@@ -21,16 +21,16 @@
       id="app-favicon"
       rel="icon"
       type="image/svg+xml"
-      href="/favicon-light.svg"
+      href="./favicon-light.svg"
     />
     <link
       rel="icon"
       type="image/svg+xml"
-      href="/favicon-dark.svg"
+      href="./favicon-dark.svg"
       media="(prefers-color-scheme: dark)"
       data-favicon-fallback="true"
     />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="./icon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -80,6 +80,10 @@
             resolved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
           }
           document.documentElement.setAttribute('data-theme',resolved);
+          var favicon = document.getElementById('app-favicon');
+          if(favicon){
+            favicon.href = (resolved === 'dark') ? './favicon-dark.svg' : './favicon-light.svg';
+          }
         }catch(e){
           document.documentElement.setAttribute('data-theme','light');
         }
