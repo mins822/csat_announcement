@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>영역별 타종 체크박스 선택 및 시간 간격 · 시각 설정</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#121212;
+  --surface:rgba(30,30,30,.92);
+  --surface-2:rgba(38,38,38,.74);
+  --surface-3:rgba(46,46,46,.60);
+  --ink:#f1f1f1;
+  --ink-2:#d2d2d2;
+  --muted:#a3a3a3;
+  --line:rgba(255,255,255,.11);
+  --rim:rgba(255,255,255,.23);
+  --rim-low:rgba(255,255,255,.13);
+  --highlight:rgba(255,255,255,.24);
+  --selected:rgba(255,255,255,.085);
+  --selected-edge:rgba(255,255,255,.20);
+  --button-fill:rgba(255,255,255,.075);
+  --button-hover:rgba(255,255,255,.13);
+  --strong:#e7e7e7;
+  --strong-text:#171717;
+  --shadow:0 26px 74px rgba(0,0,0,.48),0 5px 20px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.17);
+  --shadow-soft:0 8px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.10);
+  --accent:#e2e2e2;
+  --accent-soft:rgba(255,255,255,.10);
+  --warn:#d6b27e;
+  --warn-bg:rgba(214,178,126,.10);
+  --radius-xl:26px;
+  --font:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Roboto","Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-tap-highlight-color:transparent}
+body{transition:background .25s ease,color .25s ease}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.38;cursor:not-allowed}
+.app-shell{position:fixed;inset:0;display:grid;place-items:center;padding:clamp(8px,2.2vh,20px);background:var(--bg)}
+.dialog{
+  position:relative;isolation:isolate;
+  width:min(1180px,100%);height:min(900px,96dvh);max-height:96dvh;min-height:0;
+  display:flex;flex-direction:column;overflow:hidden;
+  border-radius:var(--radius-xl);
+  color:var(--ink);background:var(--surface);
+  border:1px solid var(--rim);
+  box-shadow:var(--shadow);
+  -webkit-backdrop-filter:blur(34px) saturate(145%);
+  backdrop-filter:blur(34px) saturate(145%);
+  transition:background .25s ease,border-color .25s ease,box-shadow .25s ease,transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s ease;
+}
+.dialog::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.23),transparent 24%,transparent 72%,rgba(255,255,255,.055))}
+.dialog::after{content:"";position:absolute;z-index:4;left:1px;right:1px;top:0;height:1px;pointer-events:none;background:var(--highlight);opacity:.88}
+html[data-theme="dark"] .dialog::before{background:linear-gradient(135deg,rgba(255,255,255,.075),transparent 28%,transparent 73%,rgba(255,255,255,.025))}
+.dialog.is-hidden{display:none}
+.reopen{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--rim);background:var(--surface);box-shadow:var(--shadow-soft);font-weight:700}
+.reopen.visible{display:inline-flex;align-items:center;gap:8px}
+.header{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:19px 24px 15px;border-bottom:1px solid var(--line);background:linear-gradient(125deg,rgba(255,255,255,.26),rgba(255,255,255,.035))}
+html[data-theme="dark"] .header{background:linear-gradient(125deg,rgba(255,255,255,.045),rgba(255,255,255,.008))}
+.heading{min-width:0}
+h1{font-size:16px;line-height:1.35;margin:0 0 6px;font-weight:760;letter-spacing:-.045em}
+.subtitle{margin:0;color:var(--muted);font-size:11.5px;line-height:1.55;letter-spacing:-.015em}
+.head-actions{display:flex;align-items:center;gap:7px;flex:none}
+.icon-btn{height:34px;min-width:38px;padding:0 11px;border-radius:999px;border:1px solid var(--rim);background:var(--button-fill);box-shadow:var(--shadow-soft);display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;transition:transform .16s,background .2s,border-color .2s}
+.icon-btn:hover{background:var(--button-hover)}
+.icon-btn:active{transform:scale(.96)}
+.icon-btn svg{width:15px;height:15px;display:block}
+.quickbar{position:relative;z-index:1;padding:12px 22px 11px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.10)}
+html[data-theme="dark"] .quickbar{background:rgba(255,255,255,.018)}
+.quick-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0}
+.quick-label{min-width:70px;color:var(--muted);font-size:10.5px;font-weight:750;letter-spacing:-.035em}
+.glass-chip,.select-chip,.save-btn{
+  position:relative;isolation:isolate;overflow:hidden;
+  height:29px;padding:0 12px;border-radius:999px;
+  border:1px solid var(--rim);background:var(--button-fill);
+  box-shadow:inset 0 1px 0 var(--highlight),0 2px 7px rgba(0,0,0,.035);
+  color:var(--ink-2);font-size:10.5px;font-weight:680;white-space:nowrap;
+  transition:transform .16s,background .2s,border-color .2s,box-shadow .2s;
+}
+.glass-chip::before,.select-chip::before,.save-btn::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:linear-gradient(120deg,rgba(255,255,255,.28),transparent 48%,rgba(255,255,255,.035))}
+html[data-theme="dark"] .glass-chip,html[data-theme="dark"] .select-chip,html[data-theme="dark"] .save-btn{border-color:var(--rim-low);box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 2px 8px rgba(0,0,0,.12)}
+.glass-chip:hover,.select-chip:hover,.save-btn:hover{background:var(--button-hover);border-color:var(--highlight)}
+.glass-chip:active,.select-chip:active,.save-btn:active{transform:scale(.97)}
+.glass-chip.active{color:var(--ink);background:var(--selected);border-color:var(--selected-edge);box-shadow:inset 0 1px 0 var(--highlight),inset 0 0 0 1px rgba(255,255,255,.10),0 3px 10px rgba(0,0,0,.06)}
+html[data-theme="dark"] .glass-chip.active{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 3px 10px rgba(0,0,0,.2)}
+.compact-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:5px 8px;border:1px solid var(--rim-low);border-radius:14px;background:var(--surface-2);box-shadow:inset 0 1px 0 var(--highlight)}
+.compact-label{display:inline-flex;align-items:center;gap:5px;color:var(--ink-2);font-size:10.5px;font-weight:650;white-space:nowrap}
+.compact-label input{accent-color:var(--strong);width:13px;height:13px;margin:0}
+.compact-select{height:25px;padding:0 7px;border-radius:8px;border:1px solid var(--rim-low);background:var(--surface-2);color:var(--ink);font-size:10.5px;font-weight:650}
+.bookmarks{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.bookmark-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 5px 3px 10px;border-radius:999px;border:1px solid var(--rim-low);background:var(--surface-2);font-size:10px;font-weight:700}
+.bookmark-chip button{border:0;background:transparent;color:var(--muted);padding:2px 3px;border-radius:50%;font-size:12px;line-height:1}
+.bookmark-chip button:hover{color:var(--ink);background:var(--selected)}
+.bookmark-save{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.bookmark-input{width:150px;height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--rim-low);background:var(--surface-2);font-size:11px;outline:none}
+.bookmark-input:focus{border-color:var(--accent)}
+.workspace{display:grid;grid-template-columns:minmax(285px,35%) minmax(0,1fr);flex:1 1 auto;min-height:0;overflow:hidden;background:rgba(255,255,255,.035)}
+html[data-theme="dark"] .workspace{background:rgba(255,255,255,.008)}
+.pane{min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.34) transparent}
+.left-pane{padding:15px 14px 92px 18px;border-right:1px solid var(--line)}
+.right-pane{padding:15px 18px 92px}
+.pane-title{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 12px;color:var(--ink-2);font-size:11.5px;line-height:1.45;font-weight:760;letter-spacing:-.035em}
+.pane-note{color:var(--muted);font-size:9.5px;line-height:1.45;font-weight:450}
+.left-tools{display:flex;flex-direction:column;gap:8px;padding:0 0 12px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+.search-wrap{position:relative;width:100%}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none}
+.search-input{display:block;width:100%;height:36px;padding:0 12px 0 34px;border-radius:999px;border:1px solid var(--rim);background:var(--surface-2);box-shadow:inset 0 1px 0 var(--highlight),0 2px 8px rgba(0,0,0,.025);color:var(--ink);font:500 12px/1 var(--font);letter-spacing:0;outline:none;user-select:text}
+.search-input::placeholder{color:transparent}
+.search-input:focus{border-color:var(--selected-edge);box-shadow:0 0 0 3px var(--accent-soft),inset 0 1px 0 var(--highlight)}
+.stage-type-chips{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.stage-type-chip{height:24px;padding:0 8px;border:1px solid var(--rim-low);border-radius:999px;background:var(--surface-2);color:var(--muted);font-size:10px;font-weight:700;white-space:nowrap;transition:.16s}
+.stage-type-chip.active{color:var(--ink);background:var(--selected);border-color:var(--selected-edge)}
+.area-card{padding:10px 10px 9px;border-radius:17px;margin-bottom:11px;border:1px solid var(--rim-low);background:linear-gradient(145deg,rgba(255,255,255,.36),rgba(255,255,255,.11));box-shadow:inset 0 1px 0 var(--highlight),0 4px 15px rgba(0,0,0,.025);contain:layout style}
+html[data-theme="dark"] .area-card{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border-color:rgba(255,255,255,.10);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 4px 14px rgba(0,0,0,.14)}
+.area-head{display:flex;align-items:center;justify-content:space-between;gap:7px;padding:0 2px 8px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.area-check{display:flex;align-items:center;gap:9px;min-width:0;font-size:11.5px;font-weight:760;letter-spacing:-.035em;cursor:pointer}
+.area-check span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.area-head-actions{display:flex;align-items:center;gap:4px;flex:none}
+.area-tag,.collapse-btn{position:relative;overflow:hidden;height:25px;padding:0 9px;border-radius:999px;border:1px solid var(--rim);background:var(--button-fill);box-shadow:inset 0 1px 0 var(--highlight),0 2px 6px rgba(0,0,0,.03);font-size:9.5px;font-weight:700;white-space:nowrap}
+.collapse-btn{border-color:transparent;background:transparent;color:var(--muted);box-shadow:none;padding:0 5px}
+.collapse-btn:hover{color:var(--ink);background:var(--selected)}
+.check{appearance:none;-webkit-appearance:none;display:grid;place-content:center;flex:none;width:19px;height:19px;margin:0;border-radius:6px;border:1px solid rgba(72,72,72,.34);background:linear-gradient(145deg,rgba(255,255,255,.64),rgba(255,255,255,.20));box-shadow:inset 0 1px 0 rgba(255,255,255,.94),inset 0 -1px 0 rgba(0,0,0,.025),0 1px 4px rgba(0,0,0,.035);cursor:pointer;transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}
+.check:hover{transform:scale(1.045);border-color:rgba(55,55,55,.58)}
+.check:checked{border-color:rgba(45,45,45,.48);background:linear-gradient(145deg,rgba(50,50,50,.88),rgba(30,30,30,.72));box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 2px 7px rgba(0,0,0,.12)}
+.check:checked::after{content:"";width:8px;height:4px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+html[data-theme="dark"] .check{border-color:rgba(255,255,255,.28);background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 4px rgba(0,0,0,.18)}
+html[data-theme="dark"] .check:checked{border-color:rgba(255,255,255,.58);background:linear-gradient(145deg,rgba(245,245,245,.94),rgba(205,205,205,.78));box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 2px 8px rgba(0,0,0,.3)}
+html[data-theme="dark"] .check:checked::after{border-color:#202020}
+.stage-row{min-height:35px;padding:5px 7px;display:grid;grid-template-columns:19px minmax(0,1fr) auto;align-items:center;gap:8px;border-radius:11px;margin-top:3px;border:1px solid transparent;background:rgba(255,255,255,.075);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+html[data-theme="dark"] .stage-row{background:rgba(255,255,255,.024)}
+.stage-row:hover{background:rgba(255,255,255,.30);border-color:var(--rim-low);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 9px rgba(0,0,0,.025)}
+html[data-theme="dark"] .stage-row:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.10)}
+.stage-row.selected{background:linear-gradient(120deg,rgba(60,60,60,.09),rgba(255,255,255,.14));border-color:rgba(255,255,255,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.76),inset 0 0 0 1px rgba(65,65,65,.045),0 2px 8px rgba(0,0,0,.025)}
+html[data-theme="dark"] .stage-row.selected{background:linear-gradient(120deg,rgba(255,255,255,.12),rgba(255,255,255,.035));border-color:rgba(255,255,255,.20);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 10px rgba(0,0,0,.17)}
+.stage-name{font-size:11.2px;line-height:1.3;font-weight:650;min-width:0;color:var(--ink)}
+.stage-meta{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:550}
+.tools-label{font-size:10px;font-weight:750;color:var(--muted)}
+.batch-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 10px;margin-bottom:9px;border-radius:14px;border:1px solid var(--rim-low);background:var(--surface-2);box-shadow:inset 0 1px 0 var(--highlight)}
+.batch-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:10px;font-weight:700;color:var(--ink-2)}
+.batch-num{width:52px;height:26px;padding:0 6px;border-radius:8px;border:1px solid var(--rim-low);background:var(--surface);font:600 11px/1 var(--font);text-align:center;outline:none;user-select:text}
+.nudge{height:28px;min-width:37px;padding:0 8px;border-radius:999px;border:1px solid var(--rim);background:var(--button-fill);box-shadow:inset 0 1px 0 var(--highlight),0 2px 6px rgba(0,0,0,.035);font-size:9.5px;font-weight:750;white-space:nowrap;transition:transform .14s,background .16s}
+.nudge:hover{background:var(--button-hover)}
+.nudge:active{transform:scale(.94)}
+.diagnostic{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;margin-bottom:6px;border-radius:11px;border:1px solid rgba(170,120,55,.25);background:var(--warn-bg);color:var(--warn);font-size:10.5px;font-weight:700}
+.fix-btn{height:23px;padding:0 9px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;font-size:9.5px;font-weight:750;white-space:nowrap}
+.schedule-item{margin-bottom:8px}
+.alarm-card{display:grid;grid-template-columns:26px minmax(0,1fr) auto auto;align-items:center;gap:9px;min-height:58px;padding:9px 12px;border:1px solid var(--rim-low);border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.44),rgba(255,255,255,.16));box-shadow:inset 0 1px 0 var(--highlight),0 4px 13px rgba(0,0,0,.035)}
+html[data-theme="dark"] .alarm-card{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border-color:rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 4px 14px rgba(0,0,0,.18)}
+.number{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--rim);background:var(--selected);color:var(--ink-2);font-size:10px;font-weight:800;font-variant-numeric:tabular-nums;box-shadow:inset 0 1px 0 var(--highlight),0 2px 6px rgba(0,0,0,.04)}
+.alarm-name{font-size:11.5px;line-height:1.3;font-weight:760;letter-spacing:-.035em;color:var(--ink)}
+.alarm-sub{margin-top:3px;font-size:9.5px;line-height:1.35;color:var(--muted);font-weight:500}
+.clock-control{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.clock-control span{font-size:9px;color:var(--muted);font-weight:650}
+.time-input{height:31px;width:104px;padding:0 8px;border-radius:9px;border:1px solid var(--rim);background:var(--surface-2);box-shadow:inset 0 1px 0 var(--highlight);color:var(--ink);font:650 11px/1 var(--font);font-variant-numeric:tabular-nums;outline:none;user-select:text}
+.sound-toggle{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;padding:0;border:1px solid var(--rim);background:var(--button-fill);box-shadow:inset 0 1px 0 var(--highlight),0 2px 7px rgba(0,0,0,.05);color:var(--ink-2);transition:transform .16s,background .16s,border-color .16s}
+.sound-toggle svg{width:16px;height:16px;display:block}
+.sound-toggle:hover{background:var(--button-hover);transform:scale(1.04)}
+.sound-toggle:active{transform:scale(.94)}
+.sound-toggle.is-muted{border-color:rgba(130,130,130,.42);background:var(--accent-soft);color:var(--muted)}
+.interval-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 9px 19px;padding:9px 11px;border-radius:13px;border:1px solid var(--rim-low);border-left:2px solid rgba(90,90,90,.45);background:linear-gradient(120deg,rgba(255,255,255,.22),rgba(255,255,255,.055));box-shadow:inset 0 1px 0 rgba(255,255,255,.48)}
+html[data-theme="dark"] .interval-row{border-left-color:rgba(255,255,255,.35);background:linear-gradient(120deg,rgba(255,255,255,.055),rgba(255,255,255,.016));box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.interval-copy{min-width:125px}
+.interval-title{font-size:10px;font-weight:760;letter-spacing:-.03em;line-height:1.4}
+.interval-sub{font-size:9px;color:var(--muted);margin-top:3px}
+.interval-actions{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.interval-input{width:56px;height:29px;padding:0 7px;text-align:right;border-radius:8px;border:1px solid var(--rim);background:var(--surface-2);box-shadow:inset 0 1px 0 var(--highlight);font:700 11px/1 var(--font);outline:none;user-select:text}
+.unit{font-size:9.5px;color:var(--ink-2);font-weight:650}
+.omitted{margin:3px 0 7px 22px;padding:6px 9px;border-radius:10px;border:1px dashed var(--rim-low);background:var(--surface-3);font-size:10px;color:var(--muted)}
+.omitted-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.omitted-list{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.omitted-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:999px;border:1px solid var(--rim-low);background:var(--surface-2);font-size:9.5px;color:var(--ink-2)}
+.omitted-pill button{border:0;background:none;color:var(--ink);font-weight:800;padding:0 2px}
+.empty-state{padding:30px 15px;text-align:center;color:var(--muted);font-size:11px;line-height:1.7;border:1px dashed var(--rim-low);border-radius:16px;background:var(--surface-2)}
+.footer{position:absolute;left:0;right:0;bottom:0;z-index:3;min-height:70px;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid rgba(255,255,255,.23);background:linear-gradient(110deg,rgba(255,255,255,.055),rgba(255,255,255,.012)),rgba(20,20,20,.20);-webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.20),0 -8px 26px rgba(0,0,0,.10)}
+.footer-summary{font-size:10px;line-height:1.55;font-weight:650;color:var(--ink-2)}
+.footer-summary strong{font-weight:800;color:var(--ink)}
+.footer-actions{display:flex;align-items:center;gap:8px;flex:none}
+.footer-btn{height:38px;padding:0 17px;border-radius:999px;border:1px solid var(--rim);background:var(--button-fill);box-shadow:inset 0 1px 0 var(--highlight),0 3px 10px rgba(0,0,0,.045);font-size:10px;font-weight:760;white-space:nowrap;transition:transform .15s,background .15s}
+.footer-btn:hover{background:var(--button-hover)}
+.footer-btn:active{transform:scale(.97)}
+.footer-btn.primary{border-color:var(--rim);background:linear-gradient(145deg,rgba(45,45,45,.94),rgba(20,20,20,.89));color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.30),0 4px 13px rgba(0,0,0,.14)}
+html[data-theme="dark"] .footer-btn.primary{background:linear-gradient(145deg,rgba(240,240,240,.96),rgba(205,205,205,.86));color:#171717;border-color:rgba(255,255,255,.52);box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 4px 13px rgba(0,0,0,.28)}
+.toast{position:fixed;left:50%;bottom:20px;z-index:8;transform:translate(-50%,10px);padding:9px 14px;border-radius:999px;border:1px solid var(--rim);background:var(--surface);box-shadow:var(--shadow-soft);font-size:11px;font-weight:650;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-height:760px){
+ .dialog{height:100%;max-height:100%}
+ .header{padding:13px 18px 10px}
+ .quickbar{padding:8px 17px;gap:6px}
+ .left-pane,.right-pane{padding-top:11px}
+ .footer{min-height:58px;padding:7px 15px}
+ .footer-btn{height:34px}
+}
+@media(max-width:980px){
+ .dialog{width:100%;height:100%;max-height:100%;border-radius:22px}
+ .workspace{grid-template-columns:minmax(245px,39%) minmax(0,1fr)}
+ .alarm-card{grid-template-columns:25px minmax(100px,1fr) auto;gap:7px}
+ .clock-control{grid-column:2;justify-self:start;margin-top:3px}
+ .sound-toggle{grid-column:3;grid-row:1 / span 2}
+ .interval-row{flex-wrap:wrap}
+ .interval-actions{width:100%;justify-content:flex-end}
+}
+@media(max-width:700px){
+ .app-shell{padding:0}
+ .dialog{border-radius:0;border:0;height:100dvh;max-height:100dvh}
+ .header{padding:12px 13px 10px;gap:9px}
+ h1{font-size:13px}
+ .subtitle{font-size:10px}
+ .head-actions{gap:4px}
+ .quickbar{padding:8px 11px;gap:7px}
+ .quick-line{gap:5px}
+ .quick-label{min-width:58px;font-size:9px}
+ .glass-chip{height:27px;padding:0 9px;font-size:9.5px}
+ .workspace{display:flex;flex-direction:column}
+ .left-pane{flex:0 0 40%;border-right:0;border-bottom:1px solid var(--line);padding:10px 11px 9px}
+ .right-pane{flex:1 1 auto;padding:10px 11px 80px}
+ .pane-title{font-size:10.5px;margin-bottom:8px}
+ .area-card{padding:8px;margin-bottom:8px}
+ .stage-row{min-height:32px}
+ .alarm-card{grid-template-columns:24px minmax(0,1fr) auto;gap:7px;padding:8px 9px}
+ .clock-control{grid-column:2;grid-row:2;margin-top:2px}
+ .sound-toggle{grid-column:3;grid-row:1 / span 2}
+ .interval-row{margin-left:13px;padding:8px}
+ .interval-copy{width:100%}
+ .interval-actions{gap:4px;flex-wrap:wrap;justify-content:flex-end}
+ .nudge{min-width:32px;padding:0 6px}
+ .footer{min-height:62px;padding:7px 10px;gap:7px}
+ .footer-summary{max-width:42%;font-size:9px}
+ .footer-actions{gap:5px}
+ .footer-btn{height:34px;padding:0 11px;font-size:9px}
+ .bookmark-input{width:115px}
+}
+@media(max-height:620px) and (max-width:700px){
+ .subtitle{display:none}
+ .quickbar{padding:5px 10px}
+ .left-pane{flex-basis:34%}
+ .footer{min-height:52px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <main class="dialog" id="builderDialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <header class="header">
+      <div class="heading">
+        <h1 id="dialogTitle">영역별 타종 체크박스 선택 및 시간 간격 · 시각 설정</h1>
+        <p class="subtitle">원하는 영역과 타종 단계를 선택하고, 각 타종 사이의 간격과 연쇄 시각을 조정하세요.</p>
+      </div>
+      <div class="head-actions">
+<button id="undoBtn" class="icon-btn" type="button" disabled title="실행 취소" aria-label="실행 취소">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 1 1 0 14h-2"/></svg>
+        </button>
+        <button id="redoBtn" class="icon-btn" type="button" disabled title="다시 실행" aria-label="다시 실행">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 1 0 0 14h2"/></svg>
+        </button>
+        <button id="closeBtn" class="icon-btn" type="button" title="닫기" aria-label="닫기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="quickbar">
+      <div class="quick-line">
+        <span class="quick-label">빠른 선택</span>
+        <button class="glass-chip" data-tpl="all_39" type="button">전체 타종 선택 (기본)</button>
+        <button class="glass-chip" data-tpl="kor_math_inq1_core" type="button">국·수·탐1 핵심</button>
+        <button class="glass-chip" data-tpl="kor_core" type="button">1교시 국어 4단계</button>
+        <button class="glass-chip" data-tpl="eng_listening_core" type="button">3교시 영어 듣기 포함</button>
+        <button class="glass-chip" data-tpl="all_core" type="button">전 영역 핵심 단계</button>
+        <button class="glass-chip" data-tpl="reset_intervals" type="button">기본 간격 초기화</button>
+      </div>
+      <div class="quick-line">
+        <span class="quick-label">응시 조합</span>
+        <div class="compact-box">
+          <label class="compact-label"><input class="subject-check" type="checkbox" value="kor" checked> 국어</label>
+          <label class="compact-label"><input class="subject-check" type="checkbox" value="math" checked> 수학</label>
+          <label class="compact-label"><input class="subject-check" type="checkbox" value="eng" checked> 영어</label>
+          <label class="compact-label"><input class="subject-check" type="checkbox" value="hist" checked> 한국사</label>
+          <label class="compact-label">탐구
+            <select id="inqCount" class="compact-select"><option value="2">2과목</option><option value="1">1과목</option><option value="0">미응시</option></select>
+          </label>
+          <label class="compact-label"><input id="lang2Check" type="checkbox"> 제2외국어/한문</label>
+          <label class="compact-label">밀도
+            <select id="density" class="compact-select"><option value="all">전체 타종</option><option value="core">핵심 단계</option><option value="real">실전 최소</option></select>
+          </label>
+          <button id="autoCompose" class="glass-chip" type="button">조합 자동 구성</button>
+        </div>
+      </div>
+      <div class="quick-line">
+        <span class="quick-label">자주 쓰는 구성</span>
+        <div id="bookmarks" class="bookmarks"><span class="pane-note">저장된 구성이 없습니다.</span></div>
+        <div class="bookmark-save">
+          <input id="bookmarkName" class="bookmark-input" type="text" maxlength="28" aria-label="저장할 구성 이름">
+          <button id="saveBookmark" class="save-btn" type="button">현재 구성 저장</button>
+        </div>
+      </div>
+      <div class="quick-line">
+        <span class="quick-label">시계 바늘 연동</span>
+        <button class="glass-chip active" data-sync-mode="original_csat_time" type="button">원래 수능 시각 맞춤 + 대기 간격 적용</button>
+        <button class="glass-chip" data-sync-mode="custom_cascaded_time" type="button">간격 연쇄 계산 시각 연동</button>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside id="leftPane" class="pane left-pane">
+        <div class="pane-title"><span>1. 진행할 영역 및 타종 단계 선택</span><span class="pane-note">영역별 필요한 단계만 선택</span></div>
+        <div class="left-tools">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+            <input id="searchInput" class="search-input" type="search" aria-label="영역 및 타종 단계 검색" autocomplete="off" spellcheck="false">
+          </div>
+          <div id="stageTypeChips" class="stage-type-chips"></div>
+        </div>
+        <div id="groupList"></div>
+      </aside>
+
+      <section id="rightPane" class="pane right-pane">
+        <div class="pane-title">
+          <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+          <span class="pane-note">간격 변경 시 이후 시각 자동 계산 · 시각 변경 시 직전 간격 반영</span>
+        </div>
+        <div class="batch-bar">
+          <div class="batch-group">
+            <span class="tools-label">일괄 간격</span>
+            <button class="nudge" data-batch-preset="prep_1" type="button">준비→본령 1분</button>
+            <button class="nudge" data-batch-preset="break_3" type="button">영역 전환 3분</button>
+            <button class="nudge" data-batch-preset="test_10s" type="button">전체 10초</button>
+          </div>
+          <div class="batch-group">
+            <span>기존</span><input id="batchFrom" class="batch-num" type="number" min="1" max="600" value="80" aria-label="변경할 기존 간격">
+            <span>분 →</span><input id="batchTo" class="batch-num" type="number" min="1" max="600" value="60" aria-label="변경할 새 간격">
+            <span>분</span><button id="batchReplace" class="nudge" type="button">일괄 변경</button>
+          </div>
+        </div>
+        <div id="diagnostics"></div>
+        <div id="scheduleRows"></div>
+      </section>
+    </section>
+
+    <footer class="footer">
+      <div id="summary" class="footer-summary" aria-live="polite"></div>
+      <div class="footer-actions">
+        <button id="cancelBtn" class="footer-btn" type="button">취소</button>
+        <button id="applyBtn" class="footer-btn primary" type="button">선택 구성 저장</button>
+      </div>
+    </footer>
+  </main>
+  <button id="reopenBtn" class="reopen" type="button">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.5"/><path d="M4 4v4.5h4.5"/></svg>
+    타종 설정 열기
+  </button>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script id="source-data" type="application/json">{"subjectGroups":[{"id":"kor","periodLabel":"1교시","title":"1교시 국어 영역","shortTitle":"국어"},{"id":"math","periodLabel":"2교시","title":"2교시 수학 영역","shortTitle":"수학"},{"id":"eng","periodLabel":"3교시","title":"3교시 영어 영역","shortTitle":"영어"},{"id":"hist","periodLabel":"4교시","title":"4교시 한국사 영역","shortTitle":"한국사"},{"id":"inq1","periodLabel":"4교시","title":"4교시 탐구 제1선택","shortTitle":"탐구 1선택"},{"id":"inq2","periodLabel":"4교시","title":"4교시 탐구 제2선택","shortTitle":"탐구 2선택"},{"id":"lang2","periodLabel":"5교시","title":"5교시 제2외국어/한문","shortTitle":"제2외국어"}],"stageTypeMeta":[{"type":"entry","label":"입실"},{"type":"preliminary","label":"예비령"},{"type":"prepare","label":"준비령"},{"type":"main","label":"본령"},{"type":"warn","label":"종료 전 안내"},{"type":"end","label":"종료령"},{"type":"listening","label":"영어 듣기 시작"}],"selectableCueNodes":[{"nodeId":"001","bellCode":"001","stageType":"entry","durationSec":9.7,"subjectGroupId":"kor","periodLabel":"1교시","subjectTitle":"감독관 입실","stageShortLabel":"감독관 입실","fullTitle":"1교시 국어 감독관 입실 (입실준비)","originalTimeText":"08:05","originalMinutes":485},{"nodeId":"002","bellCode":"002","stageType":"entry","durationSec":301.6,"subjectGroupId":"kor","periodLabel":"1교시","subjectTitle":"입실 완료","stageShortLabel":"입실 완료","fullTitle":"1교시 국어 입실 완료 (입실 마감)","originalTimeText":"08:10","originalMinutes":490},{"nodeId":"003","bellCode":"003","stageType":"preliminary","durationSec":52.1,"subjectGroupId":"kor","periodLabel":"1교시","subjectTitle":"국어 영역","stageShortLabel":"예비령","fullTitle":"1교시 국어 예비령","originalTimeText":"08:25","originalMinutes":505},{"nodeId":"004","bellCode":"004","stageType":"prepare","durationSec":56.7,"subjectGroupId":"kor","periodLabel":"1교시","subjectTitle":"국어 영역","stageShortLabel":"준비령","fullTitle":"1교시 국어 준비령","originalTimeText":"08:35","originalMinutes":515,"isCoreExamStage":true},{"nodeId":"005","bellCode":"005","stageType":"main","durationSec":7.7,"subjectGroupId":"kor","periodLabel":"1교시","subjectTitle":"국어 영역","stageShortLabel":"본령","fullTitle":"1교시 국어 본령","originalTimeText":"08:40","originalMinutes":520,"isCoreExamStage":true},{"nodeId":"006","bellCode":"006","stageType":"warn","durationSec":3.9,"subjectGroupId":"kor","periodLabel":"1교시","subjectTitle":"국어 영역","stageShortLabel":"종료 10분 전","fullTitle":"1교시 국어 종료 10분 전","originalTimeText":"09:50","originalMinutes":590,"isCoreExamStage":true},{"nodeId":"007","bellCode":"007","stageType":"end","durationSec":49,"subjectGroupId":"kor","periodLabel":"1교시","subjectTitle":"국어 영역","stageShortLabel":"종료령","fullTitle":"1교시 국어 종료령","originalTimeText":"10:00","originalMinutes":600,"isCoreExamStage":true,"isEndBell":true},{"nodeId":"008","bellCode":"008","stageType":"entry","durationSec":11.2,"subjectGroupId":"math","periodLabel":"2교시","subjectTitle":"수학 영역","stageShortLabel":"감독관 입실","fullTitle":"2교시 수학 감독관 입실","originalTimeText":"10:15","originalMinutes":615},{"nodeId":"009","bellCode":"009","stageType":"preliminary","durationSec":61.8,"subjectGroupId":"math","periodLabel":"2교시","subjectTitle":"수학 영역","stageShortLabel":"예비령","fullTitle":"2교시 수학 예비령","originalTimeText":"10:20","originalMinutes":620},{"nodeId":"010","bellCode":"010","stageType":"prepare","durationSec":59.6,"subjectGroupId":"math","periodLabel":"2교시","subjectTitle":"수학 영역","stageShortLabel":"준비령","fullTitle":"2교시 수학 준비령","originalTimeText":"10:25","originalMinutes":625,"isCoreExamStage":true},{"nodeId":"011","bellCode":"011","stageType":"main","durationSec":7.6,"subjectGroupId":"math","periodLabel":"2교시","subjectTitle":"수학 영역","stageShortLabel":"본령","fullTitle":"2교시 수학 본령","originalTimeText":"10:30","originalMinutes":630,"isCoreExamStage":true},{"nodeId":"012","bellCode":"012","stageType":"warn","durationSec":4,"subjectGroupId":"math","periodLabel":"2교시","subjectTitle":"수학 영역","stageShortLabel":"종료 10분 전","fullTitle":"2교시 수학 종료 10분 전","originalTimeText":"12:00","originalMinutes":720,"isCoreExamStage":true},{"nodeId":"013","bellCode":"013","stageType":"end","durationSec":58.5,"subjectGroupId":"math","periodLabel":"2교시","subjectTitle":"수학 영역","stageShortLabel":"종료령","fullTitle":"2교시 수학 종료령","originalTimeText":"12:10","originalMinutes":730,"isCoreExamStage":true,"isEndBell":true},{"nodeId":"014","bellCode":"014","stageType":"entry","durationSec":11.4,"subjectGroupId":"eng","periodLabel":"3교시","subjectTitle":"영어 영역","stageShortLabel":"감독관 입실","fullTitle":"3교시 영어 감독관 입실","originalTimeText":"12:55","originalMinutes":775},{"nodeId":"015","bellCode":"015","stageType":"preliminary","durationSec":69.9,"subjectGroupId":"eng","periodLabel":"3교시","subjectTitle":"영어 영역","stageShortLabel":"예비령","fullTitle":"3교시 영어 예비령","originalTimeText":"13:00","originalMinutes":780},{"nodeId":"016","bellCode":"016","stageType":"prepare","durationSec":71.8,"subjectGroupId":"eng","periodLabel":"3교시","subjectTitle":"영어 영역","stageShortLabel":"준비령","fullTitle":"3교시 영어 준비령","originalTimeText":"13:05","originalMinutes":785,"isCoreExamStage":true},{"nodeId":"ENG_1307","stageType":"listening","subjectGroupId":"eng","periodLabel":"3교시","subjectTitle":"영어 영역","stageShortLabel":"듣기평가 안내방송 및 본령","fullTitle":"3교시 영어 듣기평가 안내방송 및 본령 (13:07 시작 · 별도 타종 없음)","originalTimeText":"13:07","originalMinutes":787,"isCoreExamStage":true,"triggersEnglishListening":true},{"nodeId":"017","bellCode":"017","stageType":"warn","durationSec":3.9,"subjectGroupId":"eng","periodLabel":"3교시","subjectTitle":"영어 영역","stageShortLabel":"종료 10분 전","fullTitle":"3교시 영어 종료 10분 전","originalTimeText":"14:10","originalMinutes":850,"isCoreExamStage":true},{"nodeId":"018","bellCode":"018","stageType":"end","durationSec":49.1,"subjectGroupId":"eng","periodLabel":"3교시","subjectTitle":"영어 영역","stageShortLabel":"종료령","fullTitle":"3교시 영어 종료령","originalTimeText":"14:20","originalMinutes":860,"isCoreExamStage":true,"isEndBell":true},{"nodeId":"019","bellCode":"019","stageType":"entry","durationSec":11.5,"subjectGroupId":"hist","periodLabel":"4교시","subjectTitle":"한국사 영역","stageShortLabel":"감독관 입실","fullTitle":"4교시 한국사 감독관 입실","originalTimeText":"14:35","originalMinutes":875},{"nodeId":"020","bellCode":"020","stageType":"preliminary","durationSec":85.4,"subjectGroupId":"hist","periodLabel":"4교시","subjectTitle":"한국사 영역","stageShortLabel":"예비령","fullTitle":"4교시 한국사 예비령","originalTimeText":"14:40","originalMinutes":880},{"nodeId":"021","bellCode":"021","stageType":"prepare","durationSec":58.7,"subjectGroupId":"hist","periodLabel":"4교시","subjectTitle":"한국사 영역","stageShortLabel":"준비령","fullTitle":"4교시 한국사 준비령","originalTimeText":"14:45","originalMinutes":885,"isCoreExamStage":true},{"nodeId":"022","bellCode":"022","stageType":"main","durationSec":8.9,"subjectGroupId":"hist","periodLabel":"4교시","subjectTitle":"한국사 영역","stageShortLabel":"본령","fullTitle":"4교시 한국사 본령","originalTimeText":"14:50","originalMinutes":890,"isCoreExamStage":true},{"nodeId":"023","bellCode":"023","stageType":"warn","durationSec":5.5,"subjectGroupId":"hist","periodLabel":"4교시","subjectTitle":"한국사 영역","stageShortLabel":"종료 5분 전","fullTitle":"4교시 한국사 종료 5분 전","originalTimeText":"15:15","originalMinutes":915,"isCoreExamStage":true},{"nodeId":"024","bellCode":"024","stageType":"end","durationSec":64.7,"subjectGroupId":"hist","periodLabel":"4교시","subjectTitle":"한국사 영역","stageShortLabel":"종료령","fullTitle":"4교시 한국사 종료령","originalTimeText":"15:20","originalMinutes":920,"isCoreExamStage":true,"isEndBell":true},{"nodeId":"025","bellCode":"025","stageType":"prepare","durationSec":175.5,"subjectGroupId":"inq1","periodLabel":"4교시","subjectTitle":"탐구1 영역","stageShortLabel":"탐구 준비령","fullTitle":"4교시 탐구 준비령","originalTimeText":"15:30","originalMinutes":930,"isCoreExamStage":true},{"nodeId":"026","bellCode":"026","stageType":"main","durationSec":22.1,"subjectGroupId":"inq1","periodLabel":"4교시","subjectTitle":"탐구1 영역","stageShortLabel":"본령 (제1선택)","fullTitle":"4교시 탐구 제1선택 본령","originalTimeText":"15:35","originalMinutes":935,"isCoreExamStage":true},{"nodeId":"027","bellCode":"027","stageType":"warn","durationSec":6.1,"subjectGroupId":"inq1","periodLabel":"4교시","subjectTitle":"탐구1 영역","stageShortLabel":"종료 5분 전","fullTitle":"4교시 탐구 제1선택 종료 5분 전","originalTimeText":"16:00","originalMinutes":960,"isCoreExamStage":true},{"nodeId":"028","bellCode":"028","stageType":"end","durationSec":101.9,"subjectGroupId":"inq1","periodLabel":"4교시","subjectTitle":"탐구1 영역","stageShortLabel":"종료령 (제1선택)","fullTitle":"4교시 탐구 제1선택 종료령","originalTimeText":"16:05","originalMinutes":965,"isCoreExamStage":true,"isEndBell":true},{"nodeId":"029","bellCode":"029","stageType":"main","durationSec":9.1,"subjectGroupId":"inq2","periodLabel":"4교시","subjectTitle":"탐구2 영역","stageShortLabel":"제2선택 시작","fullTitle":"4교시 탐구 제2선택 시작 (본령)","originalTimeText":"16:07","originalMinutes":967,"isCoreExamStage":true},{"nodeId":"030","bellCode":"030","stageType":"warn","durationSec":6.1,"subjectGroupId":"inq2","periodLabel":"4교시","subjectTitle":"탐구2 영역","stageShortLabel":"종료 5분 전","fullTitle":"4교시 탐구 제2선택 종료 5분 전","originalTimeText":"16:32","originalMinutes":992,"isCoreExamStage":true},{"nodeId":"031","bellCode":"031","stageType":"end","durationSec":61.7,"subjectGroupId":"inq2","periodLabel":"4교시","subjectTitle":"탐구2 영역","stageShortLabel":"종료령","fullTitle":"4교시 탐구 영역 종료령","originalTimeText":"16:37","originalMinutes":997,"isCoreExamStage":true,"isEndBell":true},{"nodeId":"032","bellCode":"032","stageType":"entry","durationSec":11.2,"subjectGroupId":"lang2","periodLabel":"5교시","subjectTitle":"제2외국어/한문","stageShortLabel":"감독관 입실","fullTitle":"5교시 제2외국어/한문 감독관 입실","originalTimeText":"16:50","originalMinutes":1010},{"nodeId":"033","bellCode":"033","stageType":"preliminary","durationSec":68.7,"subjectGroupId":"lang2","periodLabel":"5교시","subjectTitle":"제2외국어/한문","stageShortLabel":"예비령","fullTitle":"5교시 제2외국어/한문 예비령","originalTimeText":"16:55","originalMinutes":1015},{"nodeId":"034","bellCode":"034","stageType":"prepare","durationSec":46,"subjectGroupId":"lang2","periodLabel":"5교시","subjectTitle":"제2외국어/한문","stageShortLabel":"준비령","fullTitle":"5교시 제2외국어/한문 준비령","originalTimeText":"17:00","originalMinutes":1020,"isCoreExamStage":true},{"nodeId":"035","bellCode":"035","stageType":"main","durationSec":7.7,"subjectGroupId":"lang2","periodLabel":"5교시","subjectTitle":"제2외국어/한문","stageShortLabel":"본령","fullTitle":"5교시 제2외국어/한문 본령","originalTimeText":"17:05","originalMinutes":1025,"isCoreExamStage":true},{"nodeId":"036","bellCode":"036","stageType":"warn","durationSec":3.8,"subjectGroupId":"lang2","periodLabel":"5교시","subjectTitle":"제2외국어/한문","stageShortLabel":"종료 10분 전","fullTitle":"5교시 제2외국어/한문 종료 10분 전","originalTimeText":"17:35","originalMinutes":1055,"isCoreExamStage":true},{"nodeId":"037","bellCode":"037","stageType":"end","durationSec":61.6,"subjectGroupId":"lang2","periodLabel":"5교시","subjectTitle":"제2외국어/한문","stageShortLabel":"종료령","fullTitle":"5교시 제2외국어/한문 종료령","originalTimeText":"17:45","originalMinutes":1065,"isCoreExamStage":true,"isEndBell":true}],"defaultCustomSeqConfig":{"selectedNodeIds":["001","002","003","004","005","006","007","008","009","010","011","012","013","014","015","016","ENG_1307","017","018","019","020","021","022","023","024","025","026","027","028","029","030","031","032","033","034","035","036","037"],"intervalMap":{},"intervalSecondsMap":{},"firstNodeCustomMinutes":null,"mutedNodeIds":[]},"defaultBookmarks":[]}</script>
+<script>
+(() => {
+  'use strict';
+  const DATA = JSON.parse(document.getElementById('source-data').textContent);
+  const ALL_NODES = DATA.selectableCueNodes;
+  const GROUPS = DATA.subjectGroups;
+  const STAGE_META = DATA.stageTypeMeta;
+  const DEFAULT_CONFIG = DATA.defaultCustomSeqConfig;
+  const STORE_KEY = 'csat_bell_builder_popup_only_v1';
+
+  const $ = (selector, root=document) => root.querySelector(selector);
+  const $$ = (selector, root=document) => Array.from(root.querySelectorAll(selector));
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[ch]);
+  const cloneConfig = cfg => ({
+    selectedNodeIds: Array.isArray(cfg?.selectedNodeIds) ? cfg.selectedNodeIds.slice() : [],
+    intervalMap: {...(cfg?.intervalMap || {})},
+    intervalSecondsMap: {...(cfg?.intervalSecondsMap || {})},
+    firstNodeCustomMinutes: Number.isFinite(cfg?.firstNodeCustomMinutes) ? cfg.firstNodeCustomMinutes : null,
+    mutedNodeIds: Array.isArray(cfg?.mutedNodeIds) ? cfg.mutedNodeIds.slice() : []
+  });
+  const timeToMinutes = value => {
+    const [h,m] = String(value || '00:00').split(':').map(Number);
+    return (h || 0) * 60 + (m || 0);
+  };
+  const formatTime = total => {
+    const min = ((Math.floor(total) % 1440) + 1440) % 1440;
+    return String(Math.floor(min / 60)).padStart(2,'0') + ':' + String(min % 60).padStart(2,'0');
+  };
+  const fmtDuration = total => {
+    const mins = Math.max(0, Math.round(total));
+    const h = Math.floor(mins / 60), m = mins % 60;
+    return h ? `${h}시간 ${m}분` : `${m}분`;
+  };
+
+  const saved = (() => {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch { return null; }
+  })();
+  let committedConfig = cloneConfig(saved?.config || DEFAULT_CONFIG);
+  let draftConfig = cloneConfig(committedConfig);
+  let bookmarks = Array.isArray(saved?.bookmarks) ? saved.bookmarks : [];
+  let syncMode = saved?.syncMode === 'custom_cascaded_time' ? 'custom_cascaded_time' : 'original_csat_time';
+  let searchQuery = '';
+  let collapsedGroups = {};
+  let expandedOmitted = {};
+  let undoStack = [], redoStack = [];
+  let batchFrom = 80, batchTo = 60;
+  let toastTimer = null;
+
+  const dialog = $('#builderDialog');
+  const leftPane = $('#leftPane');
+  const rightPane = $('#rightPane');
+  const searchInput = $('#searchInput');
+
+  function applyTheme() {
+    document.documentElement.dataset.theme = 'dark';
+  }
+  function persist() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        config: committedConfig,
+        bookmarks,
+        syncMode
+      }));
+    } catch {}
+  }
+  function toast(message) {
+    const el = $('#toast');
+    el.textContent = message;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+  }
+  function updateHistoryButtons() {
+    $('#undoBtn').disabled = !undoStack.length;
+    $('#redoBtn').disabled = !redoStack.length;
+  }
+  function mutateConfig(mutator) {
+    undoStack.push(cloneConfig(draftConfig));
+    if (undoStack.length > 25) undoStack.shift();
+    redoStack = [];
+    mutator(draftConfig);
+    updateHistoryButtons();
+    render();
+  }
+  function selectedIds() {
+    return draftConfig.selectedNodeIds || [];
+  }
+  function analysis() {
+    const selected = new Set(selectedIds());
+    const ordered = ALL_NODES.filter(node => selected.has(node.nodeId));
+    const indices = ordered.map(node => ALL_NODES.indexOf(node));
+    const rows = [];
+    if (!ordered.length) return {rows, diagnostics:[], omittedBefore:[], totalSeconds:0};
+    let currentTime = Number.isFinite(draftConfig.firstNodeCustomMinutes) ?
+      draftConfig.firstNodeCustomMinutes : ordered[0].originalMinutes;
+    let totalSeconds = 0;
+    ordered.forEach((node, idx) => {
+      const next = ordered[idx + 1] || null;
+      const key = node.nodeId + '__' + (next ? next.nodeId : 'SINGLE_END');
+      const defaultMinutes = next ? Math.max(1, next.originalMinutes - node.originalMinutes) : 5;
+      const savedSeconds = Number(draftConfig.intervalSecondsMap?.[key]);
+      const savedMinutes = Number(draftConfig.intervalMap?.[key]);
+      const intervalSeconds = Number.isFinite(savedSeconds) && savedSeconds >= 5 ?
+        clamp(Math.round(savedSeconds), 5, 36000) :
+        (Number.isFinite(savedMinutes) && savedMinutes >= 1 ? clamp(Math.round(savedMinutes),1,600) : defaultMinutes) * 60;
+      const intervalMinutes = Math.max(1, Math.round(intervalSeconds / 60));
+      const nodeDuration = Number(node.durationSec) || 0;
+      const nextDayOffset = Math.floor(currentTime / 1440);
+      const omittedAfter = next ? ALL_NODES.slice(indices[idx] + 1, indices[idx + 1]) : [];
+      const truncationWarning = nodeDuration > 0 && intervalSeconds < nodeDuration ?
+        `타종 길이(${nodeDuration.toFixed(1)}초)보다 간격(${intervalSeconds}초)이 짧아 음원이 잘릴 수 있습니다.` : '';
+      const missingListening = node.nodeId === '016' && next && next.nodeId !== 'ENG_1307' && !selected.has('ENG_1307');
+      rows.push({
+        node, index:idx, next, key, currentTime, dayOffset:nextDayOffset,
+        intervalSeconds, intervalMinutes, defaultMinutes, omittedAfter,
+        truncationWarning, missingListening
+      });
+      if (next || ordered.length === 1) totalSeconds += intervalSeconds;
+      currentTime += intervalSeconds / 60;
+    });
+    const byGroup = {};
+    ordered.forEach(n => (byGroup[n.subjectGroupId] ||= []).push(n));
+    const diagnostics = [];
+    Object.entries(byGroup).forEach(([groupId, list]) => {
+      const hasMain = list.some(n => n.stageType === 'main' || n.stageType === 'listening');
+      const hasEnd = list.some(n => n.stageType === 'end');
+      const group = GROUPS.find(g => g.id === groupId);
+      const title = group?.title || list[0].subjectTitle;
+      if (hasMain && !hasEnd) {
+        const fix = ALL_NODES.find(n => n.subjectGroupId === groupId && n.stageType === 'end');
+        if (fix) diagnostics.push({message:`${title} 본령이 선택되었으나 종료령이 빠져 있습니다.`, id:fix.nodeId, label:fix.stageShortLabel});
+      } else if (!hasMain && hasEnd) {
+        const fix = ALL_NODES.find(n => n.subjectGroupId === groupId && (n.stageType === 'main' || n.stageType === 'listening'));
+        if (fix) diagnostics.push({message:`${title} 종료령만 선택되고 본령이 빠져 있습니다.`, id:fix.nodeId, label:fix.stageShortLabel});
+      }
+      if (groupId === 'eng' && selected.has('016') && !selected.has('ENG_1307')) {
+        diagnostics.push({message:'3교시 영어 준비령(016) 이후 13:07 듣기평가 안내방송 단계가 선택되지 않았습니다.', id:'ENG_1307', label:'듣기평가 추가', info:true});
+      }
+    });
+    return {rows, diagnostics, omittedBefore:ALL_NODES.slice(0,indices[0]), totalSeconds};
+  }
+  function renderStageTypeChips() {
+    const selected = new Set(selectedIds());
+    $('#stageTypeChips').innerHTML = STAGE_META.map(meta => {
+      const ids = ALL_NODES.filter(node => node.stageType === meta.type).map(node => node.nodeId);
+      const active = ids.length > 0 && ids.every(id => selected.has(id));
+      return `<button type="button" class="stage-type-chip ${active ? 'active' : ''}" data-stage-type="${escapeHTML(meta.type)}" aria-pressed="${active}">${escapeHTML(meta.label)}</button>`;
+    }).join('');
+  }
+  function renderGroups() {
+    const query = searchQuery.trim().toLocaleLowerCase();
+    const selected = new Set(selectedIds());
+    const list = $('#groupList');
+    list.innerHTML = '';
+    GROUPS.forEach(group => {
+      const all = ALL_NODES.filter(n => n.subjectGroupId === group.id);
+      const visible = query ? all.filter(n =>
+        `${n.fullTitle} ${n.subjectTitle} ${n.stageShortLabel} ${n.bellCode || ''} ${n.originalTimeText}`.toLocaleLowerCase().includes(query)
+      ) : all;
+      if (query && !visible.length) return;
+      const count = all.filter(n => selected.has(n.nodeId)).length;
+      const collapsed = Boolean(collapsedGroups[group.id]) && !query;
+      const card = document.createElement('section');
+      card.className = 'area-card';
+      card.innerHTML = `
+        <div class="area-head">
+          <label class="area-check">
+            <input class="check" type="checkbox" data-group-all="${group.id}" ${count === all.length ? 'checked' : ''}>
+            <span>${escapeHTML(group.title)} (${count}/${all.length})</span>
+          </label>
+          <div class="area-head-actions">
+            <button class="area-tag" type="button" data-group-core="${group.id}">핵심 단계</button>
+            <button class="collapse-btn" type="button" data-group-collapse="${group.id}">${collapsed ? '펼치기' : '접기'}</button>
+          </div>
+        </div>
+        ${collapsed ? '' : visible.map(node => {
+          const checked = selected.has(node.nodeId);
+          const meta = node.bellCode ? `[${node.bellCode}] ${node.originalTimeText}` : `[영어 듣기] ${node.originalTimeText}`;
+          return `<label class="stage-row ${checked ? 'selected' : ''}">
+            <input class="check" type="checkbox" data-node="${node.nodeId}" ${checked ? 'checked' : ''}>
+            <span class="stage-name">${escapeHTML(node.stageShortLabel)}</span>
+            <span class="stage-meta">${escapeHTML(meta)}</span>
+          </label>`;
+        }).join('')}
+      `;
+      list.appendChild(card);
+      const groupCheckbox = card.querySelector('[data-group-all]');
+      if (groupCheckbox) groupCheckbox.indeterminate = count > 0 && count < all.length;
+    });
+    if (query && !list.children.length) {
+      list.innerHTML = '<div class="empty-state">검색 결과가 없습니다.</div>';
+    }
+  }
+  function renderDiagnostics(items) {
+    $('#diagnostics').innerHTML = items.map(item =>
+      `<div class="diagnostic">${item.info ? '알림' : '확인 필요'} · ${escapeHTML(item.message)}
+        ${item.id ? `<button class="fix-btn" type="button" data-add-node="${escapeHTML(item.id)}">+ ${escapeHTML(item.label || '추가')}</button>` : ''}
+      </div>`
+    ).join('');
+  }
+  function renderRows() {
+    const result = analysis();
+    renderDiagnostics(result.diagnostics);
+    const container = $('#scheduleRows');
+    const rows = result.rows;
+    if (!rows.length) {
+      container.innerHTML = '<div class="empty-state">좌측에서 진행할 영역과 타종 단계를 하나 이상 선택해 주세요.</div>';
+      return;
+    }
+    let html = '';
+    if (result.omittedBefore.length) {
+      const key = '__BEFORE_FIRST__';
+      const expanded = Boolean(expandedOmitted[key]);
+      html += `<div class="omitted"><div class="omitted-top"><span>이전 생략된 단계 ${result.omittedBefore.length}개</span><button class="collapse-btn" type="button" data-omitted="${key}">${expanded?'숨기기':'펼치기'}</button></div>
+        ${expanded ? `<div class="omitted-list">${result.omittedBefore.map(n => `<span class="omitted-pill">${escapeHTML(n.subjectTitle)} ${escapeHTML(n.stageShortLabel)} <button type="button" data-add-node="${escapeHTML(n.nodeId)}">+</button></span>`).join('')}</div>` : ''}</div>`;
+    }
+    rows.forEach((row, index) => {
+      const node = row.node;
+      const isLast = index === rows.length - 1;
+      const muted = (draftConfig.mutedNodeIds || []).includes(node.bellCode || node.nodeId);
+      const dayBadge = row.dayOffset > 0 ? `<span style="font-size:9px;border:1px solid var(--rim-low);padding:2px 5px;border-radius:999px;margin-left:4px">+${row.dayOffset}일</span>` : '';
+      html += `<article class="schedule-item">
+        <div class="alarm-card">
+          <div class="number">${index + 1}</div>
+          <div class="alarm-title-wrap">
+            <div class="alarm-name">${escapeHTML(node.fullTitle)}${dayBadge}</div>
+            <div class="alarm-sub">원래 수능 시각: ${escapeHTML(node.originalTimeText)}${node.bellCode ? ` · 타종 번호 ${escapeHTML(node.bellCode)}${node.durationSec ? ` (${Number(node.durationSec).toFixed(1)}초)` : ''}` : ' · 별도 타종 없음'}</div>
+          </div>
+          <label class="clock-control"><span>연쇄 시각</span><input class="time-input" type="time" data-time-row="${index}" value="${formatTime(row.currentTime)}"></label>
+          <button class="sound-toggle ${muted ? 'is-muted' : ''}" type="button" data-mute-key="${escapeHTML(node.bellCode || node.nodeId)}" aria-label="${muted ? '소리 켜기' : '소리 끄기'}" aria-pressed="${muted ? 'true' : 'false'}" title="${muted ? '소리 켜기' : '소리 끄기'}">
+            ${muted ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6m0-6-5 6"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m2.8-9.8a9 9 0 0 1 0 12.6"/></svg>`}
+          </button>
+        </div>
+        ${(!isLast || rows.length === 1) ? `<div class="interval-row">
+          <div class="interval-copy">
+            <div class="interval-title">${escapeHTML(node.stageShortLabel)} 후 ${row.intervalSeconds % 60 ? `${row.intervalSeconds}초` : `${row.intervalMinutes}분`} 뒤 → ${row.next ? `${row.next.subjectGroupId !== node.subjectGroupId ? `[${escapeHTML(row.next.subjectTitle)}] ` : ''}${escapeHTML(row.next.stageShortLabel)}` : '단독 타이머 진행'}</div>
+            ${row.next ? `<div class="interval-sub">원래 수능 간격: ${row.defaultMinutes}분</div>` : ''}
+            ${row.truncationWarning ? `<div class="interval-sub" style="color:var(--warn)">${escapeHTML(row.truncationWarning)}</div>` : ''}
+            ${row.missingListening ? `<div class="interval-sub" style="color:var(--warn)">13:07 영어 듣기평가 단계가 선택되지 않았습니다.</div>` : ''}
+          </div>
+          <div class="interval-actions">
+            <button class="nudge" type="button" data-step-key="${escapeHTML(row.key)}" data-step-base="${row.intervalMinutes}" data-step-delta="-5">−5분</button>
+            <button class="nudge" type="button" data-step-key="${escapeHTML(row.key)}" data-step-base="${row.intervalMinutes}" data-step-delta="-1">−1분</button>
+            <input class="interval-input" type="number" min="1" max="600" value="${row.intervalMinutes}" data-interval-key="${escapeHTML(row.key)}" aria-label="다음 타종까지 간격(분)">
+            <span class="unit">분 뒤</span>
+            <button class="nudge" type="button" data-step-key="${escapeHTML(row.key)}" data-step-base="${row.intervalMinutes}" data-step-delta="1">+1분</button>
+            <button class="nudge" type="button" data-step-key="${escapeHTML(row.key)}" data-step-base="${row.intervalMinutes}" data-step-delta="5">+5분</button>
+            <button class="nudge" type="button" data-step-key="${escapeHTML(row.key)}" data-step-base="${row.intervalMinutes}" data-step-delta="10">+10분</button>
+          </div>
+        </div>` : ''}
+        ${row.omittedAfter.length ? `<div class="omitted">
+          <div class="omitted-top"><span>이 구간 사이 생략된 단계 ${row.omittedAfter.length}개</span><button class="collapse-btn" type="button" data-omitted="${escapeHTML(row.key)}">${expandedOmitted[row.key]?'숨기기':'펼치기'}</button></div>
+          ${expandedOmitted[row.key] ? `<div class="omitted-list">${row.omittedAfter.map(n => `<span class="omitted-pill">${escapeHTML(n.subjectTitle)} ${escapeHTML(n.stageShortLabel)} <button type="button" data-add-node="${escapeHTML(n.nodeId)}">+</button></span>`).join('')}</div>` : ''}
+        </div>` : ''}
+      </article>`;
+    });
+    container.innerHTML = html;
+  }
+  function renderBookmarks() {
+    const container = $('#bookmarks');
+    if (!bookmarks.length) {
+      container.innerHTML = '<span class="pane-note">저장된 구성이 없습니다.</span>';
+      return;
+    }
+    container.innerHTML = bookmarks.map((item, index) => {
+      const name = escapeHTML(item.name || `저장 구성 ${index + 1}`);
+      const id = escapeHTML(item.id);
+      return `<span class="bookmark-chip"><button type="button" data-load-bookmark="${id}" title="구성 불러오기">${name} (${item.config?.selectedNodeIds?.length || 0})</button><button type="button" data-delete-bookmark="${id}" title="삭제" aria-label="구성 삭제">×</button></span>`;
+    }).join('');
+  }
+  function updateSummary() {
+    const result = analysis();
+    const count = result.rows.length;
+    const totalMinutes = Math.floor(result.totalSeconds / 60);
+    const syncText = syncMode === 'original_csat_time' ? '원래 수능 시각 기준' : '간격 연쇄 시각 연동';
+    $('#summary').innerHTML = `선택된 타종 <strong>${count}개</strong> · 총 진행 대기 시간 <strong>${fmtDuration(totalMinutes)} (${totalMinutes}분)</strong> · 시계 바늘 <strong>${syncText}</strong>`;
+  }
+  function updateActiveQuickChip() {
+    $$('[data-tpl]').forEach(btn => btn.classList.remove('active'));
+  }
+  function render() {
+    renderStageTypeChips();
+    renderGroups();
+    renderRows();
+    renderBookmarks();
+    updateSummary();
+    updateHistoryButtons();
+  }
+  function addNode(id) {
+    mutateConfig(cfg => {
+      if (!cfg.selectedNodeIds.includes(id)) cfg.selectedNodeIds.push(id);
+    });
+  }
+  function setTimeForRow(index, value) {
+    const mins = timeToMinutes(value);
+    const rows = analysis().rows;
+    if (!rows[index]) return;
+    if (index === 0) {
+      mutateConfig(cfg => { cfg.firstNodeCustomMinutes = mins; });
+      return;
+    }
+    const prev = rows[index - 1];
+    const current = rows[index];
+    const key = prev.node.nodeId + '__' + current.node.nodeId;
+    const dayBase = Math.floor(prev.currentTime / 1440) * 1440;
+    let diff = dayBase + mins - prev.currentTime;
+    if (diff < 1) diff += 1440;
+    diff = clamp(Math.round(diff),1,600);
+    mutateConfig(cfg => {
+      cfg.intervalMap[key] = diff;
+      delete cfg.intervalSecondsMap[key];
+    });
+  }
+  function applyTemplate(template) {
+    if (template === 'reset_intervals') {
+      mutateConfig(cfg => {
+        cfg.intervalMap = {};
+        cfg.intervalSecondsMap = {};
+        cfg.firstNodeCustomMinutes = null;
+      });
+      toast('선택된 단계의 간격과 시각을 기본 시간표 기준으로 초기화했습니다.');
+      return;
+    }
+    mutateConfig(cfg => {
+      cfg.intervalMap = {};
+      cfg.intervalSecondsMap = {};
+      cfg.firstNodeCustomMinutes = null;
+      if (template === 'all_39') cfg.selectedNodeIds = DEFAULT_CONFIG.selectedNodeIds.slice();
+      if (template === 'kor_math_inq1_core') cfg.selectedNodeIds = ['004','005','006','007','010','011','012','013','025','026','027','028'];
+      if (template === 'kor_core') cfg.selectedNodeIds = ['004','005','006','007'];
+      if (template === 'eng_listening_core') cfg.selectedNodeIds = ['016','ENG_1307','017','018'];
+      if (template === 'all_core') cfg.selectedNodeIds = ALL_NODES.filter(n => n.isCoreExamStage).map(n => n.nodeId);
+    });
+  }
+  function applyAutoCombination() {
+    const activeGroups = new Set($$('.subject-check:checked').map(el => el.value));
+    const inq = Number($('#inqCount').value);
+    if (inq >= 1) activeGroups.add('inq1');
+    if (inq >= 2) activeGroups.add('inq2');
+    if ($('#lang2Check').checked) activeGroups.add('lang2');
+    const density = $('#density').value;
+    const ids = ALL_NODES.filter(node => {
+      if (!activeGroups.has(node.subjectGroupId)) return false;
+      if (density === 'all') return true;
+      if (density === 'core') return Boolean(node.isCoreExamStage);
+      return node.stageType === 'main' || node.stageType === 'listening' || node.stageType === 'warn' || node.stageType === 'end';
+    }).map(n => n.nodeId);
+    if (!ids.length) {
+      toast('최소 1개 이상의 응시 영역을 선택하세요.');
+      return;
+    }
+    mutateConfig(cfg => {
+      cfg.selectedNodeIds = ids;
+      cfg.intervalMap = {};
+      cfg.intervalSecondsMap = {};
+      cfg.firstNodeCustomMinutes = null;
+    });
+    toast(`응시 조합으로 ${ids.length}개 단계를 구성했습니다.`);
+  }
+  function setSyncMode(value) {
+    syncMode = value;
+    $$('[data-sync-mode]').forEach(btn => btn.classList.toggle('active', btn.dataset.syncMode === syncMode));
+    updateSummary();
+    persist();
+  }
+  function saveBookmark() {
+    const result = analysis();
+    if (!result.rows.length) {
+      toast('먼저 하나 이상의 타종 단계를 선택하세요.');
+      return;
+    }
+    const name = $('#bookmarkName').value.trim() || `${result.rows[0].node.subjectTitle} ${result.rows[0].node.stageShortLabel} 외 ${Math.max(0,result.rows.length - 1)}개`;
+    bookmarks.unshift({
+      id: `bm_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
+      name: name.slice(0,28),
+      config: cloneConfig(draftConfig),
+      syncMode
+    });
+    $('#bookmarkName').value = '';
+    renderBookmarks();
+    persist();
+    toast(`'${name}' 구성을 저장했습니다.`);
+  }
+  function restoreBookmark(id) {
+    const item = bookmarks.find(b => b.id === id);
+    if (!item) return;
+    mutateConfig(cfg => {
+      cfg.selectedNodeIds = item.config.selectedNodeIds.slice();
+      cfg.intervalMap = {...item.config.intervalMap};
+      cfg.intervalSecondsMap = {...item.config.intervalSecondsMap};
+      cfg.firstNodeCustomMinutes = item.config.firstNodeCustomMinutes;
+      cfg.mutedNodeIds = item.config.mutedNodeIds.slice();
+    });
+    if (item.syncMode) setSyncMode(item.syncMode);
+    toast(`'${item.name}' 구성을 불러왔습니다.`);
+  }
+  function deleteBookmark(id) {
+    bookmarks = bookmarks.filter(item => item.id !== id);
+    renderBookmarks();
+    persist();
+  }
+
+  $('#groupList').addEventListener('change', event => {
+    const nodeInput = event.target.closest('[data-node]');
+    if (nodeInput) {
+      const id = nodeInput.dataset.node;
+      mutateConfig(cfg => {
+        cfg.selectedNodeIds = nodeInput.checked
+          ? Array.from(new Set([...cfg.selectedNodeIds,id]))
+          : cfg.selectedNodeIds.filter(value => value !== id);
+      });
+      return;
+    }
+    const groupInput = event.target.closest('[data-group-all]');
+    if (groupInput) {
+      const ids = ALL_NODES.filter(n => n.subjectGroupId === groupInput.dataset.groupAll).map(n => n.nodeId);
+      mutateConfig(cfg => {
+        const set = new Set(cfg.selectedNodeIds);
+        ids.forEach(id => groupInput.checked ? set.add(id) : set.delete(id));
+        cfg.selectedNodeIds = Array.from(set);
+      });
+    }
+  });
+  $('#groupList').addEventListener('click', event => {
+    const collapse = event.target.closest('[data-group-collapse]');
+    if (collapse) {
+      collapsedGroups[collapse.dataset.groupCollapse] = !collapsedGroups[collapse.dataset.groupCollapse];
+      renderGroups(); return;
+    }
+    const core = event.target.closest('[data-group-core]');
+    if (core) {
+      const groupNodes = ALL_NODES.filter(n => n.subjectGroupId === core.dataset.groupCore);
+      const ids = groupNodes.filter(n => n.isCoreExamStage).map(n => n.nodeId);
+      const allSelected = ids.every(id => selectedIds().includes(id));
+      mutateConfig(cfg => {
+        const set = new Set(cfg.selectedNodeIds);
+        groupNodes.forEach(n => set.delete(n.nodeId));
+        if (!allSelected) ids.forEach(id => set.add(id));
+        cfg.selectedNodeIds = Array.from(set);
+      });
+      return;
+    }
+  });
+  $('#stageTypeChips').addEventListener('click', event => {
+    const btn = event.target.closest('[data-stage-type]');
+    if (!btn) return;
+    const ids = ALL_NODES.filter(n => n.stageType === btn.dataset.stageType).map(n => n.nodeId);
+    const allSelected = ids.every(id => selectedIds().includes(id));
+    mutateConfig(cfg => {
+      const set = new Set(cfg.selectedNodeIds);
+      ids.forEach(id => allSelected ? set.delete(id) : set.add(id));
+      cfg.selectedNodeIds = Array.from(set);
+    });
+  });
+  $('#scheduleRows').addEventListener('click', event => {
+    const mute = event.target.closest('[data-mute-key]');
+    if (mute) {
+      const key = mute.dataset.muteKey;
+      mutateConfig(cfg => {
+        const set = new Set(cfg.mutedNodeIds);
+        set.has(key) ? set.delete(key) : set.add(key);
+        cfg.mutedNodeIds = Array.from(set);
+      });
+      return;
+    }
+    const step = event.target.closest('[data-step-key]');
+    if (step) {
+      const key = step.dataset.stepKey;
+      const base = Number(step.dataset.stepBase) || 5;
+      const delta = Number(step.dataset.stepDelta) || 0;
+      mutateConfig(cfg => {
+        cfg.intervalMap[key] = clamp(base + delta,1,600);
+        delete cfg.intervalSecondsMap[key];
+      });
+      return;
+    }
+    const batch = event.target.closest('[data-batch-preset]');
+    if (batch) {
+      const preset = batch.dataset.batchPreset;
+      mutateConfig(cfg => {
+        const rows = analysis().rows;
+        if (preset === 'prep_1') rows.forEach(r => {
+          if (r.node.stageType === 'prepare' && r.next && (r.next.stageType === 'main' || r.next.stageType === 'listening')) {
+            cfg.intervalMap[r.key] = 1; delete cfg.intervalSecondsMap[r.key];
+          }
+        });
+        if (preset === 'break_3') rows.forEach(r => {
+          if (r.next && r.node.subjectGroupId !== r.next.subjectGroupId) {
+            cfg.intervalMap[r.key] = 3; delete cfg.intervalSecondsMap[r.key];
+          }
+        });
+        if (preset === 'test_10s') rows.forEach(r => {
+          cfg.intervalSecondsMap[r.key] = 10; cfg.intervalMap[r.key] = 1;
+        });
+      });
+      return;
+    }
+    const replace = event.target.closest('#batchReplace');
+    if (replace) {
+      const from = clamp(Math.round(Number($('#batchFrom').value)||80),1,600);
+      const to = clamp(Math.round(Number($('#batchTo').value)||60),1,600);
+      mutateConfig(cfg => {
+        analysis().rows.forEach(r => {
+          if (r.intervalMinutes === from) {
+            cfg.intervalMap[r.key] = to;
+            delete cfg.intervalSecondsMap[r.key];
+          }
+        });
+      });
+      toast(`${from}분 간격을 ${to}분으로 변경했습니다.`);
+      return;
+    }
+    const omittedBtn = event.target.closest('[data-omitted]');
+    if (omittedBtn) {
+      expandedOmitted[omittedBtn.dataset.omitted] = !expandedOmitted[omittedBtn.dataset.omitted];
+      renderRows(); return;
+    }
+    const add = event.target.closest('[data-add-node]');
+    if (add) addNode(add.dataset.addNode);
+  });
+  $('#scheduleRows').addEventListener('change', event => {
+    const interval = event.target.closest('[data-interval-key]');
+    if (interval) {
+      const key = interval.dataset.intervalKey;
+      const raw = Number(interval.value);
+      const value = clamp(Number.isFinite(raw) ? Math.round(raw) : 1,1,600);
+      mutateConfig(cfg => { cfg.intervalMap[key] = value; delete cfg.intervalSecondsMap[key]; });
+      return;
+    }
+    const time = event.target.closest('[data-time-row]');
+    if (time) setTimeForRow(Number(time.dataset.timeRow), time.value);
+  });
+  $('#searchInput').addEventListener('input', event => {
+    const start = event.target.selectionStart;
+    searchQuery = event.target.value || '';
+    renderGroups();
+    const current = $('#searchInput');
+    current.focus();
+    current.setSelectionRange(start,start);
+  });
+  $('#scheduleRows').addEventListener('click', event => {
+    const stageFilter = event.target.closest('[data-unused]');
+    if (stageFilter) return;
+  });
+  $$('[data-tpl]').forEach(btn => btn.addEventListener('click', () => applyTemplate(btn.dataset.tpl)));
+  $('#autoCompose').addEventListener('click', applyAutoCombination);
+  $('#saveBookmark').addEventListener('click', saveBookmark);
+  $('#bookmarks').addEventListener('click', event => {
+    const load = event.target.closest('[data-load-bookmark]');
+    const remove = event.target.closest('[data-delete-bookmark]');
+    if (load) restoreBookmark(load.dataset.loadBookmark);
+    if (remove) deleteBookmark(remove.dataset.deleteBookmark);
+  });
+  $$('[data-sync-mode]').forEach(btn => btn.addEventListener('click', () => setSyncMode(btn.dataset.syncMode)));
+  $('#undoBtn').addEventListener('click', () => {
+    if (!undoStack.length) return;
+    redoStack.push(cloneConfig(draftConfig));
+    draftConfig = undoStack.pop();
+    render(); updateHistoryButtons();
+  });
+  $('#redoBtn').addEventListener('click', () => {
+    if (!redoStack.length) return;
+    undoStack.push(cloneConfig(draftConfig));
+    draftConfig = redoStack.pop();
+    render(); updateHistoryButtons();
+  });
+
+  function closeDialog(discard) {
+    if (discard) draftConfig = cloneConfig(committedConfig);
+    dialog.classList.add('is-hidden');
+    $('#reopenBtn').classList.add('visible');
+  }
+  $('#closeBtn').addEventListener('click', () => closeDialog(true));
+  $('#cancelBtn').addEventListener('click', () => closeDialog(true));
+  $('#reopenBtn').addEventListener('click', () => {
+    draftConfig = cloneConfig(committedConfig);
+    undoStack = []; redoStack = [];
+    dialog.classList.remove('is-hidden');
+    $('#reopenBtn').classList.remove('visible');
+    render();
+  });
+  $('#applyBtn').addEventListener('click', () => {
+    if (!draftConfig.selectedNodeIds.length) {
+      toast('최소 1개 이상의 타종 단계를 선택하세요.');
+      return;
+    }
+    committedConfig = cloneConfig(draftConfig);
+    persist();
+    toast('선택한 타종 구성을 이 브라우저에 저장했습니다.');
+    closeDialog(false);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !dialog.classList.contains('is-hidden')) closeDialog(true);
+    if ((event.ctrlKey || event.metaKey) && !dialog.classList.contains('is-hidden')) {
+      if (event.key.toLowerCase() === 'z' && !event.shiftKey) {
+        event.preventDefault(); $('#undoBtn').click();
+      } else if (event.key.toLowerCase() === 'y' || (event.key.toLowerCase() === 'z' && event.shiftKey)) {
+        event.preventDefault(); $('#redoBtn').click();
+      }
+    }
+  });
+
+  // Per-source stage and group data is intentionally isolated from the original clock and audio payload.
+  applyTheme();
+  render();
+  $$( '[data-sync-mode]' ).forEach(btn => btn.classList.toggle('active', btn.dataset.syncMode === syncMode));
+  updateHistoryButtons();
+})();
+</script>
+</body>
+</html>

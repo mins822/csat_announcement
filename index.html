@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ecebe9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="수능타종타이머" />
+    <link
+      id="app-favicon"
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon-light.svg"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon-dark.svg"
+      media="(prefers-color-scheme: dark)"
+      data-favicon-fallback="true"
+    />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&family=Noto+Serif:ital,opsz,wght@0,6..144,200..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>대학수학능력시험 안내방송</title>
+    <meta
+      name="description"
+      content="대학수학능력시험 전체 시간표와 WebGL 패브릭 아날로그 시계 애니메이션, 내장 타종 음원 및 영어 듣기평가 로컬 음원 연동을 지원하는 단일 HTML 패키징 기반 수능 안내방송 타이머"
+    />
+    <meta name="version" content="1.0.3695.20261116202530" />
+    <meta property="og:title" content="대학수학능력시험 안내방송" />
+    <meta
+      property="og:description"
+      content="대학수학능력시험 전체 시간표와 WebGL 패브릭 아날로그 시계 애니메이션, 내장 타종 음원 및 영어 듣기평가 로컬 음원 연동을 지원하는 단일 HTML 패키징 기반 수능 안내방송 타이머"
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <style id="boot-gate-style">
+      html{background:#ecebe9}
+      html[data-theme="dark"]{background:#121212}
+      html[data-theme="sepia"]{background:#e6dcc8}
+      html:not(.app-ready) body{background:inherit}
+      html:not(.app-ready) #c,
+      html:not(.app-ready) #ui,
+      html:not(.app-ready) #topLeftMenu,
+      html:not(.app-ready) #topRightMenu,
+      html:not(.app-ready) #dock,
+      html:not(.app-ready) #rightTimetablePanel{
+        opacity:0 !important;
+        visibility:hidden !important;
+        pointer-events:none !important;
+      }
+    </style>
+    <script>
+      (function(){
+        try{
+          var raw=localStorage.getItem('csat_timer_custom_settings_v2');
+          var pref='auto';
+          if(raw){
+            var p=JSON.parse(raw);
+            if(p&&['auto','light','dark','sepia'].indexOf(p.themePref)!==-1) pref=p.themePref;
+          }
+          var resolved=pref;
+          if(pref==='auto'){
+            resolved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+          }
+          document.documentElement.setAttribute('data-theme',resolved);
+        }catch(e){
+          document.documentElement.setAttribute('data-theme','light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

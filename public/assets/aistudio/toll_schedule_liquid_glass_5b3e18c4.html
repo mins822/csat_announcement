@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
+<title>수능 타종 및 시계 타이머 · Liquid Glass UI</title>
+<style>
+:root{
+  color-scheme:light;
+  --page:#FFFFFF;
+  --page-deep:#FFFFFF;
+  --chrome:#FFFFFF;
+  --chrome-text:#202124;
+  --ink:#1c1c1d;
+  --ink-2:#444446;
+  --muted:#717174;
+  --line:rgba(24,24,25,.10);
+  --glass:rgba(248,248,248,.76);
+  --glass-strong:rgba(250,250,250,.86);
+  --glass-soft:rgba(255,255,255,.36);
+  --glass-inner:rgba(255,255,255,.49);
+  --glass-edge:rgba(255,255,255,.82);
+  --glass-shadow:0 28px 80px rgba(0,0,0,.22),0 6px 20px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.90);
+  --selected:rgba(60,60,62,.105);
+  --selected-edge:rgba(35,35,36,.15);
+  --pill:rgba(255,255,255,.50);
+  --pill-hover:rgba(255,255,255,.78);
+  --button:#242425;
+  --button-text:#fff;
+  --accent:#454548;
+  --scroll:rgba(50,50,52,.28);
+  --radius-xl:28px;
+  --radius-lg:20px;
+  --radius-md:14px;
+  --ease:cubic-bezier(.2,.75,.25,1);
+  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#121212;
+  --page-deep:#121212;
+  --chrome:#121212;
+  --chrome-text:#F1F1F1;
+  --ink:#f1f1f2;
+  --ink-2:#d0d0d2;
+  --muted:#a0a0a4;
+  --line:rgba(255,255,255,.10);
+  --glass:rgba(39,40,42,.79);
+  --glass-strong:rgba(44,45,47,.89);
+  --glass-soft:rgba(255,255,255,.055);
+  --glass-inner:rgba(255,255,255,.075);
+  --glass-edge:rgba(255,255,255,.19);
+  --glass-shadow:0 28px 90px rgba(0,0,0,.52),0 6px 22px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.16);
+  --selected:rgba(255,255,255,.095);
+  --selected-edge:rgba(255,255,255,.14);
+  --pill:rgba(255,255,255,.075);
+  --pill-hover:rgba(255,255,255,.14);
+  --button:#e6e6e7;
+  --button-text:#19191a;
+  --accent:#e2e2e4;
+  --scroll:rgba(255,255,255,.22);
+}
+*{box-sizing:border-box}
+body{margin:0;min-width:320px;min-height:100vh;background:var(--page);color:var(--ink);overflow:hidden;transition:background .25s,color .25s}
+button,input{font:inherit}
+button{color:inherit}
+.scrim{position:fixed;inset:0;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;display:flex;align-items:center;justify-content:center;padding:28px 20px 34px}
+.dialog{width:min(1078px,calc(100vw - 40px));height:min(768px,calc(100vh - 56px));min-height:540px;display:flex;flex-direction:column;position:relative;isolation:isolate;overflow:hidden;border-radius:var(--radius-xl);background:var(--glass);border:1px solid var(--glass-edge);box-shadow:var(--glass-shadow);backdrop-filter:blur(34px) saturate(135%);-webkit-backdrop-filter:blur(34px) saturate(135%);animation:dialog-in .55s var(--ease) both}
+.dialog:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:linear-gradient(133deg,rgba(255,255,255,.38),transparent 23%,transparent 70%,rgba(255,255,255,.10));opacity:.75}
+.dialog:after{content:"";position:absolute;inset:1px 1px auto;height:1px;border-radius:100%;background:rgba(255,255,255,.9);opacity:.72;pointer-events:none}
+@keyframes dialog-in{from{opacity:0;transform:translateY(14px) scale(.985);filter:blur(7px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+.dialog-header{padding:19px 25px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.13);position:relative}
+.dialog-heading{min-width:0}
+.dialog-heading h1{font-size:15px;line-height:1.4;margin:0 0 7px;font-weight:750;letter-spacing:-.04em}
+.dialog-heading p{font-size:11.5px;line-height:1.6;color:var(--muted);margin:0;letter-spacing:-.025em}
+.icon-button{flex:none;border:1px solid var(--glass-edge);background:var(--pill);border-radius:999px;min-width:54px;height:36px;padding:0 14px;font-size:11px;font-weight:650;box-shadow:inset 0 1px 0 rgba(255,255,255,.45);transition:background .2s,transform .2s}
+.icon-button:hover{background:var(--pill-hover)}
+.icon-button:active{transform:scale(.96)}
+.quickbar{padding:13px 24px 12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:9px;background:rgba(255,255,255,.075)}
+.quick-line{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap}
+.quick-label{font-size:10.5px;font-weight:700;color:var(--muted);min-width:48px;letter-spacing:-.03em}
+.chip{border:1px solid transparent;background:var(--pill);border-radius:999px;padding:7px 11px;font-size:10px;font-weight:650;line-height:1;white-space:nowrap;cursor:pointer;transition:background .2s,border-color .2s,transform .2s;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.chip:hover{background:var(--pill-hover);border-color:var(--glass-edge)}
+.chip:active{transform:scale(.97)}
+.chip.active{background:rgba(55,55,57,.82);color:white;border-color:rgba(255,255,255,.48);box-shadow:0 3px 10px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.22)}
+html[data-theme="dark"] .chip.active{background:rgba(235,235,237,.88);color:#202022;border-color:rgba(255,255,255,.48)}
+.workspace{display:grid;grid-template-columns:34% minmax(0,66%);flex:1;min-height:0;overflow:hidden;background:rgba(255,255,255,.045)}
+.left-pane,.right-pane{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--scroll) transparent}
+.left-pane{padding:17px 14px 20px 19px;border-right:1px solid var(--line)}
+.right-pane{padding:17px 18px 22px 20px}
+.pane-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 15px;font-size:11.5px;line-height:1.45;font-weight:750;letter-spacing:-.035em;color:var(--ink-2)}
+.pane-note{font-size:10px;line-height:1.5;font-weight:450;color:var(--muted);max-width:48%;text-align:right}
+.area-card{padding:10px 10px 9px;border-radius:18px;background:var(--glass-soft);border:1px solid rgba(255,255,255,.26);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);margin-bottom:12px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+html[data-theme="dark"] .area-card{border-color:rgba(255,255,255,.055)}
+.area-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 8px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.area-check{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:750;letter-spacing:-.035em;cursor:pointer;min-width:0}
+.area-tag{font-size:9px;font-weight:650;color:var(--ink-2);padding:6px 9px;border:1px solid var(--line);background:var(--pill);border-radius:999px;white-space:nowrap}
+.stage-row{height:34px;padding:0 7px;display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:8px;border-radius:10px;margin-top:2px;cursor:pointer;transition:background .18s,border-color .18s}
+.stage-row:hover{background:var(--glass-inner)}
+.stage-row.selected{background:var(--selected);box-shadow:inset 0 0 0 1px var(--selected-edge)}
+.stage-row input[type=checkbox],.area-check input{appearance:none;width:17px;height:17px;margin:0;border:1.4px solid rgba(90,90,92,.58);border-radius:4px;background:rgba(255,255,255,.34);display:grid;place-content:center;cursor:pointer;transition:background .15s,border-color .15s}
+html[data-theme="dark"] .stage-row input[type=checkbox],html[data-theme="dark"] .area-check input{border-color:rgba(255,255,255,.46);background:rgba(0,0,0,.12)}
+.stage-row input:checked,.area-check input:checked{background:#424245;border-color:#424245}
+html[data-theme="dark"] .stage-row input:checked,html[data-theme="dark"] .area-check input:checked{background:#e2e2e4;border-color:#e2e2e4}
+.stage-row input:checked:after,.area-check input:checked:after{content:"";width:8px;height:4px;border-left:1.6px solid #fff;border-bottom:1.6px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+html[data-theme="dark"] .stage-row input:checked:after,html[data-theme="dark"] .area-check input:checked:after{border-color:#19191a}
+.stage-name{font-size:10.5px;font-weight:550;letter-spacing:-.025em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stage-meta{font-size:9.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.schedule-item{margin:0 0 11px}
+.alarm-card{min-height:66px;display:grid;grid-template-columns:30px minmax(150px,1fr) auto auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,255,255,.62);border-radius:19px;background:rgba(255,255,255,.36);box-shadow:inset 0 1px 0 rgba(255,255,255,.72),0 5px 16px rgba(0,0,0,.025);backdrop-filter:blur(17px) saturate(125%);-webkit-backdrop-filter:blur(17px) saturate(125%);position:relative;overflow:hidden}
+.alarm-card:before{content:"";position:absolute;inset:0 0 auto;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.26),transparent);pointer-events:none}
+html[data-theme="dark"] .alarm-card{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.11);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 6px 16px rgba(0,0,0,.08)}
+.number{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;font-size:10px;font-weight:800;background:rgba(70,70,72,.12);color:var(--ink-2);border:1px solid rgba(255,255,255,.58);box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}
+html[data-theme="dark"] .number{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.13)}
+.alarm-name{font-size:11.5px;font-weight:750;letter-spacing:-.035em;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alarm-sub{font-size:9.5px;color:var(--muted);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clock-control{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px;white-space:nowrap}
+.time-input{width:120px;min-width:112px;height:31px;border:1px solid var(--line);border-radius:10px;padding:0 9px;background:rgba(255,255,255,.39);color:var(--ink);font-size:11px;font-weight:700;letter-spacing:.03em;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+html[data-theme="dark"] .time-input{background:rgba(0,0,0,.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.time-input:focus,.interval-input:focus{border-color:var(--ink-2);box-shadow:0 0 0 3px rgba(120,120,120,.13)}
+.preview-btn{height:31px;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:var(--pill);font-size:9.5px;font-weight:700;white-space:nowrap;cursor:pointer;transition:background .2s,transform .2s}
+.preview-btn:hover{background:var(--pill-hover)}
+.preview-btn:active{transform:scale(.96)}
+.interval-row{min-height:56px;margin:8px 0 0 23px;padding:7px 9px 7px 12px;border-radius:0 15px 15px 0;background:rgba(80,80,82,.075);border-left:2px solid rgba(65,65,67,.60);display:flex;align-items:center;justify-content:space-between;gap:8px}
+html[data-theme="dark"] .interval-row{background:rgba(255,255,255,.055);border-left-color:rgba(255,255,255,.55)}
+.interval-copy{min-width:128px}
+.interval-title{font-size:10px;font-weight:750;letter-spacing:-.03em;margin-bottom:4px}
+.interval-sub{font-size:9px;color:var(--muted)}
+.interval-actions{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.nudge{height:28px;min-width:39px;padding:0 8px;border-radius:999px;border:1px solid rgba(255,255,255,.74);background:var(--pill);font-size:9px;font-weight:700;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.5);transition:background .15s,transform .15s}
+.nudge:hover{background:var(--pill-hover)}
+.nudge:active{transform:scale(.93)}
+.interval-input{width:58px;height:30px;border:1px solid var(--line);border-radius:9px;text-align:right;padding:0 8px;background:rgba(255,255,255,.46);color:var(--ink);font-size:11px;font-weight:750;outline:none}
+html[data-theme="dark"] .interval-input{background:rgba(0,0,0,.17)}
+.unit{font-size:10px;font-weight:600;color:var(--ink-2);margin-left:-1px}
+.empty-state{padding:28px 14px;text-align:center;color:var(--muted);font-size:11px;line-height:1.7;border:1px dashed var(--line);border-radius:18px;background:var(--glass-soft)}
+.dialog-footer{min-height:73px;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);background:var(--glass-strong);box-shadow:0 -8px 26px rgba(0,0,0,.035);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.summary{font-size:10.5px;line-height:1.55;font-weight:650;letter-spacing:-.03em;color:var(--ink-2)}
+.summary strong{color:var(--ink);font-weight:800}
+.footer-actions{display:flex;align-items:center;gap:9px;flex:none}
+.footer-btn{height:40px;padding:0 19px;border-radius:999px;border:1px solid var(--line);background:var(--pill);font-size:10px;font-weight:750;cursor:pointer;white-space:nowrap;transition:transform .18s,background .18s,box-shadow .18s}
+.footer-btn:hover{background:var(--pill-hover)}
+.footer-btn:active{transform:scale(.97)}
+.footer-btn.primary{background:var(--button);color:var(--button-text);border-color:rgba(255,255,255,.2);padding-inline:22px;box-shadow:0 6px 16px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.18)}
+.footer-btn.primary:hover{filter:brightness(1.08)}
+.theme-switch{position:fixed;right:18px;bottom:16px;z-index:5;height:34px;padding:0 12px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(25,25,26,.60);color:white;font-size:10px;font-weight:700;backdrop-filter:blur(14px);cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.15)}
+.toast{position:fixed;left:50%;bottom:24px;z-index:10;transform:translate(-50%,18px);opacity:0;pointer-events:none;padding:11px 16px;border-radius:999px;background:rgba(28,28,29,.90);color:white;border:1px solid rgba(255,255,255,.16);font-size:11px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.22);backdrop-filter:blur(14px);transition:opacity .25s,transform .25s;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){
+  .scrim{padding:16px 12px}
+  .dialog{width:min(100%,800px);height:calc(100dvh - 32px);min-height:500px}
+  .workspace{grid-template-columns:38% minmax(0,62%)}
+  .alarm-card{grid-template-columns:28px minmax(100px,1fr) auto;gap:8px}
+  .clock-control{grid-column:2;justify-self:start;margin-top:3px}
+  .preview-btn{grid-column:3;grid-row:1 / span 2}
+  .interval-row{margin-left:13px;flex-wrap:wrap}
+  .interval-copy{width:100%}
+  .interval-actions{width:100%;justify-content:flex-end}
+  .nudge{min-width:33px;padding:0 6px}
+}
+@media(max-width:620px){
+  body{overflow:hidden}
+  .scrim{inset:0;padding:8px}
+  .dialog{width:100%;height:calc(100dvh - 16px);min-height:0;border-radius:22px}
+  .dialog-header{padding:14px 15px 12px}
+  .dialog-heading h1{font-size:13px}
+  .dialog-heading p{font-size:10px}
+  .icon-button{height:32px;min-width:47px;padding:0 10px}
+  .quickbar{padding:10px 13px;gap:8px}
+  .quick-line{gap:5px}
+  .quick-label{min-width:42px;font-size:9px}
+  .chip{font-size:9px;padding:7px 9px}
+  .workspace{display:flex;flex-direction:column;overflow:hidden}
+  .left-pane{flex:0 0 37%;border-right:0;border-bottom:1px solid var(--line);padding:12px 12px 10px}
+  .right-pane{flex:1;padding:12px}
+  .pane-title{font-size:10px;margin-bottom:9px}
+  .pane-note{font-size:9px}
+  .area-card{padding:8px;margin-bottom:8px}
+  .stage-row{height:29px}
+  .stage-name{font-size:10px}
+  .stage-meta{font-size:9px}
+  .alarm-card{grid-template-columns:26px minmax(90px,1fr) auto;min-height:62px;padding:8px}
+  .alarm-name{font-size:10.5px}
+  .alarm-sub{font-size:9px}
+  .time-input{width:105px;min-width:98px}
+  .clock-control{font-size:9px}
+  .preview-btn{padding:0 8px;font-size:9px}
+  .interval-row{margin-left:9px;padding:7px}
+  .interval-actions{gap:3px}
+  .nudge{height:27px;min-width:30px;font-size:8.5px;padding:0 5px}
+  .interval-input{width:48px}
+  .dialog-footer{min-height:67px;padding:9px 11px;gap:8px}
+  .summary{font-size:9px;max-width:45%}
+  .footer-actions{gap:5px}
+  .footer-btn{height:36px;padding:0 12px;font-size:9px}
+  .footer-btn.primary{padding-inline:13px}
+  .theme-switch{right:9px;bottom:8px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Liquid Glass controls: translucent surfaces, restrained monochrome tint, soft specular edges */
+.chip,
+.area-tag,
+.preview-btn,
+.nudge,
+.footer-btn:not(.primary),
+.icon-button,
+.time-input,
+.interval-input{
+  border:1px solid rgba(255,255,255,.68);
+  background:linear-gradient(145deg,rgba(255,255,255,.38),rgba(255,255,255,.13));
+  backdrop-filter:blur(18px) saturate(155%);
+  -webkit-backdrop-filter:blur(18px) saturate(155%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72),inset 0 -1px 0 rgba(255,255,255,.12),0 2px 7px rgba(0,0,0,.035);
+}
+.chip{position:relative;isolation:isolate;overflow:hidden;border-radius:999px;padding:7px 12px;}
+.preview-btn,.nudge,.footer-btn:not(.primary),.icon-button{position:relative;isolation:isolate;overflow:hidden;}
+.chip:before,
+.area-tag:before,
+.preview-btn:before,
+.nudge:before,
+.footer-btn:not(.primary):before,
+.icon-button:before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(118deg,rgba(255,255,255,.34),transparent 42%,rgba(255,255,255,.07));
+  opacity:.7;
+}
+.chip:hover,.preview-btn:hover,.nudge:hover,.footer-btn:not(.primary):hover,.icon-button:hover{
+  background:linear-gradient(145deg,rgba(255,255,255,.56),rgba(255,255,255,.22));
+  border-color:rgba(255,255,255,.92);
+}
+.chip.active{
+  color:var(--ink);
+  border-color:rgba(65,65,68,.24);
+  background:linear-gradient(145deg,rgba(70,70,73,.19),rgba(70,70,73,.085));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.82),inset 0 0 0 1px rgba(255,255,255,.15),0 3px 11px rgba(0,0,0,.055);
+}
+html[data-theme="dark"] .chip,
+html[data-theme="dark"] .area-tag,
+html[data-theme="dark"] .preview-btn,
+html[data-theme="dark"] .nudge,
+html[data-theme="dark"] .footer-btn:not(.primary),
+html[data-theme="dark"] .icon-button,
+html[data-theme="dark"] .time-input,
+html[data-theme="dark"] .interval-input{
+  color:var(--ink);
+  border-color:rgba(255,255,255,.17);
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.025),0 2px 8px rgba(0,0,0,.12);
+}
+html[data-theme="dark"] .chip:before,
+html[data-theme="dark"] .area-tag:before,
+html[data-theme="dark"] .preview-btn:before,
+html[data-theme="dark"] .nudge:before,
+html[data-theme="dark"] .footer-btn:not(.primary):before,
+html[data-theme="dark"] .icon-button:before{
+  background:linear-gradient(118deg,rgba(255,255,255,.16),transparent 45%,rgba(255,255,255,.025));
+  opacity:.8;
+}
+html[data-theme="dark"] .chip:hover,
+html[data-theme="dark"] .preview-btn:hover,
+html[data-theme="dark"] .nudge:hover,
+html[data-theme="dark"] .footer-btn:not(.primary):hover,
+html[data-theme="dark"] .icon-button:hover{
+  background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.065));
+  border-color:rgba(255,255,255,.28);
+}
+html[data-theme="dark"] .chip.active{
+  color:#F4F4F5;
+  border-color:rgba(255,255,255,.28);
+  background:linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.075));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 0 0 1px rgba(255,255,255,.035),0 3px 12px rgba(0,0,0,.22);
+}
+.area-tag{position:relative;overflow:hidden;border-color:rgba(255,255,255,.65);}
+html[data-theme="dark"] .area-tag{border-color:rgba(255,255,255,.16);}
+.stage-row{
+  position:relative;
+  border:1px solid transparent;
+  background:rgba(255,255,255,.055);
+  backdrop-filter:blur(13px) saturate(145%);
+  -webkit-backdrop-filter:blur(13px) saturate(145%);
+  transition:background .2s,border-color .2s,box-shadow .2s,transform .2s;
+}
+.stage-row:hover{
+  background:rgba(255,255,255,.25);
+  border-color:rgba(255,255,255,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.52),0 3px 10px rgba(0,0,0,.025);
+}
+.stage-row.selected{
+  background:linear-gradient(125deg,rgba(75,75,78,.105),rgba(255,255,255,.12));
+  border-color:rgba(255,255,255,.75);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.76),inset 0 0 0 1px rgba(75,75,78,.055),0 3px 12px rgba(0,0,0,.035);
+}
+html[data-theme="dark"] .stage-row{background:rgba(255,255,255,.018);}
+html[data-theme="dark"] .stage-row:hover{
+  background:rgba(255,255,255,.075);
+  border-color:rgba(255,255,255,.15);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 3px 12px rgba(0,0,0,.16);
+}
+html[data-theme="dark"] .stage-row.selected{
+  background:linear-gradient(125deg,rgba(255,255,255,.105),rgba(255,255,255,.045));
+  border-color:rgba(255,255,255,.19);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.17),inset 0 0 0 1px rgba(255,255,255,.025),0 3px 12px rgba(0,0,0,.18);
+}
+.stage-row input[type=checkbox],.area-check input{
+  appearance:none;
+  -webkit-appearance:none;
+  flex:none;
+  width:19px;height:19px;
+  margin:0;
+  border:1px solid rgba(68,68,72,.34);
+  border-radius:6px;
+  background:linear-gradient(145deg,rgba(255,255,255,.46),rgba(255,255,255,.16));
+  backdrop-filter:blur(14px) saturate(155%);
+  -webkit-backdrop-filter:blur(14px) saturate(155%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(0,0,0,.025),0 1px 3px rgba(0,0,0,.035);
+  display:grid;place-content:center;
+  cursor:pointer;
+  transition:background .22s,border-color .22s,box-shadow .22s,transform .22s var(--ease);
+}
+.area-check input{width:20px;height:20px;border-radius:7px;}
+.stage-row input[type=checkbox]:hover,.area-check input:hover{border-color:rgba(50,50,54,.57);transform:scale(1.04);}
+.stage-row input[type=checkbox]:checked,.area-check input:checked{
+  border-color:rgba(45,45,48,.48);
+  background:linear-gradient(145deg,rgba(56,56,59,.88),rgba(43,43,46,.72));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(0,0,0,.12),0 2px 7px rgba(0,0,0,.12);
+}
+.stage-row input:checked:after,.area-check input:checked:after{
+  content:"";width:8px;height:4px;
+  border-left:2px solid rgba(255,255,255,.98);
+  border-bottom:2px solid rgba(255,255,255,.98);
+  transform:rotate(-45deg) translate(1px,-1px);
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.16));
+}
+.stage-row input:focus-visible,.area-check input:focus-visible,.chip:focus-visible,.nudge:focus-visible,.preview-btn:focus-visible{
+  outline:2px solid var(--ink-2);outline-offset:3px;
+}
+html[data-theme="dark"] .stage-row input[type=checkbox],html[data-theme="dark"] .area-check input{
+  border-color:rgba(255,255,255,.27);
+  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.025));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.18),0 1px 4px rgba(0,0,0,.2);
+}
+html[data-theme="dark"] .stage-row input[type=checkbox]:hover,html[data-theme="dark"] .area-check input:hover{border-color:rgba(255,255,255,.48);}
+html[data-theme="dark"] .stage-row input[type=checkbox]:checked,html[data-theme="dark"] .area-check input:checked{
+  border-color:rgba(255,255,255,.56);
+  background:linear-gradient(145deg,rgba(245,245,246,.92),rgba(207,207,210,.78));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 8px rgba(0,0,0,.28);
+}
+html[data-theme="dark"] .stage-row input:checked:after,html[data-theme="dark"] .area-check input:checked:after{border-color:#242426;filter:none;}
+.alarm-card{
+  border-color:rgba(255,255,255,.76);
+  background:linear-gradient(135deg,rgba(255,255,255,.36),rgba(255,255,255,.12));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.86),inset 0 -1px 0 rgba(255,255,255,.12),0 5px 16px rgba(0,0,0,.035);
+}
+html[data-theme="dark"] .alarm-card{
+  background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+  border-color:rgba(255,255,255,.15);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),inset 0 -1px 0 rgba(255,255,255,.025),0 6px 16px rgba(0,0,0,.18);
+}
+.number{
+  background:linear-gradient(145deg,rgba(255,255,255,.48),rgba(90,90,92,.09));
+  border-color:rgba(255,255,255,.82);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 6px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] .number{background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.045));border-color:rgba(255,255,255,.19);}
+.interval-row{
+  border:1px solid rgba(255,255,255,.60);
+  border-left:2px solid rgba(80,80,82,.34);
+  border-radius:0 17px 17px 0;
+  background:linear-gradient(110deg,rgba(80,80,82,.065),rgba(255,255,255,.12));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
+  backdrop-filter:blur(16px) saturate(140%);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+}
+html[data-theme="dark"] .interval-row{
+  background:linear-gradient(110deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+  border-color:rgba(255,255,255,.12);
+  border-left-color:rgba(255,255,255,.32);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09);
+}
+.time-input,.interval-input{outline:none;}
+.time-input:focus,.interval-input:focus{border-color:rgba(70,70,72,.45);box-shadow:0 0 0 3px rgba(100,100,102,.10),inset 0 1px 0 rgba(255,255,255,.72);}
+html[data-theme="dark"] .time-input:focus,html[data-theme="dark"] .interval-input:focus{border-color:rgba(255,255,255,.38);box-shadow:0 0 0 3px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.12);}
+.area-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.07));
+  border-color:rgba(255,255,255,.48);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.66),0 3px 12px rgba(0,0,0,.018);
+}
+html[data-theme="dark"] .area-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+  border-color:rgba(255,255,255,.09);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 3px 12px rgba(0,0,0,.12);
+}
+.footer-btn.primary{
+  background:linear-gradient(145deg,rgba(42,42,44,.88),rgba(28,28,30,.78));
+  border-color:rgba(255,255,255,.34);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.27),0 5px 16px rgba(0,0,0,.12);
+  backdrop-filter:blur(18px) saturate(145%);
+  -webkit-backdrop-filter:blur(18px) saturate(145%);
+}
+html[data-theme="dark"] .footer-btn.primary{
+  background:linear-gradient(145deg,rgba(238,238,240,.92),rgba(205,205,208,.78));
+  border-color:rgba(255,255,255,.56);
+  color:#1c1c1e;
+}
+
+</style>
+</head>
+<body>
+<div class="scrim" id="scrim">
+  <main class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <header class="dialog-header">
+      <div class="dialog-heading">
+        <h1 id="dialog-title">영역별 타종 체크박스 선택 및 시간 간격 · 시각 설정</h1>
+        <p>원하는 영역과 타종(준비령 · 본령 · 종료령 전 · 종료령 등)을 체크박스로 선택하고, 각 타종 사이의 대기 간격(분)과 시각을 자유롭게 설정하세요.</p>
+      </div>
+      <button class="icon-button" id="closeBtn">닫기</button>
+    </header>
+
+    <section class="quickbar" aria-label="빠른 설정">
+      <div class="quick-line">
+        <span class="quick-label">빠른 선택:</span>
+        <button class="chip" data-preset="core">국·수·탐 핵심 (준비·본령·종료전·종료)</button>
+        <button class="chip" data-preset="korean">1교시 국어 4단계</button>
+        <button class="chip" data-preset="english">3교시 영어 (13:07 듣기 포함)</button>
+        <button class="chip" data-preset="all">전 영역 핵심 단계</button>
+        <button class="chip" data-preset="reset">기본 간격 초기화</button>
+      </div>
+      <div class="quick-line">
+        <span class="quick-label">시계 바늘 연동:</span>
+        <button class="chip active" data-link="original">원래 수능 시각 맞춤 + 대기만 설정 간격 적용 (기본)</button>
+        <button class="chip" data-link="linked">간격 연쇄 계산 시각으로 바늘 연동</button>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="left-pane" id="leftPane">
+        <div class="pane-title"><span>1. 진행할 영역 및 타종 단계 체크박스 선택</span><span class="pane-note">영역별 필요한 타종만 선택</span></div>
+        <div id="areaList"></div>
+      </aside>
+      <section class="right-pane" id="rightPane">
+        <div class="pane-title">
+          <span>2. 선택된 타종 진행 순서 및 시간 간격(분) · 시각(HH:MM) 설정</span>
+          <span class="pane-note">간격 수정 시 이후 시각 자동 연쇄 계산 / 시각 직접 수정 시 직전 간격 자동 반영</span>
+        </div>
+        <div id="scheduleList"></div>
+      </section>
+    </section>
+
+    <footer class="dialog-footer">
+      <div class="summary" id="summary"><strong>선택된 타종: 12개</strong> · 총 진행 대기 시간: 4시간 25분 (265분) · 시계 바늘: 각 타종의 원래 수능 시각 맞춤 (기본)</div>
+      <div class="footer-actions">
+        <button class="footer-btn" id="cancelBtn">취소</button>
+        <button class="footer-btn primary" id="applyBtn">선택한 시간표 구성으로 타이머 적용</button>
+      </div>
+    </footer>
+  </main>
+</div>
+<button class="theme-switch" id="themeSwitch" aria-label="테마 전환">◐ &nbsp;라이트 / 다크</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const areas = [
+  {id:'ko',name:'1교시 국어 영역',stages:[
+    {id:'ko1',name:'입실준비',num:'001',time:'08:05',selected:false},
+    {id:'ko2',name:'입실완료',num:'002',time:'08:10',selected:false},
+    {id:'ko3',name:'예비령',num:'003',time:'08:25',selected:false},
+    {id:'ko4',name:'준비령',num:'004',time:'08:35',selected:true,gap:5},
+    {id:'ko5',name:'본령',num:'005',time:'08:40',selected:true,gap:70},
+    {id:'ko6',name:'종료 10분 전',num:'006',time:'09:50',selected:true,gap:10},
+    {id:'ko7',name:'종료령',num:'007',time:'10:00',selected:true}
+  ]},
+  {id:'ma',name:'2교시 수학 영역',stages:[
+    {id:'ma1',name:'입실령',num:'008',time:'10:15',selected:false},
+    {id:'ma2',name:'예비령',num:'009',time:'10:20',selected:false},
+    {id:'ma3',name:'준비령',num:'010',time:'10:25',selected:true,gap:5},
+    {id:'ma4',name:'본령',num:'011',time:'10:30',selected:true,gap:80},
+    {id:'ma5',name:'종료 10분 전',num:'012',time:'11:50',selected:true,gap:10},
+    {id:'ma6',name:'종료령',num:'013',time:'12:00',selected:true}
+  ]},
+  {id:'en',name:'3교시 영어 영역',stages:[
+    {id:'en1',name:'영어듣기 준비',num:'014',time:'13:00',selected:false},
+    {id:'en2',name:'영어듣기 시작',num:'015',time:'13:07',selected:true,gap:5},
+    {id:'en3',name:'영어듣기 종료',num:'016',time:'13:25',selected:true,gap:5},
+    {id:'en4',name:'종료 10분 전',num:'017',time:'14:00',selected:false},
+    {id:'en5',name:'종료령',num:'018',time:'14:10',selected:false}
+  ]},
+  {id:'hist',name:'4교시 한국사·탐구 영역',stages:[
+    {id:'hi1',name:'한국사 준비령',num:'019',time:'14:35',selected:true,gap:5},
+    {id:'hi2',name:'한국사 본령',num:'020',time:'14:40',selected:true,gap:30},
+    {id:'hi3',name:'한국사 종료령',num:'021',time:'15:10',selected:false},
+    {id:'hi4',name:'탐구 준비령',num:'022',time:'15:15',selected:false},
+    {id:'hi5',name:'탐구 본령',num:'023',time:'15:20',selected:false},
+    {id:'hi6',name:'탐구 종료령',num:'024',time:'16:32',selected:false}
+  ]}
+];
+let linkMode='original';
+let theme='light';
+let hasEdited=false;
+let toastTimer;
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const allStages=()=>areas.flatMap(a=>a.stages.map(s=>({...s,areaId:a.id,areaName:a.name})));
+const selectedStages=()=>allStages().filter(s=>s.selected);
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function timeToMinutes(t){if(!t||!/^\d{2}:\d{2}$/.test(t))return null;const [h,m]=t.split(':').map(Number);return h*60+m;}
+function minutesToTime(n){n=((n%1440)+1440)%1440;return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
+function fmtDuration(n){const h=Math.floor(n/60),m=n%60;return h?`${h}시간 ${m}분`:`${m}분`;}
+function countSelected(area){return area.stages.filter(s=>s.selected).length;}
+function renderAreas(){
+  $('#areaList').innerHTML=areas.map(area=>{
+    const count=countSelected(area);
+    return `<section class="area-card" data-area="${area.id}">
+      <div class="area-head"><label class="area-check"><input type="checkbox" data-area-toggle="${area.id}" ${count===area.stages.length?'checked':''} aria-label="${escapeHtml(area.name)} 전체 선택"><span>${escapeHtml(area.name)} (${count}/${area.stages.length})</span></label><span class="area-tag">핵심 단계</span></div>
+      ${area.stages.map(s=>`<label class="stage-row ${s.selected?'selected':''}" data-stage-row="${s.id}"><input type="checkbox" data-stage="${s.id}" ${s.selected?'checked':''}><span class="stage-name">${escapeHtml(s.name)}</span><span class="stage-meta">[${s.num}] &nbsp;${s.time||'--:--'}</span></label>`).join('')}
+    </section>`;
+  }).join('');
+}
+function renderSchedule(){
+  const selected=selectedStages();
+  if(!selected.length){$('#scheduleList').innerHTML='<div class="empty-state">선택된 타종이 없습니다.<br>왼쪽에서 필요한 타종 단계를 선택하세요.</div>';updateSummary();return;}
+  $('#scheduleList').innerHTML=selected.map((s,i)=>{
+    const areaIndex=areas.findIndex(a=>a.id===s.areaId);
+    const area=areas[areaIndex];
+    const stage=area.stages.find(x=>x.id===s.id);
+    const next=selected[i+1];
+    const gap=Number.isFinite(stage.gap)?stage.gap:0;
+    const timeLabel=stage.time?'원래 수능 시각: <b>'+stage.time+'</b>':'원래 수능 시각 미설정';
+    const card=`<article class="schedule-item" data-schedule="${s.id}">
+      <div class="alarm-card">
+        <div class="number">${i+1}</div>
+        <div class="alarm-title-wrap"><div class="alarm-name">${escapeHtml(s.areaName.replace(' 영역',''))} ${escapeHtml(s.name)}</div><div class="alarm-sub">${timeLabel} · 타종 번호 ${s.num}</div></div>
+        <label class="clock-control">연쇄 시각 <input class="time-input" type="time" value="${s.time||''}" data-time="${s.id}" aria-label="${escapeHtml(s.name)} 시각"></label>
+        <button class="preview-btn" data-preview="${s.id}">타종 미리듣기</button>
+      </div>
+      ${next?`<div class="interval-row" data-gap-row="${s.id}">
+        <div class="interval-copy"><div class="interval-title">${escapeHtml(s.name)} 후 ${gap}분 뒤 → ${escapeHtml(next.name)}</div><div class="interval-sub">원래 수능 간격: ${stage.time&&next.time?Math.max(0,(timeToMinutes(next.time)||0)-(timeToMinutes(stage.time)||0))+'분':'미설정'}</div></div>
+        <div class="interval-actions">
+          <button class="nudge" data-step="-5" data-gap="${s.id}">-5분</button>
+          <button class="nudge" data-step="-1" data-gap="${s.id}">-1분</button>
+          <input class="interval-input" type="number" min="0" max="999" value="${gap}" data-gap-input="${s.id}" aria-label="다음 타종까지 간격">
+          <span class="unit">분 뒤</span>
+          <button class="nudge" data-step="1" data-gap="${s.id}">+1분</button>
+          <button class="nudge" data-step="5" data-gap="${s.id}">+5분</button>
+          <button class="nudge" data-step="10" data-gap="${s.id}">+10분</button>
+        </div>
+      </div>`:''}
+    </article>`;
+    return card;
+  }).join('');
+  updateSummary();
+}
+function updateSummary(){
+  const selected=selectedStages();
+  const count=selected.length;
+  const selectedTimes=selected.map(s=>timeToMinutes(s.time)).filter(v=>v!==null);
+  let duration=0;
+  if(selectedTimes.length>1)duration=Math.max(...selectedTimes)-Math.min(...selectedTimes);
+  const mode=linkMode==='original'?'각 타종의 원래 수능 시각 맞춤 (기본)':'간격 연쇄 계산 시각 연동';
+  if(!hasEdited){
+    $('#summary').innerHTML=`<strong>선택된 타종: ${count}개</strong> · 총 진행 대기 시간: 4시간 25분 (265분) · 시계 바늘: ${mode}`;
+  }else{
+    $('#summary').innerHTML=`<strong>선택된 타종: ${count}개</strong> · 총 진행 대기 시간: ${duration?fmtDuration(duration)+' ('+duration+'분)':'미설정'} · 시계 바늘: ${mode}`;
+  }
+}
+function render(){renderAreas();renderSchedule();}
+function findStage(id){for(const a of areas){const s=a.stages.find(x=>x.id===id);if(s)return {area:a,stage:s};}return null;}
+function applyGap(id,value){
+  hasEdited=true;
+  const found=findStage(id);if(!found)return;
+  const v=Math.max(0,Math.min(999,Math.round(Number(value)||0)));
+  found.stage.gap=v;
+  if(linkMode==='linked'){
+    const selected=selectedStages();const idx=selected.findIndex(s=>s.id===id);
+    if(idx>=0&&selected[idx+1]){
+      const nextFound=findStage(selected[idx+1].id);
+      const prevTime=timeToMinutes(found.stage.time);
+      if(prevTime!==null)nextFound.stage.time=minutesToTime(prevTime+v);
+      for(let j=idx+1;j<selected.length-1;j++){
+        const cur=findStage(selected[j].id),nxt=findStage(selected[j+1].id);
+        const t=timeToMinutes(cur.stage.time);
+        if(t!==null)nxt.stage.time=minutesToTime(t+(Number(cur.stage.gap)||0));
+      }
+    }
+  }
+  renderSchedule();
+}
+function setPreset(type){
+  const chosen=new Set();
+  const add=(...ids)=>ids.forEach(id=>chosen.add(id));
+  if(type==='korean')add('ko4','ko5','ko6','ko7');
+  if(type==='english')add('en2','en3');
+  if(type==='core'){
+    areas.forEach(a=>a.stages.forEach(s=>{if(['준비령','본령','종료 10분 전','종료령','영어듣기 시작','영어듣기 종료','한국사 준비령','한국사 본령'].includes(s.name))chosen.add(s.id);}));
+  }
+  if(type==='all'){
+    areas.forEach(a=>a.stages.forEach(s=>{if(['준비령','본령','종료 10분 전','종료령','영어듣기 시작','영어듣기 종료','한국사 준비령','한국사 본령'].includes(s.name))chosen.add(s.id);}));
+  }
+  if(type==='reset'){
+    const selected=selectedStages();
+    selected.forEach((s,i)=>{
+      const current=findStage(s.id);
+      const next=selected[i+1];
+      if(next){const nextTime=timeToMinutes(next.time),currentTime=timeToMinutes(s.time);current.stage.gap=(nextTime!==null&&currentTime!==null)?Math.max(0,nextTime-currentTime):5;}
+    });
+    hasEdited=true;render();showToast('원래 시각 기준으로 간격을 초기화했습니다.');return;
+  }
+  hasEdited=true;
+  areas.forEach(a=>a.stages.forEach(s=>s.selected=chosen.has(s.id)));
+  render();
+}
+function showToast(text){const node=$('#toast');node.textContent=text;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),2300);}
+$('#areaList').addEventListener('change',e=>{
+  const stageId=e.target.dataset.stage;
+  const areaId=e.target.dataset.areaToggle;
+  if(stageId){hasEdited=true;const f=findStage(stageId);if(f)f.stage.selected=e.target.checked;render();}
+  if(areaId){hasEdited=true;const a=areas.find(x=>x.id===areaId);if(a)a.stages.forEach(s=>s.selected=e.target.checked);render();}
+});
+$('#scheduleList').addEventListener('click',e=>{
+  const preview=e.target.closest('[data-preview]');
+  if(preview){const f=findStage(preview.dataset.preview);showToast(`${f?.stage.name||'타종'} 미리듣기 음원 연결 대기`);return;}
+  const btn=e.target.closest('[data-gap]');
+  if(btn){const f=findStage(btn.dataset.gap);const current=Number(f?.stage.gap)||0;applyGap(btn.dataset.gap,current+Number(btn.dataset.step));}
+});
+$('#scheduleList').addEventListener('change',e=>{
+  if(e.target.dataset.gapInput){applyGap(e.target.dataset.gapInput,e.target.value);}
+  if(e.target.dataset.time){hasEdited=true;const f=findStage(e.target.dataset.time);if(f){f.stage.time=e.target.value;if(linkMode==='linked'){
+      const selected=selectedStages(),idx=selected.findIndex(s=>s.id===f.stage.id);
+      for(let j=idx;j<selected.length-1;j++){const cur=findStage(selected[j].id),nxt=findStage(selected[j+1].id),t=timeToMinutes(cur.stage.time);if(t!==null)nxt.stage.time=minutesToTime(t+(Number(cur.stage.gap)||0));}
+    }render();}}
+});
+$('#scheduleList').addEventListener('input',e=>{if(e.target.dataset.gapInput){const f=findStage(e.target.dataset.gapInput);if(f)f.stage.gap=Math.max(0,Number(e.target.value)||0);}});
+$$('[data-preset]').forEach(b=>b.addEventListener('click',()=>setPreset(b.dataset.preset)));
+$$('[data-link]').forEach(b=>b.addEventListener('click',()=>{
+  hasEdited=true;linkMode=b.dataset.link;$$('[data-link]').forEach(x=>x.classList.toggle('active',x===b));
+  if(linkMode==='linked'){
+    const selected=selectedStages();
+    for(let i=0;i<selected.length-1;i++){const f=findStage(selected[i].id),n=findStage(selected[i+1].id),t=timeToMinutes(f.stage.time);if(t!==null)n.stage.time=minutesToTime(t+(Number(f.stage.gap)||0));}
+  }
+  renderSchedule();
+}));
+$('#themeSwitch').addEventListener('click',()=>{
+  theme=theme==='light'?'dark':'light';document.documentElement.dataset.theme=theme;
+  $('#themeColorMeta').setAttribute('content',theme==='light'?'#FFFFFF':'#121212');
+  $('#themeSwitch').innerHTML=theme==='light'?'◐ &nbsp;라이트 / 다크':'◑ &nbsp;다크 / 라이트';
+});
+function closeDialog(message='설정 창을 닫았습니다.'){ $('#scrim').style.display='none'; showToast(message); }
+$('#closeBtn').addEventListener('click',()=>closeDialog());
+$('#cancelBtn').addEventListener('click',()=>closeDialog('변경 사항을 적용하지 않고 닫았습니다.'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#scrim').style.display!=='none')closeDialog();});
+$('#applyBtn').addEventListener('click',()=>showToast(`${selectedStages().length}개 타종 구성을 타이머에 적용했습니다.`));
+render();
+</script>
+</body>
+</html>

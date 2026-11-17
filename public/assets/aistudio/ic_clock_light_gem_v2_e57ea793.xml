@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="320dp"
+    android:height="320dp"
+    android:viewportWidth="320"
+    android:viewportHeight="320">
+
+    <!-- [1. 천(Fabric) 음영 및 정중앙 시계 원판 레이어 (원판 반지름 109의 약 1.468배 r=160 원형)] -->
+    <group android:name="fabricStage">
+        <!-- 기본 천 배경 (좌상단 #EEEEEC -> 중심 #EAE9E7 -> 우하단 #E0DFDD) -->
+        <path android:pathData="M0,0 H320 V320 H0 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="45"
+                    android:startY="45"
+                    android:endX="275"
+                    android:endY="275"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#FFEEEEEC"/>
+                    <item android:offset="0.5" android:color="#FFEAE9E7"/>
+                    <item android:offset="1.0" android:color="#FFE0DFDD"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- 우하단 광역 확산 그림자 (cx=178, cy=178, r=136) -->
+        <path android:pathData="M178,178 m-136,0 a136,136 0 1,0 272,0 a136,136 0 1,0 -272,0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="178"
+                    android:centerY="178"
+                    android:gradientRadius="136"
+                    android:type="radial">
+                    <item android:offset="0.0" android:color="#75585755"/>
+                    <item android:offset="0.62" android:color="#70585755"/>
+                    <item android:offset="0.72" android:color="#57585755"/>
+                    <item android:offset="0.80" android:color="#38585755"/>
+                    <item android:offset="0.88" android:color="#1C585755"/>
+                    <item android:offset="0.95" android:color="#08585755"/>
+                    <item android:offset="1.0" android:color="#00585755"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- 우하단 원판 경계 밀착 차폐 그림자 (cx=169, cy=169, r=120) -->
+        <path android:pathData="M169,169 m-120,0 a120,120 0 1,0 240,0 a120,120 0 1,0 -240,0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="169"
+                    android:centerY="169"
+                    android:gradientRadius="120"
+                    android:type="radial">
+                    <item android:offset="0.0" android:color="#52454442"/>
+                    <item android:offset="0.78" android:color="#4C454442"/>
+                    <item android:offset="0.86" android:color="#38454442"/>
+                    <item android:offset="0.93" android:color="#1A454442"/>
+                    <item android:offset="1.0" android:color="#00454442"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- 좌상단 천 융기 경사면 하이라이트 (cx=149, cy=149, r=122) -->
+        <path android:pathData="M149,149 m-122,0 a122,122 0 1,0 244,0 a122,122 0 1,0 -244,0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="149"
+                    android:centerY="149"
+                    android:gradientRadius="122"
+                    android:type="radial">
+                    <item android:offset="0.0" android:color="#73FFFFFF"/>
+                    <item android:offset="0.78" android:color="#6BFFFFFF"/>
+                    <item android:offset="0.88" android:color="#40FFFFFF"/>
+                    <item android:offset="0.95" android:color="#14FFFFFF"/>
+                    <item android:offset="1.0" android:color="#00FFFFFF"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- 정중앙 시계 원판 소프트 필렛 캡 (cx=160, cy=160, r=111.5) -->
+        <path android:pathData="M160,160 m-111.5,0 a111.5,111.5 0 1,0 223.0,0 a111.5,111.5 0 1,0 -223.0,0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="160"
+                    android:centerY="160"
+                    android:gradientRadius="111.5"
+                    android:type="radial">
+                    <item android:offset="0.0" android:color="#FFEAE9E7"/>
+                    <item android:offset="0.925" android:color="#FFEAE9E7"/>
+                    <item android:offset="0.950" android:color="#E0EAE9E7"/>
+                    <item android:offset="0.972" android:color="#85EAE9E7"/>
+                    <item android:offset="0.988" android:color="#2EEAE9E7"/>
+                    <item android:offset="1.0" android:color="#00EAE9E7"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+
+        <!-- 시계 원판 평면의 미세한 광원 기울기 -->
+        <path android:pathData="M160,160 m-106,0 a106,106 0 1,0 212,0 a106,106 0 1,0 -212,0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="70"
+                    android:startY="70"
+                    android:endX="250"
+                    android:endY="250"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#29FFFFFF"/>
+                    <item android:offset="0.5" android:color="#00FFFFFF"/>
+                    <item android:offset="1.0" android:color="#0D000000"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+
+    <!-- [2. 다이얼 글로우 및 눈금 레이어] -->
+    <group android:name="ticks">
+        <path android:pathData="M156,138 m-70,0 a70,70 0 1,0 140,0 a70,70 0 1,0 -140,0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="156"
+                    android:centerY="138"
+                    android:gradientRadius="70"
+                    android:type="radial">
+                    <item android:offset="0.0" android:color="#4DFFB9A4"/>
+                    <item android:offset="1.0" android:color="#00FFB9A4"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="M160,75 L160,63 M245,160 L257,160 M160,245 L160,257 M75,160 L63,160"
+            android:strokeColor="#FF5A5A5A"
+            android:strokeWidth="1.5"/>
+        <path
+            android:pathData="M205.00,82.06 L208.00,76.86 M237.94,115.00 L243.14,112.00 M237.94,205.00 L243.14,208.00 M205.00,237.94 L208.00,243.14 M115.00,237.94 L112.00,243.14 M82.06,205.00 L76.86,208.00 M82.06,115.00 L76.86,112.00 M115.00,82.06 L112.00,76.86"
+            android:strokeColor="#FFA9A9A9"
+            android:strokeWidth="0.8"/>
+    </group>
+
+    <!-- [3. 독립 오브젝트: 시침 (hourHand)] -->
+    <group
+        android:name="hourHand"
+        android:pivotX="160"
+        android:pivotY="160"
+        android:rotation="215.0972">
+        <!-- 시침 본체 그라데이션 (SVG objectBoundingBox (0,0)->(1,1)과 수학적으로 100% 동일한 벡터) -->
+        <path android:pathData="M185.5,147.5 L224.5,147.5 A12.5,12.5 0 0,1 237,160 A12.5,12.5 0 0,1 224.5,172.5 L185.5,172.5 A12.5,12.5 0 0,1 173,160 A12.5,12.5 0 0,1 185.5,147.5 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="173.0"
+                    android:startY="147.5"
+                    android:endX="189.95"
+                    android:endY="190.88"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#FFB3308F"/>
+                    <item android:offset="0.55" android:color="#FFD9568A"/>
+                    <item android:offset="1.0" android:color="#FFF6AC5E"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- 시침 좌하단 긴 모서리(y=147.5) 내부 음영 -->
+        <path android:pathData="M185.5,147.5 L224.5,147.5 A12.5,12.5 0 0,1 237,160 A12.5,12.5 0 0,1 224.5,172.5 L185.5,172.5 A12.5,12.5 0 0,1 173,160 A12.5,12.5 0 0,1 185.5,147.5 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="205.0"
+                    android:startY="147.5"
+                    android:endX="205.0"
+                    android:endY="155.8"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#703A0828"/>
+                    <item android:offset="0.28" android:color="#3D3A0828"/>
+                    <item android:offset="0.62" android:color="#123A0828"/>
+                    <item android:offset="1.0" android:color="#003A0828"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- 시침 중심쪽 둥근 캡(x=173.5) 내부 음영 -->
+        <path android:pathData="M185.5,147.5 L224.5,147.5 A12.5,12.5 0 0,1 237,160 A12.5,12.5 0 0,1 224.5,172.5 L185.5,172.5 A12.5,12.5 0 0,1 173,160 A12.5,12.5 0 0,1 185.5,147.5 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="173.5"
+                    android:startY="155.5"
+                    android:endX="181.5"
+                    android:endY="161.5"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#613A0828"/>
+                    <item android:offset="0.32" android:color="#2E3A0828"/>
+                    <item android:offset="0.68" android:color="#0A3A0828"/>
+                    <item android:offset="1.0" android:color="#003A0828"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+
+    <!-- [4. 독립 오브젝트: 분침 (minuteHand)] -->
+    <group
+        android:name="minuteHand"
+        android:pivotX="160"
+        android:pivotY="160"
+        android:rotation="60">
+        <path
+            android:pathData="M161.66,159.92 L161.66,71.92"
+            android:strokeColor="#24000000"
+            android:strokeWidth="3.8"
+            android:strokeLineCap="round"/>
+        <path
+            android:pathData="M161.20,159.95 L161.20,71.95"
+            android:strokeColor="#33000000"
+            android:strokeWidth="2.6"
+            android:strokeLineCap="round"/>
+        <path
+            android:pathData="M160,160 L160,72"
+            android:strokeColor="#FF171717"
+            android:strokeWidth="2.3"
+            android:strokeLineCap="round"/>
+    </group>
+
+    <!-- [5. 독립 오브젝트: 초침 (secondHand)] -->
+    <group
+        android:name="secondHand"
+        android:pivotX="160"
+        android:pivotY="160"
+        android:rotation="210">
+        <path
+            android:pathData="M158.52,177.24 L158.52,67.24"
+            android:strokeColor="#24000000"
+            android:strokeWidth="2.8"
+            android:strokeLineCap="round"/>
+        <path
+            android:pathData="M158.90,177.45 L158.90,67.45"
+            android:strokeColor="#33000000"
+            android:strokeWidth="1.8"
+            android:strokeLineCap="round"/>
+        <path
+            android:fillColor="#38000000"
+            android:pathData="M158.65,159.32 m-3.1,0 a3.1,3.1 0 1,0 6.2,0 a3.1,3.1 0 1,0 -6.2,0"/>
+        <path
+            android:pathData="M160,178 L160,68"
+            android:strokeColor="#FF4D4D4D"
+            android:strokeWidth="1.4"
+            android:strokeLineCap="round"/>
+        <path
+            android:fillColor="#FF4D4D4D"
+            android:pathData="M160,160 m-2.7,0 a2.7,2.7 0 1,0 5.4,0 a2.7,2.7 0 1,0 -5.4,0"/>
+    </group>
+</vector>

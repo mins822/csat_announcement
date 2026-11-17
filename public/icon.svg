@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#171923"/>
+      <stop offset="50%" stop-color="#1d2236"/>
+      <stop offset="100%" stop-color="#12141c"/>
+    </linearGradient>
+    <radialGradient id="auroraBlue" cx="0.32" cy="0.62" r="0.48">
+      <stop offset="0%" stop-color="#3a4ca8" stop-opacity="0.72"/>
+      <stop offset="55%" stop-color="#4e3888" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#181c2b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="auroraGreen" cx="0.65" cy="0.38" r="0.42">
+      <stop offset="0%" stop-color="#1f8a6e" stop-opacity="0.68"/>
+      <stop offset="58%" stop-color="#2b5878" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#181c2b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="handGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#36489e"/>
+      <stop offset="52%" stop-color="#5a3e99"/>
+      <stop offset="100%" stop-color="#22856a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="204" fill="url(#auroraBlue)"/>
+  <circle cx="256" cy="256" r="204" fill="url(#auroraGreen)"/>
+  <circle cx="256" cy="256" r="184" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="4"/>
+  <g transform="translate(256 256)">
+    <line x1="0" y1="-166" x2="0" y2="-144" stroke="#f1f1f1" stroke-width="5" stroke-linecap="round"/>
+    <line x1="166" y1="0" x2="144" y2="0" stroke="#f1f1f1" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="166" x2="0" y2="144" stroke="#f1f1f1" stroke-width="5" stroke-linecap="round"/>
+    <line x1="-166" y1="0" x2="-144" y2="0" stroke="#f1f1f1" stroke-width="5" stroke-linecap="round"/>
+    <g transform="rotate(148)">
+      <rect x="22" y="-22" width="112" height="44" rx="22" fill="url(#handGrad)"/>
+    </g>
+    <line x1="0" y1="0" x2="68" y2="-118" stroke="#f1f1f1" stroke-width="7" stroke-linecap="round"/>
+    <line x1="0" y1="30" x2="-88" y2="-112" stroke="#8a8f9e" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="8" fill="#f1f1f1"/>
+  </g>
+</svg>

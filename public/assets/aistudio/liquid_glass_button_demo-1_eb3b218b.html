@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f5f8">
+<meta name="color-scheme" content="light dark">
+<title>Liquid Glass — Material Study</title>
+<style>
+  :root {
+    color-scheme: light;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Roboto", "Noto Sans KR", sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    --ease: cubic-bezier(.2,.75,.25,1);
+    --spring: cubic-bezier(.2,1.1,.3,1);
+    --page: #f4f5f8;
+    --ink: #202127;
+    --muted: #777b86;
+  }
+  * { box-sizing: border-box; }
+  html { min-width: 320px; min-height: 100%; background: var(--page); }
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    padding: clamp(22px, 4.5vw, 54px) 18px 42px;
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse at 5% 0%, rgba(210,220,243,.24), transparent 34%),
+      radial-gradient(ellipse at 100% 88%, rgba(225,218,238,.22), transparent 35%),
+      var(--page);
+  }
+  button { font: inherit; }
+  .page { width: min(100%, 1000px); margin: 0 auto; }
+  .eyebrow { margin: 0 0 10px; color: #858997; font-size: 10px; font-weight: 760; letter-spacing: .18em; }
+  h1 { margin: 0; color: #252832; font-size: clamp(30px, 5vw, 46px); font-weight: 680; letter-spacing: -.06em; line-height: 1.04; }
+  .intro { max-width: 680px; margin: 13px 0 26px; color: #686d79; font-size: 13px; line-height: 1.7; word-break: keep-all; }
+  .samples { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+  .sample {
+    --fg: #252832;
+    --muted: #737985;
+    --scene-bg: #e8ebf1;
+    --glass-fill: rgba(255,255,255,.025);
+    --glass-rim: rgba(255,255,255,.66);
+    --glint: rgba(255,255,255,.84);
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 20px 20px 14px;
+    border: 1px solid rgba(255,255,255,.78);
+    border-radius: 25px;
+    color: var(--fg);
+    background: #e8ebf1;
+    box-shadow: 0 14px 42px rgba(40,49,66,.055), inset 0 1px 0 rgba(255,255,255,.8);
+  }
+  .sample.dark {
+    color-scheme: dark;
+    --m3-background: #141218;
+    --m3-surface: #141218;
+    --m3-container-low: #1c1b20;
+    --m3-container: #201f25;
+    --m3-container-high: #2b2930;
+    --m3-container-highest: #36343b;
+    --m3-on-surface: #e6e1e5;
+    --m3-on-surface-variant: #cac4d0;
+    --m3-primary: #d0bcff;
+    --fg: var(--m3-on-surface);
+    --muted: var(--m3-on-surface-variant);
+    --scene-bg: var(--m3-background);
+    --glass-fill: rgba(255,255,255,.02);
+    --glass-rim: rgba(242,239,247,.34);
+    --glint: rgba(255,255,255,.52);
+    border-color: rgba(255,255,255,.075);
+    background: var(--m3-surface);
+    box-shadow: 0 14px 42px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.035);
+  }
+  .sample-head { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .mode { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 760; letter-spacing: .14em; }
+  .mode-dot { width: 7px; height: 7px; border-radius: 50%; background: #8c9ab2; box-shadow: 0 0 0 3px rgba(140,154,178,.13); }
+  .dark .mode-dot { background: #d0bcff; box-shadow: 0 0 0 3px rgba(208,188,255,.14); }
+  .mode-note { color: var(--muted); font-size: 9px; white-space: nowrap; }
+  .scene {
+    position: relative;
+    height: 320px;
+    height: clamp(270px, 31vw, 330px);
+    margin: 15px -20px -14px;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--scene-bg);
+  }
+  .scene::before, .scene::after { content: ""; position: absolute; pointer-events: none; border-radius: 50%; filter: blur(1px); }
+  .light .scene {
+    background: linear-gradient(145deg, #e6edf5 0%, #e9e7f0 54%, #e2eceb 100%);
+  }
+  .light .scene::before { width: 205px; height: 205px; left: -86px; top: 50px; background: radial-gradient(circle, rgba(122,171,218,.64), rgba(122,171,218,0) 70%); }
+  .light .scene::after { width: 220px; height: 220px; right: -90px; bottom: -70px; background: radial-gradient(circle, rgba(176,151,207,.52), rgba(176,151,207,0) 70%); }
+  .dark .scene {
+    background: linear-gradient(145deg, var(--m3-background) 0%, var(--m3-container-low) 58%, #17191b 100%);
+  }
+  .dark .scene::before { width: 205px; height: 205px; left: -86px; top: 50px; background: radial-gradient(circle, rgba(105,91,142,.27), rgba(105,91,142,0) 70%); }
+  .dark .scene::after { width: 220px; height: 220px; right: -90px; bottom: -70px; background: radial-gradient(circle, rgba(69,111,107,.19), rgba(69,111,107,0) 70%); }
+  .scene-content { position: absolute; inset: 0; z-index: 1; }
+  .mock-topline { position: absolute; top: 20px; left: 22px; right: 22px; display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 10px; letter-spacing: .025em; }
+  .mock-avatar { width: 23px; height: 23px; border-radius: 50%; background: linear-gradient(145deg,#a9bdd8,#e1c4d9); box-shadow: 0 0 0 2px rgba(255,255,255,.42); }
+  .dark .mock-avatar { background: linear-gradient(145deg,#777094,#597a78); box-shadow: 0 0 0 2px rgba(255,255,255,.08); }
+  .mock-card {
+    position: absolute;
+    left: 23px;
+    right: 23px;
+    height: 80px;
+    top: 57px;
+    border: 1px solid rgba(255,255,255,.54);
+    border-radius: 17px;
+    background: rgba(255,255,255,.36);
+    box-shadow: 0 7px 22px rgba(44,56,81,.045), inset 0 1px 0 rgba(255,255,255,.53);
+  }
+  .dark .mock-card {
+    border-color: rgba(255,255,255,.055);
+    background: var(--m3-container-low);
+    box-shadow: 0 7px 22px rgba(0,0,0,.13), inset 0 1px 0 rgba(255,255,255,.025);
+  }
+  .mock-card-title { position: absolute; left: 17px; top: 15px; color: var(--fg); font-size: 11px; font-weight: 650; }
+  .mock-card-sub { position: absolute; left: 17px; top: 35px; color: var(--muted); font-size: 9px; }
+  .mock-pill { position: absolute; right: 15px; top: 16px; width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(145deg,#d7e4f5,#c5d5eb); }
+  .dark .mock-pill { background: #332d40; }
+  .mock-pill::after { content:""; position:absolute; inset:12px; border:1.5px solid #637f9e; border-radius:50%; }
+  .dark .mock-pill::after { border-color:#d0bcff; }
+  .mock-row { position: absolute; left: 24px; right: 24px; top: 157px; display: flex; align-items: center; gap: 9px; }
+  .mini-tile { position: relative; flex: 1; height: 51px; border-radius: 13px; border: 1px solid rgba(255,255,255,.62); background: rgba(255,255,255,.29); }
+  .dark .mini-tile { border-color: rgba(255,255,255,.055); background: var(--m3-container); }
+  .mini-tile::before { content:""; position:absolute; left:10px; top:10px; width:13px; height:13px; border-radius:5px; background:#9bb2d2; }
+  .mini-tile:nth-child(2)::before { background:#c0a7d0; }
+  .mini-tile:nth-child(3)::before { background:#91bdb3; }
+  .dark .mini-tile::before { background:var(--m3-primary); }
+  .dark .mini-tile:nth-child(2)::before { background:#a78bb5; }
+  .dark .mini-tile:nth-child(3)::before { background:#7fa69c; }
+  .mini-tile::after { content:""; position:absolute; left:10px; bottom:9px; width:42px; height:3px; border-radius:3px; background:rgba(67,76,93,.25); }
+  .dark .mini-tile::after { background:rgba(230,225,229,.17); }
+  .mock-bottomline { position:absolute; left:25px; right:25px; bottom:33px; display:flex; align-items:center; justify-content:space-between; color:var(--muted); font-size:9px; }
+  .mock-progress { width:72px; height:4px; overflow:hidden; border-radius:4px; background:rgba(108,119,139,.16); }
+  .mock-progress::before { content:""; display:block; width:58%; height:100%; border-radius:inherit; background:#829dbf; }
+  .dark .mock-progress { background:rgba(230,225,229,.12); }
+  .dark .mock-progress::before { background:#bba7e0; }
+  .scene-noise { position:absolute; inset:0; z-index:2; pointer-events:none; opacity:.055; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E"); mix-blend-mode:soft-light; }
+  .glass-button {
+    --px: 50%; --py: 12%;
+    position: absolute;
+    z-index: 4;
+    left: 50%; top: 49%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    min-width: 176px;
+    height: 62px;
+    padding: 0 23px;
+    overflow: visible;
+    isolation: isolate;
+    transform: translate(-50%,-50%) translateZ(0);
+    border: 1px solid var(--glass-rim);
+    border-radius: 999px;
+    color: var(--fg);
+    background: var(--glass-fill);
+    box-shadow:
+      0 9px 24px rgba(35,43,58,.09),
+      inset 0 1px 0 rgba(255,255,255,.68),
+      inset 0 -1px 0 rgba(40,48,62,.08);
+    -webkit-backdrop-filter: blur(.8px) saturate(1.38) contrast(1.02);
+    backdrop-filter: blur(.8px) saturate(1.38) contrast(1.02);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .34s var(--spring), box-shadow .32s var(--ease), border-color .28s ease;
+  }
+  .dark .glass-button {
+    box-shadow:
+      0 10px 25px rgba(0,0,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.18),
+      inset 0 -1px 0 rgba(0,0,0,.22);
+  }
+  .glass-button::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    border-radius:inherit;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 43% 72% at var(--px) var(--py), rgba(255,255,255,.115), transparent 100%),
+      linear-gradient(150deg, rgba(255,255,255,.075), transparent 43%, rgba(255,255,255,.018) 76%, rgba(255,255,255,.055));
+    opacity:.9;
+  }
+  .dark .glass-button::before {
+    background:
+      radial-gradient(ellipse 43% 72% at var(--px) var(--py), rgba(245,240,255,.095), transparent 100%),
+      linear-gradient(150deg, rgba(255,255,255,.07), transparent 44%, rgba(255,255,255,.012) 78%, rgba(255,255,255,.035));
+  }
+  .glass-button::after {
+    content:"";
+    position:absolute;
+    inset:1px;
+    border-radius:inherit;
+    pointer-events:none;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.52), transparent 11%),
+      linear-gradient(0deg, rgba(255,255,255,.16), transparent 16%);
+    opacity:.28;
+    mix-blend-mode:screen;
+  }
+  .dark .glass-button::after { opacity:.22; }
+  .glass-button:hover {
+    transform: translate(-50%,-52%) scale(1.025);
+    box-shadow: 0 13px 30px rgba(31,39,54,.12), inset 0 1px 0 rgba(255,255,255,.82), inset 0 -1px 0 rgba(40,48,62,.07);
+  }
+  .dark .glass-button:hover {
+    box-shadow: 0 13px 30px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.24), inset 0 -1px 0 rgba(0,0,0,.2);
+  }
+  .glass-button:active, .glass-button.is-pressed { transform: translate(-50%,-50%) scale(.955); transition-duration:.13s; }
+  .glass-button:focus-visible { outline:2px solid #7c9cc5; outline-offset:4px; }
+  .dark .glass-button:focus-visible { outline-color:#d0bcff; }
+  .button-content { position:relative; z-index:2; display:inline-flex; align-items:center; gap:12px; color:inherit; font-size:14px; font-weight:650; letter-spacing:-.025em; white-space:nowrap; text-shadow:0 1px 2px rgba(255,255,255,.24); }
+  .dark .button-content { text-shadow:0 1px 2px rgba(0,0,0,.22); }
+  .button-symbol { display:grid; width:23px; height:23px; place-items:center; opacity:.84; transition: transform .34s var(--spring); }
+  .button-symbol svg { width:17px; height:17px; overflow:visible; }
+  .glass-button:hover .button-symbol { transform:translateX(2px); }
+  .glass-button[aria-pressed="true"] .button-symbol { transform:rotate(-7deg) scale(1.08); }
+  .glass-button[aria-pressed="true"] .button-symbol path { d:path("M4 10.5 8.2 14.5 16 6"); }
+  .sample-status { position:absolute; z-index:5; left:50%; top:calc(49% + 53px); transform:translateX(-50%); color:var(--muted); font-size:9px; white-space:nowrap; pointer-events:none; }
+  .scene-caption { position:absolute; z-index:5; left:21px; bottom:13px; color:var(--muted); font-size:9px; letter-spacing:.07em; }
+  .scene-index { position:absolute; z-index:5; right:21px; bottom:13px; color:var(--muted); font-size:9px; font-variant-numeric:tabular-nums; }
+  .info-row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin:17px 1px 0; color:#7c818d; font-size:10px; line-height:1.6; }
+  .info-row strong { color:#555c69; font-weight:650; }
+  .dark-info { color:#8e8b94; }
+  .dark-info strong { color:#c8c3cd; }
+  .legend { display:flex; flex-wrap:wrap; gap:7px; margin-top:18px; }
+  .legend span { padding:6px 9px; border:1px solid rgba(99,108,128,.14); border-radius:999px; color:#697180; background:rgba(255,255,255,.4); font-size:9px; }
+  .implementation { margin-top:27px; padding:17px 19px; border:1px solid rgba(91,101,121,.13); border-radius:17px; background:rgba(255,255,255,.42); }
+  .implementation h2 { margin:0 0 7px; color:#39404d; font-size:12px; font-weight:720; }
+  .implementation p { margin:0; color:#707785; font-size:11px; line-height:1.75; }
+  .svg-filters { position:absolute; width:0; height:0; overflow:hidden; }
+  @supports (backdrop-filter: url("#glass-lens-light")) {
+    .glass-button { -webkit-backdrop-filter:url("#glass-lens-light") blur(.8px) saturate(1.38); backdrop-filter:url("#glass-lens-light") blur(.8px) saturate(1.38); }
+    .dark .glass-button { -webkit-backdrop-filter:url("#glass-lens-dark") blur(.8px) saturate(1.34); backdrop-filter:url("#glass-lens-dark") blur(.8px) saturate(1.34); }
+  }
+  @media (max-width: 700px) {
+    body { padding:27px 14px 34px; }
+    .samples { grid-template-columns:1fr; gap:13px; }
+    .sample { padding:18px 18px 13px; border-radius:22px; }
+    .scene { height:278px; margin:14px -18px -13px; }
+    .intro { margin-bottom:21px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass-button { background:rgba(255,255,255,.2); -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px); }
+    .dark .glass-button { background:rgba(43,41,48,.42); }
+  }
+</style>
+</head>
+<body>
+<svg class="svg-filters" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <filter id="glass-lens-light" filterUnits="objectBoundingBox" primitiveUnits="objectBoundingBox" x="-0.08" y="-0.16" width="1.16" height="1.32" color-interpolation-filters="sRGB">
+    <feImage id="glass-map-light" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="glass-lens-dark" filterUnits="objectBoundingBox" primitiveUnits="objectBoundingBox" x="-0.08" y="-0.16" width="1.16" height="1.32" color-interpolation-filters="sRGB">
+    <feImage id="glass-map-dark" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"/>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+<main class="page">
+  <p class="eyebrow">MATERIAL STUDY / 02</p>
+  <h1>Liquid Glass</h1>
+  <p class="intro">표면 틴트와 블러를 낮춰 배경이 더 많이 비치도록 조정한 버튼 샘플이다. 오른쪽은 Android 기본 다크 테마의 Material 3 중성 표면색을 기준으로 구성했다.</p>
+  <section class="samples" aria-label="Liquid Glass appearance comparison">
+    <article class="sample light" data-theme="light">
+      <header class="sample-head">
+        <span class="mode"><i class="mode-dot"></i> LIGHT APPEARANCE</span>
+        <span class="mode-note">Clear · Light</span>
+      </header>
+      <div class="scene">
+        <div class="scene-content" aria-hidden="true">
+          <div class="mock-topline"><span>10:08</span><span class="mock-avatar"></span></div>
+          <div class="mock-card"><span class="mock-card-title">오늘의 요약</span><span class="mock-card-sub">주요 항목을 한눈에 확인하세요</span><span class="mock-pill"></span></div>
+          <div class="mock-row"><span class="mini-tile"></span><span class="mini-tile"></span><span class="mini-tile"></span></div>
+          <div class="mock-bottomline"><span>최근 활동</span><span class="mock-progress"></span></div>
+        </div>
+        <div class="scene-noise" aria-hidden="true"></div>
+        <button class="glass-button" type="button" aria-pressed="false" aria-label="라이트 모드 Liquid Glass 버튼 선택">
+          <span class="button-content"><span class="button-label">계속하기</span><span class="button-symbol" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M3.8 10h11m-4.2-4.2L14.8 10l-4.2 4.2" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+        </button>
+        <span class="sample-status" aria-live="polite">버튼을 눌러 상태 변경</span>
+        <span class="scene-caption">LOW TINT / EDGE REFRACTION</span><span class="scene-index">01 — 02</span>
+      </div>
+    </article>
+    <article class="sample dark" data-theme="dark">
+      <header class="sample-head">
+        <span class="mode"><i class="mode-dot"></i> ANDROID DARK</span>
+        <span class="mode-note">Material 3 · Dark</span>
+      </header>
+      <div class="scene">
+        <div class="scene-content" aria-hidden="true">
+          <div class="mock-topline"><span>10:08</span><span class="mock-avatar"></span></div>
+          <div class="mock-card"><span class="mock-card-title">오늘의 요약</span><span class="mock-card-sub">주요 항목을 한눈에 확인하세요</span><span class="mock-pill"></span></div>
+          <div class="mock-row"><span class="mini-tile"></span><span class="mini-tile"></span><span class="mini-tile"></span></div>
+          <div class="mock-bottomline"><span>최근 활동</span><span class="mock-progress"></span></div>
+        </div>
+        <div class="scene-noise" aria-hidden="true"></div>
+        <button class="glass-button" type="button" aria-pressed="false" aria-label="Android 다크 모드 Liquid Glass 버튼 선택">
+          <span class="button-content"><span class="button-label">계속하기</span><span class="button-symbol" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M3.8 10h11m-4.2-4.2L14.8 10l-4.2 4.2" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+        </button>
+        <span class="sample-status" aria-live="polite">버튼을 눌러 상태 변경</span>
+        <span class="scene-caption">MATERIAL 3 / NEUTRAL DARK</span><span class="scene-index">02 — 02</span>
+      </div>
+    </article>
+  </section>
+  <div class="legend" aria-label="Implemented visual properties"><span>낮은 표면 틴트</span><span>배경 선명도 유지</span><span>가장자리 굴절</span><span>방향성 반사광</span><span>터치 피드백</span></div>
+  <div class="implementation">
+    <h2>이번 개선의 핵심</h2>
+    <p>이전 버전처럼 버튼 안에 배경 캡처 이미지를 덧씌우지 않는다. 실제 배경을 backdrop-filter가 직접 처리하고, SVG 변위 맵은 가장자리의 얕은 렌즈 효과에만 사용한다. 블러는 0.8px, 표면 틴트는 약 2~2.5% 수준으로 낮췄다. 굴절 필터를 지원하지 않는 브라우저에서는 낮은 블러와 반사 경계로 대체한다.</p>
+  </div>
+  <p class="info-row"><span><strong>Note</strong> — 웹 렌더링으로 재현한 시각적 근사이며 네이티브 iOS 렌더러와 동일하지 않다.</span><span>HTML · CSS · SVG Filter · JavaScript</span></p>
+  <p class="info-row"><span>Design reference: <a href="https://developer.apple.com/design/resources/" target="_blank" rel="noreferrer">Apple iOS 27 UI Kit for Figma</a> · <a href="https://developer.apple.com/design/human-interface-guidelines/materials" target="_blank" rel="noreferrer">Materials HIG</a></span><span>Code study: <a href="https://github.com/nordify/css-liquid-glass" target="_blank" rel="noreferrer">nordify</a> · <a href="https://github.com/dpawlikowski/liquid-glass" target="_blank" rel="noreferrer">dpawlikowski</a></span></p>
+</main>
+<script>
+(() => {
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const smoothstep = (a, b, value) => {
+    const t = clamp((value - a) / (b - a), 0, 1);
+    return t * t * (3 - 2 * t);
+  };
+
+  function roundedRectDistance(x, y, width, height, radius) {
+    const qx = Math.abs(x) - (width / 2 - radius);
+    const qy = Math.abs(y) - (height / 2 - radius);
+    return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - radius;
+  }
+
+  function buildLensMap(width, height, radius) {
+    const canvas = document.createElement('canvas');
+    const scale = Math.min(2, window.devicePixelRatio || 1);
+    const mapWidth = Math.max(128, Math.round(width * scale));
+    const mapHeight = Math.max(48, Math.round(height * scale));
+    canvas.width = mapWidth;
+    canvas.height = mapHeight;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    const image = context.createImageData(mapWidth, mapHeight);
+    const edgeWidth = Math.max(7, height * .14);
+    const maxOffset = 3.1;
+    const sampleDistance = 1.15;
+
+    for (let y = 0; y < mapHeight; y++) {
+      for (let x = 0; x < mapWidth; x++) {
+        const px = (x / (mapWidth - 1) - .5) * width;
+        const py = (y / (mapHeight - 1) - .5) * height;
+        const distance = (xx, yy) => roundedRectDistance(xx, yy, width, height, radius);
+        const inside = Math.max(0, -distance(px, py));
+        const profile = smoothstep(0, edgeWidth, inside);
+        const gx = (smoothstep(0, edgeWidth, Math.max(0, -distance(px + sampleDistance, py))) - smoothstep(0, edgeWidth, Math.max(0, -distance(px - sampleDistance, py)))) / (2 * sampleDistance);
+        const gy = (smoothstep(0, edgeWidth, Math.max(0, -distance(px, py + sampleDistance))) - smoothstep(0, edgeWidth, Math.max(0, -distance(px, py - sampleDistance)))) / (2 * sampleDistance);
+        const lensWeight = 1 - profile;
+        const cornerFactor = .72 + .28 * clamp(Math.abs(px) / (width * .5), 0, 1);
+        const dx = clamp(-gx * maxOffset * cornerFactor * lensWeight, -maxOffset, maxOffset);
+        const dy = clamp(-gy * maxOffset * lensWeight, -maxOffset, maxOffset);
+        const index = (y * mapWidth + x) * 4;
+        image.data[index] = clamp(Math.round(128 + dx / 18 * 255), 0, 255);
+        image.data[index + 1] = clamp(Math.round(128 + dy / 18 * 255), 0, 255);
+        image.data[index + 2] = 128;
+        image.data[index + 3] = 255;
+      }
+    }
+    context.putImageData(image, 0, 0);
+    return canvas.toDataURL('image/png');
+  }
+
+  function updateLensFilter(sample) {
+    const button = sample.querySelector('.glass-button');
+    const rect = button.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const radius = rect.height / 2;
+    const mapUrl = buildLensMap(rect.width, rect.height, radius);
+    const id = sample.dataset.theme === 'dark' ? 'glass-map-dark' : 'glass-map-light';
+    const map = document.getElementById(id);
+    map.setAttribute('href', mapUrl);
+    map.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', mapUrl);
+  }
+
+  function init(sample) {
+    const button = sample.querySelector('.glass-button');
+    const status = sample.querySelector('.sample-status');
+    let resizeFrame = 0;
+    const renderMap = () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => updateLensFilter(sample));
+    };
+    renderMap();
+
+    button.addEventListener('pointermove', event => {
+      const rect = button.getBoundingClientRect();
+      button.style.setProperty('--px', `${clamp((event.clientX - rect.left) / rect.width * 100, 0, 100)}%`);
+      button.style.setProperty('--py', `${clamp((event.clientY - rect.top) / rect.height * 100, 0, 100)}%`);
+    });
+    button.addEventListener('pointerleave', () => {
+      button.style.setProperty('--px', '50%');
+      button.style.setProperty('--py', '12%');
+    });
+    button.addEventListener('click', () => {
+      const selected = button.getAttribute('aria-pressed') === 'true';
+      const next = !selected;
+      button.setAttribute('aria-pressed', String(next));
+      status.textContent = next ? '선택 상태가 활성화됨' : '버튼을 눌러 상태 변경';
+      const path = button.querySelector('.button-symbol path');
+      path.setAttribute('d', next ? 'M4 10.5 8.2 14.5 16 6' : 'M3.8 10h11m-4.2-4.2L14.8 10l-4.2 4.2');
+      button.classList.add('is-pressed');
+      window.setTimeout(() => button.classList.remove('is-pressed'), 170);
+    });
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(renderMap);
+      observer.observe(button);
+      observer.observe(sample.querySelector('.scene'));
+    } else {
+      window.addEventListener('resize', renderMap, { passive: true });
+    }
+  }
+
+  document.querySelectorAll('.sample').forEach(init);
+})();
+</script>
+</body>
+</html>
