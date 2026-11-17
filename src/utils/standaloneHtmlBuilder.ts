@@ -123,11 +123,11 @@ export function buildStandaloneCsatHtml(
   --toll-muted:#717174;
   --toll-line:rgba(24,24,25,.10);
   --toll-line-soft:rgba(24,24,25,.07);
-  --toll-glass:rgba(246,246,248,.82);
+  --toll-glass:var(--glass-fill);
   --toll-glass-strong:rgba(255,255,255,.78);
   --toll-glass-soft:rgba(255,255,255,.46);
   --toll-glass-inner:rgba(255,255,255,.56);
-  --toll-glass-edge:rgba(255,255,255,.78);
+  --toll-glass-edge:var(--glass-rim);
   --toll-glass-edge-low:rgba(255,255,255,.62);
   --toll-highlight:rgba(255,255,255,.90);
   --toll-glass-shadow:0 28px 80px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.86);
@@ -173,11 +173,11 @@ export function buildStandaloneCsatHtml(
   --toll-muted:#9f9f9f;
   --toll-line:rgba(255,255,255,.11);
   --toll-line-soft:rgba(255,255,255,.075);
-  --toll-glass:rgba(24,24,26,.94);
+  --toll-glass:var(--glass-fill);
   --toll-glass-strong:rgba(22,22,24,.95);
   --toll-glass-soft:rgba(38,38,38,.82);
   --toll-glass-inner:rgba(46,46,46,.72);
-  --toll-glass-edge:rgba(255,255,255,.23);
+  --toll-glass-edge:var(--glass-rim);
   --toll-glass-edge-low:rgba(255,255,255,.13);
   --toll-highlight:rgba(255,255,255,.24);
   --toll-glass-shadow:0 34px 96px rgba(0,0,0,.62),0 8px 26px rgba(0,0,0,.40),inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.05);
@@ -220,11 +220,11 @@ export function buildStandaloneCsatHtml(
   --toll-muted:#786452;
   --toll-line:rgba(54,41,30,.12);
   --toll-line-soft:rgba(54,41,30,.08);
-  --toll-glass:rgba(245,236,220,.90);
+  --toll-glass:var(--glass-fill);
   --toll-glass-strong:rgba(255,250,240,.82);
   --toll-glass-soft:rgba(255,250,240,.48);
   --toll-glass-inner:rgba(255,250,240,.62);
-  --toll-glass-edge:rgba(255,250,242,.82);
+  --toll-glass-edge:var(--glass-rim);
   --toll-glass-edge-low:rgba(255,250,242,.68);
   --toll-highlight:rgba(255,250,242,.90);
   --toll-glass-shadow:0 28px 80px rgba(42,31,21,.22),0 6px 20px rgba(42,31,21,.10),inset 0 1px 0 rgba(255,250,242,.90);
@@ -238,11 +238,6 @@ export function buildStandaloneCsatHtml(
   --toll-warn:#9a5b13;
   --toll-warn-bg:rgba(214,178,126,.16);
   --toll-warn-line:rgba(154,91,19,.28);
-}
-@media (max-width:1024px){
-  :root,[data-theme="light"]{--toll-glass:rgba(246,246,248,.94);--modal-bg:linear-gradient(155deg,rgba(252,252,254,.96) 0%,rgba(244,244,246,.94) 100%)}
-  [data-theme="dark"]{--toll-glass:rgba(22,22,24,.96);--modal-bg:rgba(22,22,24,.96)}
-  [data-theme="sepia"]{--toll-glass:rgba(245,236,220,.95);--modal-bg:linear-gradient(155deg,rgba(248,240,225,.97) 0%,rgba(238,228,208,.95) 100%)}
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -440,24 +435,28 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
 }
 
 /* ---------- Liquid Glass — Material Study (Low Tint / Edge Refraction) ---------- */
-.lg-btn,.pill-group-row,.drawer-card-panel,.bookmark-drawer-card{
+.lg-btn,.pill-group-row,.drawer-card-panel,.bookmark-drawer-card,.toll-dialog{
   --px:50%;
   --py:12%;
   position:relative;
   overflow:hidden;
   isolation:isolate;
-  border-radius:999px;
   border:1px solid var(--glass-rim);
   background:var(--glass-fill);
   box-shadow:var(--btn-shadow);
   -webkit-backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
   backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
+  transform:translateZ(0);
+  will-change:backdrop-filter,transform;
   color:var(--btn);
   text-shadow:var(--btn-text-shadow);
   -webkit-tap-highlight-color:transparent;
+}
+.lg-btn,.pill-group-row{
+  border-radius:999px;
   transition:transform .24s var(--spring),box-shadow .24s var(--ease),border-color .22s ease,color .22s ease;
 }
-.lg-btn::before,.pill-group-row::before,.drawer-card-panel::before,.bookmark-drawer-card::before{
+.lg-btn::before,.pill-group-row::before,.drawer-card-panel::before,.bookmark-drawer-card::before,.toll-dialog::before{
   content:"";
   position:absolute;
   inset:0;
@@ -465,9 +464,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   border-radius:inherit;
   pointer-events:none;
   background:var(--btn-before);
-  opacity:.9;
+  opacity:.92;
 }
-.lg-btn::after,.pill-group-row::after,.drawer-card-panel::after,.bookmark-drawer-card::after{
+.lg-btn::after,.pill-group-row::after,.drawer-card-panel::after,.bookmark-drawer-card::after,.toll-dialog::after{
   content:"";
   position:absolute;
   inset:1px;
@@ -478,17 +477,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   opacity:var(--btn-after-opacity);
   mix-blend-mode:screen;
 }
-@supports (backdrop-filter: url("#glass-lens-light")){
-  .lg-btn,.pill-group-row,.drawer-card-panel,.bookmark-drawer-card{
-    -webkit-backdrop-filter:url("#glass-lens-light") blur(18px) saturate(1.42) contrast(1.02);
-    backdrop-filter:url("#glass-lens-light") blur(18px) saturate(1.42) contrast(1.02);
-  }
-  [data-theme="dark"] .lg-btn,[data-theme="dark"] .pill-group-row,[data-theme="dark"] .drawer-card-panel,[data-theme="dark"] .bookmark-drawer-card{
-    -webkit-backdrop-filter:url("#glass-lens-dark") blur(18px) saturate(1.38);
-    backdrop-filter:url("#glass-lens-dark") blur(18px) saturate(1.38);
-  }
-}
-.lg-btn > *,.pill-group-row > *,.drawer-card-panel > *,.bookmark-drawer-card > *{
+.lg-btn > *,.pill-group-row > *,.drawer-card-panel > *,.bookmark-drawer-card > *,.toll-dialog > *:not(.dialog-footer){
   position:relative;
   z-index:2;
 }
@@ -811,7 +800,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   .info-grid{grid-template-columns:1fr}
 }
 
-/* ---------- Custom Checkbox Sequence & Interval/Time Editor Modal (Monochrome Liquid Glass UI, GPU-Accelerated) ---------- */
+/* ---------- Custom Checkbox Sequence & Interval/Time Editor Modal (Synced with .drawer-card-panel Blur & Translucency) ---------- */
 #builderModalBackdrop{
   position:fixed;
   inset:0;
@@ -819,9 +808,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   height:100dvh;
   max-height:100dvh;
   z-index:52;
-  background:rgba(14,14,18,.34);
-  backdrop-filter:blur(42px) saturate(140%);
-  -webkit-backdrop-filter:blur(42px) saturate(140%);
+  background:transparent;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -831,17 +818,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   opacity:0;
   visibility:hidden;
   pointer-events:none;
-  transition:opacity .22s cubic-bezier(.22,1,.36,1),visibility .22s;
+  transform:none;
 }
 [data-theme="dark"] #builderModalBackdrop{
-  background:radial-gradient(960px 560px at 18% 12%,rgba(255,255,255,.045),transparent 62%),radial-gradient(880px 540px at 84% 88%,rgba(255,255,255,.035),transparent 60%),rgba(8,8,8,.76);
-  backdrop-filter:blur(26px) saturate(118%);
-  -webkit-backdrop-filter:blur(26px) saturate(118%);
+  background:transparent;
 }
 #builderModalBackdrop.open{
   opacity:1;
   visibility:visible;
   pointer-events:auto;
+  transform:none;
 }
 .toll-scrim button,.toll-scrim input,.toll-scrim select{font:inherit;color:inherit}
 .toll-dialog{
@@ -851,44 +837,15 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   min-height:0;
   display:flex;
   flex-direction:column;
-  position:relative;
-  isolation:isolate;
-  overflow:hidden;
   word-break:keep-all;
   overflow-wrap:break-word;
   border-radius:26px;
-  background:var(--toll-glass);
-  border:1px solid var(--toll-glass-edge);
-  box-shadow:var(--toll-glass-shadow);
-  backdrop-filter:blur(68px) saturate(140%);
-  -webkit-backdrop-filter:blur(68px) saturate(140%);
-  transform:translate3d(0,14px,0) scale(.965);
-  opacity:0;
-  transition:transform .28s cubic-bezier(.22,1,.36,1),opacity .22s cubic-bezier(.22,1,.36,1);
+  color:var(--toll-ink);
+  text-shadow:none;
+  box-shadow:var(--btn-shadow);
 }
 #builderModalBackdrop.open .toll-dialog{
-  transform:translate3d(0,0,0) scale(1);
-  opacity:1;
-}
-.toll-dialog::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
-  border-radius:inherit;
-  background:linear-gradient(135deg,rgba(255,255,255,.11),transparent 24%,transparent 72%,rgba(255,255,255,.04));
-  opacity:.85;
-}
-.toll-dialog::after{
-  content:"";
-  position:absolute;
-  inset:1px 1px auto;
-  height:1px;
-  border-radius:100%;
-  background:rgba(255,255,255,.32);
-  opacity:.8;
-  pointer-events:none;
+  transform:translateZ(0);
 }
 .toll-dialog .dialog-header{
   padding:15px 22px 13px;
@@ -1238,7 +1195,6 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   border:1px solid rgba(255,255,255,.48);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.66),0 3px 12px rgba(0,0,0,.018);
   margin-bottom:10px;
-  contain:layout style;
 }
 [data-theme="dark"] .toll-dialog .area-card{
   background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
@@ -1508,7 +1464,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
 .toll-dialog .fix-btn:hover{
   background:rgba(255,255,255,.08);
 }
-.toll-dialog .schedule-item{margin:0 0 10px;contain:layout style}
+.toll-dialog .schedule-item{margin:0 0 10px}
 .toll-dialog .alarm-card{
   min-height:64px;
   display:grid;
@@ -1790,8 +1746,6 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   gap:12px;
   border-top:1px solid var(--toll-glass-edge-low);
   background:var(--toll-glass-strong);
-  backdrop-filter:blur(22px) saturate(140%);
-  -webkit-backdrop-filter:blur(22px) saturate(140%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 -8px 26px rgba(0,0,0,.045);
 }
 [data-theme="dark"] .toll-dialog .dialog-footer{
@@ -1931,8 +1885,6 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   color:var(--toll-ink);
   border:1px solid rgba(255,255,255,.85);
   background:linear-gradient(145deg,rgba(255,255,255,.54),rgba(220,222,228,.24));
-  backdrop-filter:blur(16px) saturate(150%);
-  -webkit-backdrop-filter:blur(16px) saturate(150%);
   padding-inline:22px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.92),inset 0 -1px 0 rgba(255,255,255,.24),0 4px 14px rgba(0,0,0,.065);
 }
@@ -2331,7 +2283,15 @@ html:not(.app-ready) #rightTimetablePanel{
 .ui-option-toggle-row input[type="checkbox"]{width:16px;height:16px;accent-color:var(--toll-button);cursor:pointer;flex-shrink:0}
 .vol-control-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;font-weight:700;color:var(--toll-ink)}
 .vol-slider-wrap{display:flex;align-items:center;gap:6px;flex:1;justify-content:flex-end}
-.vol-slider-wrap input[type="range"]{width:100px;accent-color:var(--toll-button)}
+.vol-slider-wrap input[type="range"]{--slider-fill:rgba(28,28,30,.78);--slider-track:rgba(28,28,30,.16);-webkit-appearance:none;appearance:none;width:108px;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--slider-fill) 0%,var(--slider-fill) var(--slider-pct,100%),var(--slider-track) var(--slider-pct,100%),var(--slider-track) 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,.12),0 1px 0 rgba(255,255,255,.55);cursor:pointer;outline:none;margin:0;padding:0}
+[data-theme="dark"] .vol-slider-wrap input[type="range"]{--slider-fill:rgba(255,255,255,.88);--slider-track:rgba(255,255,255,.18);box-shadow:inset 0 1px 2px rgba(0,0,0,.38),0 1px 0 rgba(255,255,255,.08)}
+[data-theme="sepia"] .vol-slider-wrap input[type="range"]{--slider-fill:rgba(54,41,30,.78);--slider-track:rgba(54,41,30,.16)}
+.vol-slider-wrap input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:transparent}
+.vol-slider-wrap input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:14px;margin-top:-4px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(242,243,247,.92) 100%);border:1px solid rgba(255,255,255,.96);box-shadow:0 2px 6px rgba(0,0,0,.22),0 1px 2px rgba(0,0,0,.12),inset 0 1px 0 #fff;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease}
+.vol-slider-wrap input[type="range"]:hover::-webkit-slider-thumb{transform:scale(1.06)}
+.vol-slider-wrap input[type="range"]:active::-webkit-slider-thumb{transform:scale(1.12,1.06)}
+.vol-slider-wrap input[type="range"]::-moz-range-track{height:6px;border-radius:999px;background:transparent}
+.vol-slider-wrap input[type="range"]::-moz-range-thumb{width:22px;height:14px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(242,243,247,.92) 100%);border:1px solid rgba(255,255,255,.96);box-shadow:0 2px 6px rgba(0,0,0,.22),0 1px 2px rgba(0,0,0,.12),inset 0 1px 0 #fff;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease}
 .vol-pct{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;min-width:34px;text-align:right;color:var(--toll-muted)}
 .sched-control-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .sched-time-input{height:28px;padding:0 8px;border-radius:8px;border:1px solid var(--toll-glass-edge-low);background:var(--toll-pill);color:var(--toll-ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:600}
@@ -3645,6 +3605,7 @@ void main(){
   if(bellVolSlider){
     bellVolSlider.addEventListener('input', ()=>{
       bellVolume = clamp(Number(bellVolSlider.value)||0,0,1);
+      bellVolSlider.style.setProperty('--slider-pct', Math.round(bellVolume*100)+'%');
       if(bellVolPct) bellVolPct.textContent = Math.round(bellVolume*100)+'%';
       bellPlayer.volume = bellVolume;
       previewPlayer.volume = bellVolume;
@@ -3654,6 +3615,7 @@ void main(){
   if(engVolSlider){
     engVolSlider.addEventListener('input', ()=>{
       englishVolume = clamp(Number(engVolSlider.value)||0,0,1);
+      engVolSlider.style.setProperty('--slider-pct', Math.round(englishVolume*100)+'%');
       if(engVolPct) engVolPct.textContent = Math.round(englishVolume*100)+'%';
       englishAudio.volume = englishVolume;
       saveCustomSettings();
@@ -6000,14 +5962,20 @@ void main(){
       }
       if(typeof parsed.bellVolume==='number' && isFinite(parsed.bellVolume)){
         bellVolume = clamp(parsed.bellVolume,0,1);
-        if(bellVolSlider) bellVolSlider.value = String(bellVolume);
+        if(bellVolSlider){
+          bellVolSlider.value = String(bellVolume);
+          bellVolSlider.style.setProperty('--slider-pct', Math.round(bellVolume*100)+'%');
+        }
         if(bellVolPct) bellVolPct.textContent = Math.round(bellVolume*100)+'%';
         bellPlayer.volume = bellVolume;
         previewPlayer.volume = bellVolume;
       }
       if(typeof parsed.englishVolume==='number' && isFinite(parsed.englishVolume)){
         englishVolume = clamp(parsed.englishVolume,0,1);
-        if(engVolSlider) engVolSlider.value = String(englishVolume);
+        if(engVolSlider){
+          engVolSlider.value = String(englishVolume);
+          engVolSlider.style.setProperty('--slider-pct', Math.round(englishVolume*100)+'%');
+        }
         if(engVolPct) engVolPct.textContent = Math.round(englishVolume*100)+'%';
         englishAudio.volume = englishVolume;
       }
@@ -6107,14 +6075,20 @@ void main(){
         }
         if(typeof data.bellVolume==='number' && isFinite(data.bellVolume)){
           bellVolume = clamp(data.bellVolume,0,1);
-          if(bellVolSlider) bellVolSlider.value = String(bellVolume);
+          if(bellVolSlider){
+            bellVolSlider.value = String(bellVolume);
+            bellVolSlider.style.setProperty('--slider-pct', Math.round(bellVolume*100)+'%');
+          }
           if(bellVolPct) bellVolPct.textContent = Math.round(bellVolume*100)+'%';
           bellPlayer.volume = bellVolume;
           previewPlayer.volume = bellVolume;
         }
         if(typeof data.englishVolume==='number' && isFinite(data.englishVolume)){
           englishVolume = clamp(data.englishVolume,0,1);
-          if(engVolSlider) engVolSlider.value = String(englishVolume);
+          if(engVolSlider){
+            engVolSlider.value = String(englishVolume);
+            engVolSlider.style.setProperty('--slider-pct', Math.round(englishVolume*100)+'%');
+          }
           if(engVolPct) engVolPct.textContent = Math.round(englishVolume*100)+'%';
           englishAudio.volume = englishVolume;
         }

@@ -50,11 +50,11 @@
   --toll-ink-2: #3c3c3e;
   --toll-muted: #626266;
   --toll-line: rgba(24, 24, 25, 0.10);
-  --toll-glass: rgba(245, 245, 247, 0.88);
+  --toll-glass: var(--glass-fill);
   --toll-glass-strong: rgba(255, 255, 255, 0.36);
   --toll-glass-soft: rgba(255, 255, 255, 0.56);
   --toll-glass-inner: rgba(255, 255, 255, 0.68);
-  --toll-glass-edge: rgba(255, 255, 255, 0.82);
+  --toll-glass-edge: var(--glass-rim);
   --toll-glass-edge-low: rgba(24, 24, 25, 0.12);
   --toll-highlight: rgba(255, 255, 255, 0.90);
   --toll-glass-shadow:
@@ -118,11 +118,11 @@
   --toll-ink-2: #d8d8dc;
   --toll-muted: #a6a6ab;
   --toll-line: rgba(255, 255, 255, 0.12);
-  --toll-glass: rgba(24, 24, 26, 0.94);
+  --toll-glass: var(--glass-fill);
   --toll-glass-strong: rgba(20, 20, 22, 0.42);
   --toll-glass-soft: rgba(38, 38, 42, 0.82);
   --toll-glass-inner: rgba(46, 46, 50, 0.74);
-  --toll-glass-edge: rgba(255, 255, 255, 0.25);
+  --toll-glass-edge: var(--glass-rim);
   --toll-glass-edge-low: rgba(255, 255, 255, 0.15);
   --toll-highlight: rgba(255, 255, 255, 0.26);
   --toll-glass-shadow:
@@ -188,11 +188,11 @@
   --toll-ink-2: #483829;
   --toll-muted: #705c4b;
   --toll-line: rgba(54, 41, 30, 0.13);
-  --toll-glass: rgba(244, 235, 218, 0.91);
+  --toll-glass: var(--glass-fill);
   --toll-glass-strong: rgba(255, 250, 240, 0.36);
   --toll-glass-soft: rgba(255, 250, 240, 0.62);
   --toll-glass-inner: rgba(255, 250, 240, 0.72);
-  --toll-glass-edge: rgba(255, 250, 242, 0.86);
+  --toll-glass-edge: var(--glass-rim);
   --toll-glass-edge-low: rgba(54, 41, 30, 0.16);
   --toll-highlight: rgba(255, 250, 242, 0.92);
   --toll-glass-shadow:
@@ -624,7 +624,8 @@ body {
 .lg-btn,
 .pill-group-row,
 .drawer-card-panel,
-.bookmark-drawer-card {
+.bookmark-drawer-card,
+.toll-dialog {
   --px: 50%;
   --py: 12%;
   position: relative;
@@ -655,7 +656,8 @@ body {
 .lg-btn::before,
 .pill-group-row::before,
 .drawer-card-panel::before,
-.bookmark-drawer-card::before {
+.bookmark-drawer-card::before,
+.toll-dialog::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -669,7 +671,8 @@ body {
 .lg-btn::after,
 .pill-group-row::after,
 .drawer-card-panel::after,
-.bookmark-drawer-card::after {
+.bookmark-drawer-card::after,
+.toll-dialog::after {
   content: "";
   position: absolute;
   inset: 1px;
@@ -686,7 +689,8 @@ body {
 .lg-btn > *,
 .pill-group-row > *,
 .drawer-card-panel > *,
-.bookmark-drawer-card > * {
+.bookmark-drawer-card > *,
+.toll-dialog > *:not(.dialog-footer) {
   position: relative;
   z-index: 2;
 }
@@ -909,7 +913,7 @@ body {
   cursor: pointer;
 }
 
-/* ---------- Toll Schedule Liquid Glass UI (High-Blur Anti-Bleed Popup) ---------- */
+/* ---------- Toll Schedule Liquid Glass UI (Synced with .drawer-card-panel Blur & Translucency) ---------- */
 .toll-scrim {
   position: fixed;
   inset: 0;
@@ -917,9 +921,7 @@ body {
   height: 100dvh;
   max-height: 100dvh;
   z-index: 52;
-  background: rgba(216, 215, 212, 0.64);
-  backdrop-filter: blur(44px) saturate(155%);
-  -webkit-backdrop-filter: blur(44px) saturate(155%);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -929,27 +931,22 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transform: none;
 }
 
 [data-theme="dark"] .toll-scrim {
-  background:
-    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.05), transparent 28%),
-    radial-gradient(circle at 82% 84%, rgba(255, 255, 255, 0.035), transparent 30%),
-    rgba(8, 8, 10, 0.78);
-  backdrop-filter: blur(48px) saturate(150%);
-  -webkit-backdrop-filter: blur(48px) saturate(150%);
+  background: transparent;
 }
 
 [data-theme="sepia"] .toll-scrim {
-  background: rgba(214, 202, 182, 0.66);
-  backdrop-filter: blur(44px) saturate(155%);
-  -webkit-backdrop-filter: blur(44px) saturate(155%);
+  background: transparent;
 }
 
 .toll-scrim.open {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  transform: none;
 }
 
 .toll-scrim button,
@@ -966,95 +963,16 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
   word-break: keep-all;
   overflow-wrap: break-word;
   border-radius: 26px;
-  background: var(--toll-glass);
-  border: 1px solid var(--toll-glass-edge);
-  box-shadow: var(--toll-glass-shadow);
-  backdrop-filter: blur(48px) saturate(165%);
-  -webkit-backdrop-filter: blur(48px) saturate(165%);
-  transform: translate3d(0, 10px, 0) scale(0.98);
-  transition:
-    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.3s ease,
-    border-color 0.3s ease;
-}
-
-[data-theme="dark"] .toll-dialog {
-  backdrop-filter: blur(52px) saturate(160%);
-  -webkit-backdrop-filter: blur(52px) saturate(160%);
+  color: var(--toll-ink);
+  text-shadow: none;
+  box-shadow: var(--btn-shadow);
 }
 
 .toll-scrim.open .toll-dialog {
-  transform: translate3d(0, 0, 0) scale(1);
-}
-
-@media (max-width: 1024px) {
-  :root,
-  [data-theme="light"] {
-    --toll-glass: rgba(245, 245, 247, 0.94);
-  }
-  [data-theme="dark"] {
-    --toll-glass: rgba(22, 22, 24, 0.96);
-  }
-  [data-theme="sepia"] {
-    --toll-glass: rgba(244, 235, 218, 0.95);
-  }
-  .toll-scrim {
-    backdrop-filter: blur(52px) saturate(165%);
-    -webkit-backdrop-filter: blur(52px) saturate(165%);
-  }
-  .toll-dialog {
-    backdrop-filter: blur(56px) saturate(170%);
-    -webkit-backdrop-filter: blur(56px) saturate(170%);
-  }
-}
-
-.toll-dialog::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  border-radius: inherit;
-  background: linear-gradient(
-    133deg,
-    rgba(255, 255, 255, 0.34),
-    transparent 23%,
-    transparent 70%,
-    rgba(255, 255, 255, 0.08)
-  );
-  opacity: 0.72;
-}
-
-[data-theme="dark"] .toll-dialog::before {
-  background: linear-gradient(
-    133deg,
-    rgba(255, 255, 255, 0.095),
-    transparent 23%,
-    transparent 70%,
-    rgba(255, 255, 255, 0.03)
-  );
-  opacity: 0.7;
-}
-
-.toll-dialog::after {
-  content: "";
-  position: absolute;
-  inset: 1px 1px auto;
-  height: 1px;
-  border-radius: 100%;
-  background: var(--toll-highlight);
-  opacity: 0.72;
-  pointer-events: none;
-}
-
-[data-theme="dark"] .toll-dialog::after {
-  opacity: 0.56;
+  transform: translateZ(0);
 }
 
 .toll-dialog .dialog-header {
@@ -1238,7 +1156,6 @@ body {
   border: 1px solid var(--toll-glass-edge-low);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56), 0 3px 12px rgba(0, 0, 0, 0.02);
   margin-bottom: 10px;
-  contain: layout style;
 }
 
 [data-theme="dark"] .toll-dialog .area-card {
@@ -1638,8 +1555,6 @@ body {
   gap: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.68);
   background: rgba(246, 246, 248, 0.88);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
     0 -8px 26px rgba(0, 0, 0, 0.06);
@@ -3157,10 +3072,122 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 .vol-slider {
+  --slider-fill: rgba(28, 28, 30, 0.78);
+  --slider-track: rgba(28, 28, 30, 0.16);
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
-  accent-color: var(--ink);
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--slider-fill) 0%,
+    var(--slider-fill) var(--slider-pct, 100%),
+    var(--slider-track) var(--slider-pct, 100%),
+    var(--slider-track) 100%
+  );
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.55);
   cursor: pointer;
-  height: 5px;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+[data-theme="dark"] .vol-slider {
+  --slider-fill: rgba(255, 255, 255, 0.88);
+  --slider-track: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.38),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="sepia"] .vol-slider {
+  --slider-fill: rgba(54, 41, 30, 0.78);
+  --slider-track: rgba(54, 41, 30, 0.16);
+}
+
+.vol-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 14px;
+  margin-top: -4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(242, 243, 247, 0.92) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.22),
+    0 1px 2px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 #ffffff;
+  cursor: pointer;
+  transition:
+    transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.vol-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.06);
+  box-shadow:
+    0 3px 9px rgba(0, 0, 0, 0.26),
+    0 1px 3px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 #ffffff;
+}
+
+.vol-slider:active::-webkit-slider-thumb {
+  transform: scale(1.12, 1.06);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(248, 249, 252, 0.96) 100%
+  );
+}
+
+.vol-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.vol-slider::-moz-range-thumb {
+  width: 22px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(242, 243, 247, 0.92) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.22),
+    0 1px 2px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 #ffffff;
+  cursor: pointer;
+  transition:
+    transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.vol-slider:hover::-moz-range-thumb {
+  transform: scale(1.06);
+}
+
+.vol-slider:active::-moz-range-thumb {
+  transform: scale(1.12, 1.06);
 }
 
 .vol-val {
@@ -3824,6 +3851,12 @@ html:not(.app-ready) #rightTimetablePanel {
 .custom-time-trigger.is-open {
   background: var(--toll-pill-hover);
   border-color: var(--focus-ring);
+}
+
+.toll-dialog .custom-select-popover,
+.toll-dialog .custom-time-popover {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .custom-time-popover {

@@ -4780,6 +4780,7 @@ export default function App() {
                         max={100}
                         value={bellVolume}
                         className="vol-slider"
+                        style={{ '--slider-pct': `${bellVolume}%` } as React.CSSProperties}
                         onChange={(e) => {
                           const v = Number(e.target.value);
                           setBellVolume(v);
@@ -4805,6 +4806,7 @@ export default function App() {
                         max={100}
                         value={englishVolume}
                         className="vol-slider"
+                        style={{ '--slider-pct': `${englishVolume}%` } as React.CSSProperties}
                         onChange={(e) => {
                           const v = Number(e.target.value);
                           setEnglishVolume(v);
@@ -5362,6 +5364,11 @@ export default function App() {
                         max={98}
                         value={timetableOpacity}
                         className="vol-slider"
+                        style={
+                          {
+                            '--slider-pct': `${Math.round(((timetableOpacity - 45) / (98 - 45)) * 100)}%`,
+                          } as React.CSSProperties
+                        }
                         aria-label="수능 시간표 창 불투명도 조절"
                         onChange={(e) => {
                           const v = Number(e.target.value);
