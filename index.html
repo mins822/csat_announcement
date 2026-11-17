@@ -11,16 +11,35 @@
       });
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#ecebe9" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta id="theme-color-light" name="theme-color" content="#ecebe9" media="(prefers-color-scheme: light)" />
+    <meta id="theme-color-dark" name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+    <meta id="theme-color-active" name="theme-color" content="#ecebe9" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="수능타종타이머" />
     <link
+      id="app-favicon-dark"
+      rel="icon"
+      type="image/svg+xml"
+      sizes="any"
+      href="%BASE_URL%favicon-dark.svg"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link
+      id="app-favicon-light"
+      rel="icon"
+      type="image/svg+xml"
+      sizes="any"
+      href="%BASE_URL%favicon-light.svg"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
       id="app-favicon"
       rel="icon"
       type="image/svg+xml"
+      sizes="any"
       href="%BASE_URL%favicon-light.svg"
     />
     <link
@@ -28,6 +47,80 @@
       rel="apple-touch-icon"
       href="%BASE_URL%favicon-light.svg"
     />
+    <script>
+      (function(){
+        var base = '%BASE_URL%';
+        function applyEarlyThemeAndIcons(){
+          try{
+            var raw=localStorage.getItem('csat_timer_custom_settings_v2');
+            var pref='auto';
+            if(raw){
+              var p=JSON.parse(raw);
+              if(p&&['auto','light','dark','sepia'].indexOf(p.themePref)!==-1) pref=p.themePref;
+            }
+            var sysDark=Boolean(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+            var resolved=pref==='auto'?(sysDark?'dark':'light'):pref;
+            var isDark=(resolved==='dark');
+            var themeHex=isDark?'#121212':(resolved==='sepia'?'#e6dcc8':'#ecebe9');
+            document.documentElement.setAttribute('data-theme',resolved);
+            document.documentElement.style.colorScheme=isDark?'dark':'light';
+
+            var tcActive=document.getElementById('theme-color-active');
+            if(tcActive) tcActive.setAttribute('content',themeHex);
+            var tcLight=document.getElementById('theme-color-light');
+            var tcDark=document.getElementById('theme-color-dark');
+            if(pref==='auto'){
+              if(tcLight) tcLight.setAttribute('content','#ecebe9');
+              if(tcDark) tcDark.setAttribute('content','#121212');
+            }else{
+              if(tcLight) tcLight.setAttribute('content',themeHex);
+              if(tcDark) tcDark.setAttribute('content',themeHex);
+            }
+
+            var iconHref=base+(isDark?'favicon-dark.svg':'favicon-light.svg');
+            var favicon=document.getElementById('app-favicon');
+            if(favicon) favicon.setAttribute('href',iconHref);
+            var favDark=document.getElementById('app-favicon-dark');
+            var favLight=document.getElementById('app-favicon-light');
+            if(pref==='auto'){
+              if(favDark){
+                favDark.setAttribute('media','(prefers-color-scheme: dark)');
+                favDark.setAttribute('href',base+'favicon-dark.svg');
+              }
+              if(favLight){
+                favLight.setAttribute('media','(prefers-color-scheme: light)');
+                favLight.setAttribute('href',base+'favicon-light.svg');
+              }
+            }else{
+              if(favDark){
+                favDark.removeAttribute('media');
+                favDark.setAttribute('href',iconHref);
+              }
+              if(favLight){
+                favLight.removeAttribute('media');
+                favLight.setAttribute('href',iconHref);
+              }
+            }
+            var touchIcon=document.getElementById('app-apple-touch-icon');
+            if(touchIcon) touchIcon.setAttribute('href',iconHref);
+
+            var manifestLink=document.querySelector('link[rel="manifest"]');
+            if(manifestLink){
+              manifestLink.setAttribute('href',base+(isDark?'manifest-dark.webmanifest':'manifest-light.webmanifest'));
+            }
+          }catch(e){
+            document.documentElement.setAttribute('data-theme','light');
+          }
+        }
+        applyEarlyThemeAndIcons();
+        document.addEventListener('DOMContentLoaded', applyEarlyThemeAndIcons);
+        if(window.matchMedia){
+          var mq = window.matchMedia('(prefers-color-scheme: dark)');
+          if(mq.addEventListener) mq.addEventListener('change', applyEarlyThemeAndIcons);
+          else if(mq.addListener) mq.addListener(applyEarlyThemeAndIcons);
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -39,7 +132,7 @@
       name="description"
       content="대학수학능력시험 전체 시간표와 WebGL 패브릭 아날로그 시계 애니메이션, 내장 타종 음원 및 영어 듣기평가 로컬 음원 연동을 지원하는 단일 HTML 패키징 기반 수능 안내방송 타이머"
     />
-    <meta name="version" content="1.0.5218.20261117174600" />
+    <meta name="version" content="1.0.5300.20261117180800" />
     <meta property="og:title" content="대학수학능력시험 안내방송" />
     <meta
       property="og:description"
@@ -48,9 +141,9 @@
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <style id="boot-gate-style">
-      html{background:#ecebe9}
-      html[data-theme="dark"]{background:#121212}
-      html[data-theme="sepia"]{background:#e6dcc8}
+      html{background:#ecebe9;color-scheme:light}
+      html[data-theme="dark"]{background:#121212;color-scheme:dark}
+      html[data-theme="sepia"]{background:#e6dcc8;color-scheme:light}
       html:not(.app-ready) body{background:inherit}
       html:not(.app-ready) #c,
       html:not(.app-ready) #ui,
@@ -63,38 +156,6 @@
         pointer-events:none !important;
       }
     </style>
-    <script>
-      (function(){
-        var base = '%BASE_URL%';
-        function applyEarlyThemeAndIcons(){
-          try{
-            var raw=localStorage.getItem('csat_timer_custom_settings_v2');
-            var pref='auto';
-            if(raw){
-              var p=JSON.parse(raw);
-              if(p&&['auto','light','dark','sepia'].indexOf(p.themePref)!==-1) pref=p.themePref;
-            }
-            var resolved=pref;
-            if(pref==='auto'){
-              resolved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
-            }
-            document.documentElement.setAttribute('data-theme',resolved);
-            var iconHref = (resolved === 'dark') ? (base + 'favicon-dark.svg') : (base + 'favicon-light.svg');
-            var favicon = document.getElementById('app-favicon');
-            if(favicon) favicon.setAttribute('href', iconHref);
-            var touchIcon = document.getElementById('app-apple-touch-icon');
-            if(touchIcon) touchIcon.setAttribute('href', iconHref);
-          }catch(e){
-            document.documentElement.setAttribute('data-theme','light');
-          }
-        }
-        applyEarlyThemeAndIcons();
-        if(window.matchMedia){
-          var mq = window.matchMedia('(prefers-color-scheme: dark)');
-          if(mq.addEventListener) mq.addEventListener('change', applyEarlyThemeAndIcons);
-        }
-      })();
-    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -21,6 +21,16 @@ export function syncFaviconWithTheme(resolvedTheme: 'light' | 'dark' | 'sepia'):
   const isDark = resolvedTheme === 'dark';
   const baseUrl = import.meta.env.BASE_URL || '/';
   const svgFileHref = `${baseUrl}${isDark ? 'favicon-dark.svg' : 'favicon-light.svg'}`;
+  const themeHex = isDark ? '#121212' : resolvedTheme === 'sepia' ? '#e6dcc8' : '#ecebe9';
+
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+
+  const tcActive = document.getElementById('theme-color-active') as HTMLMetaElement | null;
+  if (tcActive) tcActive.setAttribute('content', themeHex);
+  const tcLight = document.getElementById('theme-color-light') as HTMLMetaElement | null;
+  if (tcLight) tcLight.setAttribute('content', themeHex);
+  const tcDark = document.getElementById('theme-color-dark') as HTMLMetaElement | null;
+  if (tcDark) tcDark.setAttribute('content', themeHex);
 
   let mainIcon = document.getElementById('app-favicon') as HTMLLinkElement | null;
   if (!mainIcon) {
@@ -28,11 +38,28 @@ export function syncFaviconWithTheme(resolvedTheme: 'light' | 'dark' | 'sepia'):
     mainIcon.id = 'app-favicon';
     mainIcon.rel = 'icon';
     mainIcon.type = 'image/svg+xml';
+    mainIcon.sizes = 'any';
     document.head.appendChild(mainIcon);
   }
   mainIcon.removeAttribute('media');
   if (mainIcon.getAttribute('href') !== svgFileHref) {
     mainIcon.setAttribute('href', svgFileHref);
+  }
+
+  const favDark = document.getElementById('app-favicon-dark') as HTMLLinkElement | null;
+  if (favDark) {
+    favDark.removeAttribute('media');
+    if (favDark.getAttribute('href') !== svgFileHref) {
+      favDark.setAttribute('href', svgFileHref);
+    }
+  }
+
+  const favLight = document.getElementById('app-favicon-light') as HTMLLinkElement | null;
+  if (favLight) {
+    favLight.removeAttribute('media');
+    if (favLight.getAttribute('href') !== svgFileHref) {
+      favLight.setAttribute('href', svgFileHref);
+    }
   }
 
   let touchIcon = document.getElementById('app-apple-touch-icon') as HTMLLinkElement | null;
@@ -44,6 +71,14 @@ export function syncFaviconWithTheme(resolvedTheme: 'light' | 'dark' | 'sepia'):
   }
   if (touchIcon.getAttribute('href') !== svgFileHref) {
     touchIcon.setAttribute('href', svgFileHref);
+  }
+
+  const manifestLink = document.querySelector('link[rel="manifest"]') as HTMLLinkElement | null;
+  if (manifestLink) {
+    const targetManifestHref = `${baseUrl}${isDark ? 'manifest-dark.webmanifest' : 'manifest-light.webmanifest'}`;
+    if (manifestLink.getAttribute('href') !== targetManifestHref) {
+      manifestLink.setAttribute('href', targetManifestHref);
+    }
   }
 
   const fallbackIcons = document.querySelectorAll('link[data-favicon-fallback="true"]');
