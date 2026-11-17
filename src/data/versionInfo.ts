@@ -17,8 +17,8 @@ export interface AppVersionSpec {
 export const APP_VERSION: AppVersionSpec = {
   major: 1,
   minor: 0,
-  patch: 4944,
-  timestampKst: '20261117141000',
+  patch: 4946,
+  timestampKst: '20261117141500',
 };
 
 export function formatAppVersion(includeTimestamp: boolean): string {

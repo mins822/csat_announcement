@@ -21,12 +21,12 @@
       id="app-favicon"
       rel="icon"
       type="image/svg+xml"
-      href="./favicon-light.svg"
+      href="%BASE_URL%favicon-light.svg"
     />
     <link
       rel="icon"
       type="image/svg+xml"
-      href="./favicon-dark.svg"
+      href="%BASE_URL%favicon-dark.svg"
       media="(prefers-color-scheme: dark)"
       data-favicon-fallback="true"
     />
@@ -81,7 +81,8 @@
           document.documentElement.setAttribute('data-theme',resolved);
           var favicon = document.getElementById('app-favicon');
           if(favicon){
-            favicon.href = (resolved === 'dark') ? './favicon-dark.svg' : './favicon-light.svg';
+            var base = '%BASE_URL%';
+            favicon.href = (resolved === 'dark') ? (base + 'favicon-dark.svg') : (base + 'favicon-light.svg');
           }
         }catch(e){
           document.documentElement.setAttribute('data-theme','light');
