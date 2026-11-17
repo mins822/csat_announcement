@@ -4,8 +4,11 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
+const base = process.env.BASE_PATH ?? '/';
+
 export default defineConfig(() => {
   return {
+    base,
     plugins: [
       react(),
       tailwindcss(),
@@ -21,7 +24,7 @@ export default defineConfig(() => {
           'pwa-maskable-512x512.png',
         ],
         manifest: {
-          id: '/',
+          id: base,
           name: '대학수학능력시험 안내방송',
           short_name: '수능타종타이머',
           description:
@@ -30,8 +33,9 @@ export default defineConfig(() => {
           background_color: '#121212',
           display: 'standalone',
           orientation: 'any',
-          scope: '/',
-          start_url: '/',
+          scope: base,
+          start_url: base,
+          lang: 'ko',
           icons: [
             {
               src: 'pwa-192x192.png',
@@ -54,13 +58,22 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
-          maximumFileSizeToCacheInBytes: 50 * 1024 * 1024,
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,mp3}'],
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          globIgnores: ['**/csat-timer-standalone.html', 'assets/aistudio/**', 'audio/**'],
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
           cleanupOutdatedCaches: true,
-          clientsClaim: true,
-          skipWaiting: true,
-          navigateFallback: '/index.html',
-          navigateFallbackDenylist: [/^\/api\//],
+          navigateFallback: `${base}index.html`,
+          navigateFallbackDenylist: [/\/csat-timer-standalone\.html$/, /^\/api\//],
+          runtimeCaching: [{
+            urlPattern: ({ url }) => url.pathname.includes('/audio/bells/'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'bell-audio',
+              rangeRequests: true,
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 60 },
+            },
+          }],
         },
         devOptions: {
           enabled: true,
@@ -82,4 +95,3 @@ export default defineConfig(() => {
     },
   };
 });
-

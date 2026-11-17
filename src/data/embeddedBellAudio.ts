@@ -174,7 +174,7 @@ export function getEmbeddedBellDataUris(): Record<Exclude<BellType, 'none'>, str
  * /public/audio/bells/ 내의 특정 타종 파일 경로 반환
  */
 export function getBellFileUrl(item: CsatBellCueItem): string {
-  return `/audio/bells/${encodeURIComponent(item.fileName)}`;
+  return `${import.meta.env.BASE_URL}audio/bells/${encodeURIComponent(item.fileName)}`;
 }
 
 let loading37Promise: Promise<Partial<Record<string, string>>> | null = null;

@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 
+declare global {
+  interface Window { __bip?: BeforeInstallPromptEvent | null }
+}
+
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
@@ -7,7 +11,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function usePWAInstall() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(window.__bip ?? null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [showIOSGuide, setShowIOSGuide] = useState(false);
@@ -26,19 +30,27 @@ export function usePWAInstall() {
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      window.__bip = e as BeforeInstallPromptEvent;
+      setDeferredPrompt(window.__bip);
+    };
+
+    const handleBipCaptured = () => {
+      setDeferredPrompt(window.__bip ?? null);
     };
 
     const handleAppInstalled = () => {
       setIsInstalled(true);
+      window.__bip = null;
       setDeferredPrompt(null);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('bip-captured', handleBipCaptured);
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('bip-captured', handleBipCaptured);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
@@ -48,6 +60,7 @@ export function usePWAInstall() {
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
+        window.__bip = null;
         setDeferredPrompt(null);
       }
       return outcome;

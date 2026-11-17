@@ -6,3 +6,5 @@ coverage/
 *.log
 .env*
 !.env.example
+public/csat-timer-standalone.html
+
