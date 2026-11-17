@@ -15,13 +15,8 @@ export default defineConfig(() => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: [
-          'icon.svg',
           'favicon-light.svg',
           'favicon-dark.svg',
-          'apple-touch-icon.png',
-          'pwa-192x192.png',
-          'pwa-512x512.png',
-          'pwa-maskable-512x512.png',
         ],
         manifest: {
           id: base,
@@ -38,28 +33,10 @@ export default defineConfig(() => {
           lang: 'ko',
           icons: [
             {
-              src: 'icon.svg',
+              src: 'favicon-dark.svg',
               sizes: 'any',
               type: 'image/svg+xml',
               purpose: 'any maskable',
-            },
-            {
-              src: 'pwa-192x192.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'any',
-            },
-            {
-              src: 'pwa-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'any',
-            },
-            {
-              src: 'pwa-maskable-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'maskable',
             },
           ],
         },
