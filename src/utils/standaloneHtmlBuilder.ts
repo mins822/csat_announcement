@@ -90,6 +90,11 @@ export function buildStandaloneCsatHtml(
   }catch(e){
     document.documentElement.setAttribute('data-theme','light');
   }
+  setTimeout(function(){
+    if(!document.documentElement.classList.contains('app-ready')){
+      document.documentElement.classList.add('app-ready');
+    }
+  },1200);
 })();
 </script>
 <style>
@@ -3996,7 +4001,7 @@ void main(){
     endLab.innerHTML='END - TIME<br>'+formatAmPm(dispEndMin);
     endLab.style.opacity='0.38';
     remainDigits.textContent=formatDurationClock(finalIdleRemainMs);
-    const formattedIdleCat = idleCatText.indexOf(' → ')!==-1 ? idleCatText.replace(' → ', ' 대기\n다음 방송: ') : (idleCatText+' 대기');
+    const formattedIdleCat = idleCatText.indexOf(' → ')!==-1 ? idleCatText.replace(' → ', ' 대기\\n다음 방송: ') : (idleCatText+' 대기');
     stageBadge.textContent=(firstStep.periodLabel!=='-'?firstStep.periodLabel+' · ':'')+formattedIdleCat;
     syncActiveStepHighlight(firstStep, isCustomSeq);
     glowReleaseStartPerf = 0;
@@ -4254,10 +4259,10 @@ void main(){
       if(isMainBeforeWarn){
         const mainStageTitle = catText.indexOf('듣기평가')!==-1 ? '듣기평가 및 본령' : '본령';
         const nextLabel = nextWarnBroadcastLabel || '종료 10분 전';
-        stageBadge.textContent = periodPrefix + mainStageTitle + statusSuffix + '\n다음 방송: ' + nextLabel;
+        stageBadge.textContent = periodPrefix + mainStageTitle + statusSuffix + '\\n다음 방송: ' + nextLabel;
       }else if(catText.indexOf(' → ')!==-1){
         const parts = catText.split(' → ');
-        stageBadge.textContent = periodPrefix + parts[0] + statusSuffix + '\n다음 방송: ' + parts.slice(1).join(' → ');
+        stageBadge.textContent = periodPrefix + parts[0] + statusSuffix + '\\n다음 방송: ' + parts.slice(1).join(' → ');
       }else{
         stageBadge.textContent = periodPrefix + catText + statusSuffix;
       }
