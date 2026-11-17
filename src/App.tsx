@@ -914,6 +914,44 @@ export default function App() {
     }
   }, [showToast]);
 
+  const enterFullscreenSilently = useCallback(() => {
+    const doc = document as Document & { webkitFullscreenElement?: Element | null };
+    const rootEl = document.documentElement as HTMLElement & {
+      webkitRequestFullscreen?: () => Promise<void> | void;
+    };
+    if (doc.fullscreenElement || doc.webkitFullscreenElement) return;
+    try {
+      if (typeof rootEl.requestFullscreen === 'function') {
+        const res = rootEl.requestFullscreen();
+        if (res && typeof res.catch === 'function') res.catch(() => {});
+      } else if (typeof rootEl.webkitRequestFullscreen === 'function') {
+        const res = rootEl.webkitRequestFullscreen();
+        if (res && typeof res.catch === 'function') res.catch(() => {});
+      }
+    } catch {
+      // Ignore fullscreen restriction errors (e.g., scheduled start without gesture)
+    }
+  }, []);
+
+  const exitFullscreenSilently = useCallback(() => {
+    const doc = document as Document & {
+      webkitFullscreenElement?: Element | null;
+      webkitExitFullscreen?: () => Promise<void> | void;
+    };
+    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) return;
+    try {
+      if (typeof doc.exitFullscreen === 'function') {
+        const res = doc.exitFullscreen();
+        if (res && typeof res.catch === 'function') res.catch(() => {});
+      } else if (typeof doc.webkitExitFullscreen === 'function') {
+        const res = doc.webkitExitFullscreen();
+        if (res && typeof res.catch === 'function') res.catch(() => {});
+      }
+    } catch {
+      // Ignore fullscreen exit errors
+    }
+  }, []);
+
   // B6: Reset 3s auto-hide timer on running controls touch layer
   const revealRunAuxControls = useCallback(() => {
     setIsRunAuxRevealed(true);
@@ -2825,6 +2863,7 @@ export default function App() {
 
     stopPreviewBell();
     setScheduledTargetMs(null);
+    enterFullscreenSilently();
     requestWakeLock();
 
     const now = performance.now();
@@ -2852,6 +2891,7 @@ export default function App() {
     st.rafId = requestAnimationFrame(stepAnimationFrame);
   }, [
     checkAndTriggerCues,
+    enterFullscreenSilently,
     requestWakeLock,
     revealRunAuxControls,
     stepAnimationFrame,
@@ -2948,6 +2988,7 @@ export default function App() {
 
     stopBell();
     stopEnglishAudio();
+    exitFullscreenSilently();
     if (!keepScreenAwakeRef.current) {
       releaseWakeLock();
     }

@@ -3321,6 +3321,33 @@ void main(){
     });
   }
 
+  function enterFullscreenSilently(){
+    if(isDocFullscreen()) return;
+    const rootEl = document.documentElement;
+    try{
+      if(rootEl.requestFullscreen){
+        const p = rootEl.requestFullscreen();
+        if(p && typeof p.catch==='function') p.catch(()=>{});
+      }else if(rootEl.webkitRequestFullscreen){
+        const p = rootEl.webkitRequestFullscreen();
+        if(p && typeof p.catch==='function') p.catch(()=>{});
+      }
+    }catch(_){}
+  }
+
+  function exitFullscreenSilently(){
+    if(!isDocFullscreen()) return;
+    try{
+      if(document.exitFullscreen){
+        const p = document.exitFullscreen();
+        if(p && typeof p.catch==='function') p.catch(()=>{});
+      }else if(document.webkitExitFullscreen){
+        const p = document.webkitExitFullscreen();
+        if(p && typeof p.catch==='function') p.catch(()=>{});
+      }
+    }catch(_){}
+  }
+
   hamburgerBtn.addEventListener('click', ()=>{
     const isOpen = pillDrawer.classList.contains('open');
     setLeftMenuOpen(!isOpen);
@@ -4880,6 +4907,7 @@ void main(){
   function start(){
     if(phase!=='idle')return;
     stopPreviewBell();
+    enterFullscreenSilently();
     const now=performance.now();
     phase='rise';
     t0=now;
@@ -4924,6 +4952,7 @@ void main(){
     if(phase!=='rise'&&phase!=='hold')return;
     stopBell();
     stopEnglishAudio();
+    exitFullscreenSilently();
     if(!keepScreenAwake) releaseWakeLock();
     isPaused=false;
     dH=H;dT=kT;dHnd=kH;dX=kX;
