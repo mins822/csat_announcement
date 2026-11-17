@@ -56,6 +56,7 @@ export function buildStandaloneCsatHtml(
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="application-name" content="대학수학능력시험 안내방송">
 <meta name="version" content="${fullVersionString}">
+<meta id="theme-color-meta" name="theme-color" content="#ecebe9">
 <link id="app-favicon" rel="icon" type="image/svg+xml" href="${LIGHT_FAVICON_DATA_URI}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,6 +64,8 @@ export function buildStandaloneCsatHtml(
 <title>대학수학능력시험 안내방송</title>
 <script>
 (function(){
+  var LIGHT_FAV=${JSON.stringify(LIGHT_FAVICON_DATA_URI)};
+  var DARK_FAV=${JSON.stringify(DARK_FAVICON_DATA_URI)};
   try{
     var raw=localStorage.getItem('csat_timer_custom_settings_v2');
     var pref='auto';
@@ -75,6 +78,10 @@ export function buildStandaloneCsatHtml(
       resolved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
     }
     document.documentElement.setAttribute('data-theme',resolved);
+    var fav=document.getElementById('app-favicon');
+    if(fav) fav.setAttribute('href',resolved==='dark'?DARK_FAV:LIGHT_FAV);
+    var tc=document.getElementById('theme-color-meta');
+    if(tc) tc.setAttribute('content',resolved==='dark'?'#121212':(resolved==='sepia'?'#e6dcc8':'#ecebe9'));
   }catch(e){
     document.documentElement.setAttribute('data-theme','light');
   }
@@ -111,18 +118,18 @@ export function buildStandaloneCsatHtml(
   --toll-muted:#717174;
   --toll-line:rgba(24,24,25,.10);
   --toll-line-soft:rgba(24,24,25,.07);
-  --toll-glass:rgba(246,246,248,.58);
-  --toll-glass-strong:rgba(255,255,255,.16);
-  --toll-glass-soft:rgba(255,255,255,.26);
-  --toll-glass-inner:rgba(255,255,255,.36);
-  --toll-glass-edge:rgba(255,255,255,.82);
-  --toll-glass-edge-low:rgba(255,255,255,.68);
+  --toll-glass:rgba(246,246,248,.34);
+  --toll-glass-strong:rgba(255,255,255,.09);
+  --toll-glass-soft:rgba(255,255,255,.15);
+  --toll-glass-inner:rgba(255,255,255,.22);
+  --toll-glass-edge:rgba(255,255,255,.78);
+  --toll-glass-edge-low:rgba(255,255,255,.62);
   --toll-highlight:rgba(255,255,255,.90);
   --toll-glass-shadow:0 28px 80px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.86);
   --toll-selected:rgba(60,60,62,.105);
   --toll-selected-edge:rgba(35,35,36,.15);
-  --toll-pill:rgba(255,255,255,.38);
-  --toll-pill-hover:rgba(255,255,255,.66);
+  --toll-pill:rgba(255,255,255,.24);
+  --toll-pill-hover:rgba(255,255,255,.48);
   --toll-button:#242425;
   --toll-button-text:#1c1c1d;
   --toll-scroll:rgba(50,50,52,.28);
@@ -2267,11 +2274,18 @@ html:not(.app-ready) #rightTimetablePanel{
 .preview-btn-wrap{position:relative;overflow:hidden}
 .preview-progress-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(255,255,255,.18);pointer-events:none;transition:width .1s linear}
 .rt-item-wrap{display:flex;flex-direction:column;gap:4px}
-.rt-row-actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:6px 8px;border-radius:12px;background:var(--toll-glass-soft);border:1px solid var(--toll-line)}
-.rt-act-chip{appearance:none;border:1px solid var(--toll-glass-edge-low);background:var(--toll-pill);color:var(--toll-ink);border-radius:999px;height:25px;padding:0 9px;font-size:11px;font-weight:700;cursor:pointer}
+.rt-row-card{display:flex;flex-direction:column;gap:4px}
+.rt-row-actions{display:flex;flex-direction:column;gap:6px;padding:7px 9px;border-radius:12px;background:var(--toll-glass-soft);border:1px solid var(--toll-line)}
+.rt-action-btn-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.rt-act-chip{appearance:none;border:1px solid var(--toll-glass-edge-low);background:var(--toll-pill);color:var(--toll-ink);border-radius:999px;height:25px;padding:0 9px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 .rt-act-chip:hover{background:var(--toll-pill-hover)}
 .rt-act-chip.primary{background:var(--toll-button);border-color:var(--toll-button);color:#fff}
 [data-theme="dark"] .rt-act-chip.primary{color:var(--toll-button-text);border-color:rgba(255,255,255,.62);background:linear-gradient(145deg,rgba(240,240,240,.96),rgba(205,205,205,.86))}
+.rt-step-info-box{display:flex;flex-direction:column;gap:4px;padding:7px 9px;border-radius:10px;background:var(--toll-glass-inner);border:1px solid var(--toll-line-soft);font-size:10.5px;color:var(--toll-ink-2)}
+.rt-info-row{display:flex;align-items:center;justify-content:space-between;gap:8px;line-height:1.35}
+.rt-info-label{font-weight:650;color:var(--toll-muted);flex-shrink:0}
+.rt-info-val{font-weight:700;color:var(--toll-ink);text-align:right;word-break:keep-all}
+.alarm-actions-col{display:flex;align-items:center;gap:6px;justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -2352,26 +2366,38 @@ html:not(.app-ready) #rightTimetablePanel{
           </button>
           <button id="engFileClearBtn" class="lg-btn lg-sub-btn" type="button" style="display:none;padding:0 10px" title="선택된 듣기 음원 해제">✕</button>
         </div>
-        <div class="drawer-card-panel" aria-label="음량 및 시각 예약 시작">
+        <div class="drawer-card-panel" aria-label="타종 및 듣기 음량 조절">
+          <div class="drawer-card-title">
+            <span>타종 · 듣기 음량 조절</span>
+            <span id="muteStatusMeta">전체 활성</span>
+          </div>
           <div class="vol-control-row">
             <span>타종 음량</span>
             <div class="vol-slider-wrap">
-              <input id="bellVolSlider" type="range" min="0" max="1" step="0.05" value="1">
+              <input id="bellVolSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="타종 음량">
               <span id="bellVolPct" class="vol-pct">100%</span>
             </div>
           </div>
           <div class="vol-control-row">
             <span>듣기 음량</span>
             <div class="vol-slider-wrap">
-              <input id="engVolSlider" type="range" min="0" max="1" step="0.05" value="1">
+              <input id="engVolSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="영어 듣기 음량">
               <span id="engVolPct" class="vol-pct">100%</span>
             </div>
           </div>
-          <div class="sched-control-row">
-            <span style="font-size:11.5px;font-weight:700;color:var(--toll-ink)">예약 시작:</span>
-            <input id="schedTimeInput" type="time" class="sched-time-input" value="08:05">
-            <button id="schedToggleBtn" type="button" class="bm-act-btn primary">예약 켜기</button>
+        </div>
+        <div class="drawer-card-panel" aria-label="실제 시각 기준 자동 예약 시작">
+          <div class="drawer-card-title">
+            <span>예약 시작 (실제 시각 기준)</span>
+            <span id="schedStatusMeta">해제됨</span>
           </div>
+          <div class="sched-control-row">
+            <input id="schedTimeInput" type="time" step="1" class="sched-time-input" value="08:05" aria-label="예약 시작 시각">
+            <button id="schedToggleBtn" type="button" class="bm-act-btn primary">예약</button>
+          </div>
+          <span style="font-size:10px;color:var(--toll-muted);line-height:1.35">
+            정확한 타종을 위해 화면을 켜 두세요 (자동 절전 방지 지원)
+          </span>
         </div>
         <button id="drawerBookmarkOpenBtn" class="lg-btn lg-sub-btn" type="button">
           <span id="drawerBookmarkOpenLabel">자주 쓰는 타종 구성</span>
@@ -2402,12 +2428,12 @@ html:not(.app-ready) #rightTimetablePanel{
         </div>
         <div class="pill-group-row" role="group" aria-label="시계 바늘 연동 방식">
           <button type="button" class="sync-chip active" data-sync-mode="original_csat_time">원래 수능 시각 맞춤 (기본)</button>
-          <button type="button" class="sync-chip" data-sync-mode="custom_cascaded_time">연쇄 계산 시각 연동</button>
+          <button type="button" class="sync-chip" data-sync-mode="custom_cascaded_time">구성 계산 시각 연동</button>
         </div>
         <div class="drawer-card-panel" aria-label="화면 및 시계 블러 애니메이션 설정">
           <div class="drawer-card-title">
             <span>화면 유지 · 시계 블러 효과</span>
-            <span>시침·분침·초침 길게 눌러 회전</span>
+            <span>시침·분침·초침 길게 눌러 회전 가능</span>
           </div>
           <label class="ui-option-toggle-row">
             <span class="ui-opt-text">
@@ -2446,7 +2472,7 @@ html:not(.app-ready) #rightTimetablePanel{
           </button>
         </div>
         <button id="exportCleanHtmlBtn" class="lg-btn lg-sub-btn" type="button">
-          <span>단일 HTML 내보내기</span>
+          <span>프로그램 공유</span>
         </button>
       </div>
     </div>
@@ -2491,7 +2517,7 @@ html:not(.app-ready) #rightTimetablePanel{
           <button id="rtTabSelected" type="button" role="tab" aria-selected="false" class="rt-mode-btn" data-rt-mode="selected">선택된 영역 시간표</button>
         </div>
         <div class="rt-sub-actions">
-          <span class="rt-sub-hint">항목 클릭 시 시작·편집·미리듣기 선택</span>
+          <span class="rt-sub-hint">항목 클릭 시 시작·편집·정보 액션 표시</span>
           <button id="rtEditSeqBtn" type="button" class="rt-edit-seq-btn">체크박스 선택 · 편집</button>
         </div>
       </div>
@@ -2801,8 +2827,10 @@ html:not(.app-ready) #rightTimetablePanel{
         bellVolPct=document.getElementById('bellVolPct'),
         engVolSlider=document.getElementById('engVolSlider'),
         engVolPct=document.getElementById('engVolPct'),
+        muteStatusMeta=document.getElementById('muteStatusMeta'),
         schedTimeInput=document.getElementById('schedTimeInput'),
         schedToggleBtn=document.getElementById('schedToggleBtn'),
+        schedStatusMeta=document.getElementById('schedStatusMeta'),
         dockStatusBadges=document.getElementById('dockStatusBadges'),
         runTouchZone=document.getElementById('runTouchZone'),
         runAuxLayer=document.getElementById('runAuxLayer'),
@@ -2968,6 +2996,9 @@ void main(){
   let activeRowId = EMBEDDED.presets[0].steps[0].id;
   let activeCustomNodeId = null;
   let expandedRtKey = null;
+  let expandedRtInfoKey = null;
+  let renamingBookmarkId = null;
+  let renameBookmarkDraft = '';
   let isTemporaryStartPoint = false;
   let bellVolume = 1.0;
   let englishVolume = 1.0;
@@ -3206,7 +3237,12 @@ void main(){
   function setLeftMenuOpen(nextOpen){
     pillDrawer.classList.toggle('open', nextOpen);
     pillDrawer.classList.toggle('closed', !nextOpen);
-    if(hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+    if(hamburgerBtn){
+      hamburgerBtn.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+      hamburgerBtn.innerHTML = nextOpen
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>';
+    }
     if(fullscreenBtn){
       fullscreenBtn.classList.toggle('is-open', nextOpen);
       fullscreenBtn.classList.toggle('is-closed', !nextOpen);
@@ -3264,6 +3300,10 @@ void main(){
     const favEl = document.getElementById('app-favicon');
     if(favEl){
       favEl.setAttribute('href', resolvedTheme==='dark' ? EMBEDDED.faviconDark : EMBEDDED.faviconLight);
+    }
+    const tcEl = document.getElementById('theme-color-meta');
+    if(tcEl){
+      tcEl.setAttribute('content', resolvedTheme==='dark' ? '#121212' : (resolvedTheme==='sepia' ? '#e6dcc8' : '#ecebe9'));
     }
     document.querySelectorAll('.theme-chip').forEach(el=>{
       el.classList.toggle('active', el.getAttribute('data-theme-pref')===pref);
@@ -3829,7 +3869,8 @@ void main(){
     dockStatusBadges.addEventListener('click', e=>{
       if(e.target.closest('button[data-cancel-sched]')){
         scheduledStartEnabled = false;
-        if(schedToggleBtn) schedToggleBtn.textContent = '예약 켜기';
+        if(schedToggleBtn) schedToggleBtn.textContent = '예약';
+        if(schedStatusMeta) schedStatusMeta.textContent = '해제됨';
         updateDockAndAuxUI();
       }else if(e.target.closest('button[data-restore-seq]')){
         const built = buildCustomSequencePreset(customSequenceConfig);
@@ -3838,9 +3879,16 @@ void main(){
           currentPreset = built;
           isTemporaryStartPoint = false;
           syncUiToPresetIdle();
+          showToast('원래 선택 구성 첫 단계로 복귀했습니다.');
         }
       }
     });
+  }
+
+  function updateMuteStatusMeta(){
+    if(!muteStatusMeta) return;
+    const mutedLen = (customSequenceConfig && Array.isArray(customSequenceConfig.mutedNodeIds)) ? customSequenceConfig.mutedNodeIds.length : 0;
+    muteStatusMeta.textContent = mutedLen > 0 ? ('무음 '+mutedLen+'개') : '전체 활성';
   }
 
   function syncUiToPresetIdle(){
@@ -3882,6 +3930,7 @@ void main(){
     if(builderBtnLabel){
       builderBtnLabel.textContent = '영역 · 타종 선택 구성 (' + (customSequenceConfig.selectedNodeIds ? customSequenceConfig.selectedNodeIds.length : 0) + '개 선택)';
     }
+    updateMuteStatusMeta();
     updateDockAndAuxUI();
   }
 
@@ -4612,29 +4661,48 @@ void main(){
   if(schedTimeInput){
     schedTimeInput.addEventListener('change', ()=>{
       scheduledStartTime = schedTimeInput.value || '08:05';
+      if(scheduledStartEnabled && schedStatusMeta) schedStatusMeta.textContent = scheduledStartTime + ' 대기 중';
       updateDockAndAuxUI();
     });
   }
   if(schedToggleBtn){
     schedToggleBtn.addEventListener('click', ()=>{
+      if(phase!=='idle'){
+        showToast('타이머 진행 중에는 예약 시작을 설정할 수 없습니다.');
+        return;
+      }
       scheduledStartEnabled = !scheduledStartEnabled;
       if(schedTimeInput && schedTimeInput.value) scheduledStartTime = schedTimeInput.value;
-      schedToggleBtn.textContent = scheduledStartEnabled ? '예약 해제' : '예약 켜기';
+      schedToggleBtn.textContent = scheduledStartEnabled ? '예약 취소' : '예약';
+      schedToggleBtn.classList.toggle('primary', !scheduledStartEnabled);
+      if(schedStatusMeta) schedStatusMeta.textContent = scheduledStartEnabled ? (scheduledStartTime + ' 대기 중') : '해제됨';
       updateDockAndAuxUI();
-      showToast(scheduledStartEnabled ? ('실제 시각 '+scheduledStartTime+'에 타이머가 자동 시작됩니다.') : '시각 예약 시작이 해제되었습니다.', 2600);
+      showToast(scheduledStartEnabled ? ('실제 시각 '+scheduledStartTime+'에 타이머가 자동 시작됩니다.') : '예약 시작이 해제되었습니다.', 2600);
     });
   }
   setInterval(()=>{
     if(!scheduledStartEnabled || phase!=='idle') return;
     const now = new Date();
-    const hm = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-    if(hm === scheduledStartTime && now.getSeconds() <= 2){
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const ss = String(now.getSeconds()).padStart(2,'0');
+    const parts = String(scheduledStartTime || '08:05').split(':');
+    const targetHasSec = parts.length >= 3;
+    const matched = targetHasSec
+      ? ((hh+':'+mm+':'+ss) === scheduledStartTime)
+      : ((hh+':'+mm) === (parts[0]+':'+parts[1]) && now.getSeconds() <= 1);
+    if(matched){
       scheduledStartEnabled = false;
-      if(schedToggleBtn) schedToggleBtn.textContent = '예약 켜기';
+      if(schedToggleBtn){
+        schedToggleBtn.textContent = '예약';
+        schedToggleBtn.classList.add('primary');
+      }
+      if(schedStatusMeta) schedStatusMeta.textContent = '해제됨';
       updateDockAndAuxUI();
+      showToast('예약 시각('+scheduledStartTime+')이 되어 타이머를 자동 시작합니다.');
       start();
     }
-  }, 1000);
+  }, 500);
 
   function draw(){
     tk.style.opacity=kT;hd.style.opacity=kH;title.style.opacity=kX;lab.style.opacity=kX;
@@ -4988,21 +5056,23 @@ void main(){
                 <span>\${escapeHtml(row.node.fullTitle)}</span>
                 \${row.dayOffset > 0 ? \`<span class="next-day-badge">+\${row.dayOffset}일</span>\` : ''}
               </div>
-              <div class="alarm-sub">원래 수능 시각: \${escapeHtml(row.node.originalTimeText)}\${row.node.bellCode?' · 타종 번호 '+escapeHtml(row.node.bellCode)+' ('+durSec+'초)':' · 영어 듣기평가 음원 재생'}</div>
+              <div class="alarm-sub">원래 수능 시각: \${escapeHtml(row.node.originalTimeText)} · 연쇄 계산 시각: \${format24hTime(row.customTimeMinutes)}\${row.dayOffset > 0 ? ' (+'+row.dayOffset+'일)' : ''} · \${row.node.bellCode?'타종 '+escapeHtml(row.node.bellCode)+' ('+durSec+'초)':'13:07 듣기 음원'}</div>
             </div>
             <label class="clock-control">
               <span>연쇄 시각</span>
               <input type="time" class="time-input" data-time-row="\${idx}" value="\${format24hTime(row.customTimeMinutes)}">
             </label>
-            <div class="card-right-actions">
-              <button type="button" class="mute-toggle-btn \${isMuted?'is-muted':''}" data-mute-key="\${escapeHtml(muteKey)}" aria-label="\${isMuted?'음소거 해제':'음소거'}" title="\${isMuted?'음소거됨 (클릭 시 소리 켜기)':'소리 켜짐 (클릭 시 음소거)'}">\${speakerIconSvg}</button>
-              \${row.node.bellCode ? \`<button type="button" class="preview-btn preview-btn-wrap" data-preview-bell="\${escapeHtml(row.node.bellCode)}">미리듣기 (\${durSec}초)</button>\` : ''}
+            <div class="alarm-actions-col">
+              <button type="button" class="mute-toggle-btn \${isMuted?'is-muted':''}" data-mute-key="\${escapeHtml(muteKey)}" aria-label="\${isMuted?'타종 소리 켜기':'타종 무음 처리'}" title="\${isMuted?'현재 무음 (클릭 시 소리 켜기)':'소리 켜짐 (클릭 시 무음)'}">\${speakerIconSvg}</button>
             </div>
           </div>
         \`;
 
         if(!isLast || rows.length===1){
           const waitLabel = isSecMode ? (row.intervalAfterSeconds+'초') : (row.intervalAfterMinutes+'분');
+          const inpDisplayVal = isSecMode
+            ? (Math.floor(row.intervalAfterSeconds/60)+':'+String(row.intervalAfterSeconds%60).padStart(2,'0'))
+            : String(row.intervalAfterMinutes);
           html += \`
             <div class="interval-row">
               <div class="interval-copy">
@@ -5015,8 +5085,8 @@ void main(){
               <div class="interval-actions">
                 <button type="button" class="nudge" data-step-key="\${escapeHtml(pairKey)}" data-step-base="\${row.intervalAfterMinutes}" data-step-delta="-5">-5분</button>
                 <button type="button" class="nudge" data-step-key="\${escapeHtml(pairKey)}" data-step-base="\${row.intervalAfterMinutes}" data-step-delta="-1">-1분</button>
-                <input type="number" min="1" max="600" class="interval-input" data-interval-key="\${escapeHtml(pairKey)}" value="\${row.intervalAfterMinutes}" aria-label="다음 타종까지 대기 간격(분)">
-                <span class="unit">분 뒤</span>
+                <input type="text" inputmode="numeric" class="interval-input" data-interval-key="\${escapeHtml(pairKey)}" value="\${inpDisplayVal}" title="분 숫자(예: 10) 또는 분:초(예: 0:10) 입력" aria-label="다음 타종까지 대기 간격(분 또는 분:초)">
+                <span class="unit">\${isSecMode ? '분:초' : '분 뒤'}</span>
                 <button type="button" class="nudge" data-step-key="\${escapeHtml(pairKey)}" data-step-base="\${row.intervalAfterMinutes}" data-step-delta="1">+1분</button>
                 <button type="button" class="nudge" data-step-key="\${escapeHtml(pairKey)}" data-step-base="\${row.intervalAfterMinutes}" data-step-delta="5">+5분</button>
                 <button type="button" class="nudge" data-step-key="\${escapeHtml(pairKey)}" data-step-base="\${row.intervalAfterMinutes}" data-step-delta="10">+10분</button>
@@ -5041,6 +5111,21 @@ void main(){
         article.innerHTML = html;
         builderRightPane.appendChild(article);
       });
+
+      if(analysis.omittedAfterLast && analysis.omittedAfterLast.length){
+        const omKey = '__AFTER_LAST__';
+        const isExp = Boolean(expandedOmittedMap[omKey]);
+        const omDiv = document.createElement('div');
+        omDiv.className = 'omitted-steps-box';
+        omDiv.innerHTML = \`
+          <div class="omitted-head">
+            <span>이후 생략된 단계 \${analysis.omittedAfterLast.length}개</span>
+            <button type="button" class="collapse-btn" data-toggle-omitted="\${omKey}">\${isExp?'숨기기':'펼치기'}</button>
+          </div>
+          \${isExp ? ('<div class="omitted-list">' + analysis.omittedAfterLast.map(n=>\`<span class="omitted-pill">\${escapeHtml(n.subjectTitle)} \${escapeHtml(n.stageShortLabel)} <button type="button" data-add-node="\${escapeHtml(n.nodeId)}">+추가</button></span>\`).join('') + '</div>') : ''}
+        \`;
+        builderRightPane.appendChild(omDiv);
+      }
     }
 
     updatePreviewButtonsUI();
@@ -5211,16 +5296,39 @@ void main(){
     const intInput = e.target.closest('input[data-interval-key]');
     if(intInput){
       const key = intInput.getAttribute('data-interval-key');
-      const raw = Number(intInput.value);
+      const trimmed = String(intInput.value || '').trim();
       let msg = '';
-      let val = Math.round(raw);
-      if(!isFinite(raw) || raw < 1){ val = 1; msg = '최소 간격은 1분입니다. 1분으로 보정되었습니다.'; }
-      else if(raw > 600){ val = 600; msg = '최대 간격은 600분입니다. 600분으로 보정되었습니다.'; }
-      mutateDraftConfig(cfg=>{
-        if(!cfg.intervalMap) cfg.intervalMap = {};
-        if(cfg.intervalSecondsMap) delete cfg.intervalSecondsMap[key];
-        cfg.intervalMap[key] = val;
-      });
+      if(trimmed.includes(':')){
+        const p = trimmed.split(':').map(Number);
+        const rawSec = (p[0]||0)*60 + (p[1]||0);
+        if(!isFinite(rawSec) || rawSec < 5){
+          msg = '초 단위 최소 간격은 5초(0:05)입니다. 5초로 보정되었습니다.';
+          mutateDraftConfig(cfg=>{
+            if(!cfg.intervalMap) cfg.intervalMap = {};
+            if(!cfg.intervalSecondsMap) cfg.intervalSecondsMap = {};
+            cfg.intervalSecondsMap[key] = 5;
+            cfg.intervalMap[key] = 1;
+          });
+        }else{
+          const clampedSec = clamp(Math.round(rawSec), 5, 36000);
+          mutateDraftConfig(cfg=>{
+            if(!cfg.intervalMap) cfg.intervalMap = {};
+            if(!cfg.intervalSecondsMap) cfg.intervalSecondsMap = {};
+            cfg.intervalSecondsMap[key] = clampedSec;
+            cfg.intervalMap[key] = Math.max(1, Math.round(clampedSec/60));
+          });
+        }
+      }else{
+        const raw = Number(trimmed);
+        let val = Math.round(raw);
+        if(!isFinite(raw) || raw < 1){ val = 1; msg = '최소 간격은 1분입니다. 1분으로 보정되었습니다.'; }
+        else if(raw > 600){ val = 600; msg = '최대 간격은 600분입니다. 600분으로 보정되었습니다.'; }
+        mutateDraftConfig(cfg=>{
+          if(!cfg.intervalMap) cfg.intervalMap = {};
+          if(cfg.intervalSecondsMap) delete cfg.intervalSecondsMap[key];
+          cfg.intervalMap[key] = val;
+        });
+      }
       if(msg){
         rowAlertMap[key] = msg;
         renderBuilderModal();
@@ -5365,17 +5473,30 @@ void main(){
           const count = (bm.config && Array.isArray(bm.config.selectedNodeIds)) ? bm.config.selectedNodeIds.length : 0;
           const safeName = escapeHtml(bm.name);
           const safeId = escapeHtml(bm.id);
-          item.innerHTML = \`
-            <div class="bookmark-pill-top">
-              <span class="bookmark-pill-name-text">\${safeName} (\${count}개)</span>
+          if(renamingBookmarkId === bm.id){
+            item.innerHTML = \`
+              <div class="bookmark-save-row open">
+                <input type="text" class="bookmark-name-input" data-bm-rename-input="\${safeId}" maxlength="28" value="\${escapeHtml(renameBookmarkDraft)}">
+                <button type="button" class="bm-act-btn primary" data-bm-rename-ok="\${safeId}">확인</button>
+                <button type="button" class="bm-act-btn" data-bm-rename-cancel="1">취소</button>
+              </div>
+            \`;
+          }else{
+            item.innerHTML = \`
+              <div class="bookmark-pill-top">
+                <span class="bookmark-pill-name-text" title="\${safeName}">\${safeName}</span>
+                <span class="bookmark-pill-count">\${count}개</span>
+              </div>
               <div class="bookmark-pill-actions">
-                <button type="button" class="bm-act-btn primary" data-bm-apply="\${safeId}">바로 적용</button>
-                <button type="button" class="bm-act-btn" data-bm-edit="\${safeId}">편집기로</button>
+                <button type="button" class="bm-act-btn primary" data-bm-apply="\${safeId}">적용</button>
+                <button type="button" class="bm-act-btn" data-bm-edit="\${safeId}">편집기</button>
+                <button type="button" class="bm-act-btn" data-bm-rename="\${safeId}">이름변경</button>
+                <button type="button" class="bm-act-btn" data-bm-overwrite="\${safeId}">덮어쓰기</button>
                 <button type="button" class="bm-act-btn" data-bm-dup="\${safeId}">복제</button>
                 <button type="button" class="bm-act-btn danger" data-bm-del="\${safeId}" aria-label="저장 구성 삭제">삭제</button>
               </div>
-            </div>
-          \`;
+            \`;
+          }
           drawerBookmarkList.appendChild(item);
         });
       }
@@ -5538,19 +5659,63 @@ void main(){
         }
         return;
       }
+      const renBtn = e.target.closest('button[data-bm-rename]');
+      if(renBtn){
+        const bm = bookmarks.find(b=>b.id===renBtn.getAttribute('data-bm-rename'));
+        if(bm){
+          renamingBookmarkId = bm.id;
+          renameBookmarkDraft = bm.name;
+          renderBookmarks();
+        }
+        return;
+      }
+      const renOkBtn = e.target.closest('button[data-bm-rename-ok]');
+      if(renOkBtn){
+        const id = renOkBtn.getAttribute('data-bm-rename-ok');
+        const inp = drawerBookmarkList.querySelector('input[data-bm-rename-input="'+id+'"]');
+        const nextName = inp && inp.value.trim() ? inp.value.trim().slice(0,28) : '';
+        if(nextName){
+          bookmarks = bookmarks.map(b=>b.id===id ? Object.assign({}, b, {name: nextName}) : b);
+          saveCustomSettings();
+          showToast('북마크 이름이 변경되었습니다.');
+        }
+        renamingBookmarkId = null;
+        renderBookmarks();
+        return;
+      }
+      const renCancelBtn = e.target.closest('button[data-bm-rename-cancel]');
+      if(renCancelBtn){
+        renamingBookmarkId = null;
+        renderBookmarks();
+        return;
+      }
+      const ovwBtn = e.target.closest('button[data-bm-overwrite]');
+      if(ovwBtn){
+        const id = ovwBtn.getAttribute('data-bm-overwrite');
+        const bm = bookmarks.find(b=>b.id===id);
+        if(bm){
+          bm.config = cloneCfg(customSequenceConfig);
+          bm.clockSyncMode = clockSyncMode;
+          renderBookmarks();
+          saveCustomSettings();
+          showToast("'" + bm.name + "'에 현재 구성을 덮어썼습니다.");
+        }
+        return;
+      }
       const dupBtn = e.target.closest('button[data-bm-dup]');
       if(dupBtn){
         const bm = bookmarks.find(b=>b.id===dupBtn.getAttribute('data-bm-dup'));
         if(bm){
           bookmarks.unshift({
             id: 'bm_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
-            name: bm.name + ' (복사본)',
+            name: (bm.name + ' (복사본)').slice(0,28),
             config: cloneCfg(bm.config),
             clockSyncMode: bm.clockSyncMode,
             createdAt: new Date().toISOString()
           });
           renderBookmarks();
           saveCustomSettings();
+          showToast("'" + bm.name + "' 복제본이 생성되었습니다.");
         }
         return;
       }
@@ -5976,7 +6141,7 @@ void main(){
     if(rtCountMeta){
       rtCountMeta.textContent = timetableViewMode==='all'
         ? ('전체 ' + EMBEDDED.timetable.length + '구간')
-        : ('선택 ' + seqRows.length + '단계');
+        : ('선택 ' + seqRows.length + '단계 (' + (clockSyncMode==='original_csat_time' ? '원래 수능 시각' : '구성 계산 시각') + ')');
       if(switchAnimDir){
         rtCountMeta.classList.remove('is-animating');
         void rtCountMeta.offsetWidth;
@@ -5993,12 +6158,13 @@ void main(){
         const isCurrent = row.id === activeRowId;
         const expKey = 'all_'+row.id;
         const isExpanded = expandedRtKey === expKey;
+        const isInfoOpen = expandedRtInfoKey === expKey;
         const prefix = row.periodLabel !== '-' ? (row.periodLabel + ' · ') : '';
         const bellCode = row.startBellCode || row.endBellCode || '';
         const durSec = bellCode && EMBEDDED.bellDurationSecMap ? (EMBEDDED.bellDurationSecMap[bellCode] || 10) : 0;
 
         const wrap = document.createElement('div');
-        wrap.className = 'rt-item-wrap';
+        wrap.className = 'rt-row-card';
         wrap.innerHTML = \`
           <button type="button" class="rt-item-btn \${isCurrent ? 'is-current' : ''}" data-rt-toggle-key="\${escapeHtml(expKey)}">
             <span class="rt-item-idx">\${idx+1}</span>
@@ -6010,9 +6176,35 @@ void main(){
           </button>
           \${isExpanded ? \`
             <div class="rt-row-actions">
-              <button type="button" class="rt-act-chip primary" data-rt-start-all="\${escapeHtml(row.id)}">이 단계부터 시작</button>
-              <button type="button" class="rt-act-chip" data-rt-open-editor="1">선택 구성 편집</button>
-              \${bellCode ? \`<button type="button" class="rt-act-chip preview-btn-wrap" data-preview-bell="\${escapeHtml(bellCode)}">미리듣기 (\${durSec}초)</button>\` : \`<span style="font-size:10.5px;color:var(--Text-Sub)">\${row.triggersEnglishAudioAtStart?'13:07 영어 듣기 음원 구간':'타종 없음'}</span>\`}
+              <div class="rt-action-btn-row">
+                <button type="button" class="rt-act-chip primary" data-rt-start-all="\${escapeHtml(row.id)}">이 단계부터 시작</button>
+                <button type="button" class="rt-act-chip" data-rt-open-editor="1">선택 구성 편집</button>
+                <button type="button" class="rt-act-chip \${isInfoOpen ? 'primary' : ''}" data-rt-info-key="\${escapeHtml(expKey)}">단계 정보 · 미리듣기</button>
+              </div>
+              \${isInfoOpen ? \`
+                <div class="rt-step-info-box">
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">교시 · 영역</span>
+                    <span class="rt-info-val">\${escapeHtml(prefix + row.displayTitle)}</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">진행 시각</span>
+                    <span class="rt-info-val">\${escapeHtml(row.timeRangeText)} (\${row.durationMinutes}분)</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">상세 설명</span>
+                    <span class="rt-info-val">\${escapeHtml(row.description)}</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">타종 음원</span>
+                    <span class="rt-info-val">
+                      \${bellCode
+                        ? \`[\${escapeHtml(bellCode)}] (\${durSec}초) <button type="button" class="rt-act-chip preview-btn-wrap" style="margin-left:4px" data-preview-bell="\${escapeHtml(bellCode)}">미리듣기 (\${durSec}초)</button>\`
+                        : (row.triggersEnglishAudioAtStart ? '13:07 영어 듣기평가 음원 재생' : '타종 없음')}
+                    </span>
+                  </div>
+                </div>
+              \` : ''}
             </div>
           \` : ''}
         \`;
@@ -6035,31 +6227,63 @@ void main(){
       }
       seqRows.forEach((row, idx)=>{
         const isCurrent = activeCustomNodeId !== null && row.node.nodeId === activeCustomNodeId;
-        const expKey = 'sel_'+idx;
+        const expKey = 'sel_'+row.node.nodeId+'_'+idx;
         const isExpanded = expandedRtKey === expKey;
-        const dispTime = clockSyncMode==='original_csat_time' ? row.node.originalTimeText : format24hTime(row.customTimeMinutes);
+        const isInfoOpen = expandedRtInfoKey === expKey;
+        const dispTime = clockSyncMode==='original_csat_time'
+          ? row.node.originalTimeText
+          : (format24hTime(row.customTimeMinutes) + (row.dayOffset > 0 ? (' (+'+row.dayOffset+'일)') : ''));
+        const waitUnit = row.intervalAfterSeconds % 60 !== 0
+          ? (row.intervalAfterSeconds + '초')
+          : (row.intervalAfterMinutes + '분');
         const subDetail = row.nextNode
-          ? ('다음까지 ' + row.intervalAfterMinutes + '분 대기 · 원래 ' + row.node.originalTimeText)
-          : ('마지막 단계 (' + row.intervalAfterMinutes + '분) · 원래 ' + row.node.originalTimeText);
+          ? ('다음까지 ' + waitUnit + ' 대기 · ' + (clockSyncMode==='original_csat_time' ? ('구성 시각 ' + format24hTime(row.customTimeMinutes)) : ('원래 ' + row.node.originalTimeText)))
+          : ('마지막 단계 (' + waitUnit + ') · ' + (clockSyncMode==='original_csat_time' ? ('구성 시각 ' + format24hTime(row.customTimeMinutes)) : ('원래 ' + row.node.originalTimeText)));
         const bellCode = row.node.bellCode || '';
         const durSec = bellCode && EMBEDDED.bellDurationSecMap ? (EMBEDDED.bellDurationSecMap[bellCode] || 10) : 0;
 
         const wrap = document.createElement('div');
-        wrap.className = 'rt-item-wrap';
+        wrap.className = 'rt-row-card';
         wrap.innerHTML = \`
           <button type="button" class="rt-item-btn \${isCurrent ? 'is-current' : ''}" data-rt-toggle-key="\${escapeHtml(expKey)}">
             <span class="rt-item-idx">\${idx+1}</span>
             <span class="rt-item-main">
-              <span class="rt-item-title">\${escapeHtml(row.node.periodLabel + ' · ' + row.node.subjectTitle + ' · ' + row.node.stageShortLabel)}\${row.dayOffset>0?' (+\'+row.dayOffset+\'일)':''}</span>
+              <span class="rt-item-title">\${escapeHtml(row.node.periodLabel + ' · ' + row.node.subjectTitle + ' · ' + row.node.stageShortLabel)}</span>
               <span class="rt-item-sub">\${escapeHtml(subDetail)}</span>
             </span>
             <span class="rt-item-time">\${escapeHtml(dispTime)}</span>
           </button>
           \${isExpanded ? \`
             <div class="rt-row-actions">
-              <button type="button" class="rt-act-chip primary" data-rt-start-seq="\${idx}">이 단계부터 시작</button>
-              <button type="button" class="rt-act-chip" data-rt-open-editor="1">선택 구성 편집</button>
-              \${bellCode ? \`<button type="button" class="rt-act-chip preview-btn-wrap" data-preview-bell="\${escapeHtml(bellCode)}">미리듣기 (\${durSec}초)</button>\` : \`<span style="font-size:10.5px;color:var(--Text-Sub)">13:07 영어 듣기평가 음원</span>\`}
+              <div class="rt-action-btn-row">
+                <button type="button" class="rt-act-chip primary" data-rt-start-seq="\${idx}">이 단계부터 시작</button>
+                <button type="button" class="rt-act-chip" data-rt-open-editor="1">선택 구성 편집</button>
+                <button type="button" class="rt-act-chip \${isInfoOpen ? 'primary' : ''}" data-rt-info-key="\${escapeHtml(expKey)}">단계 정보 · 미리듣기</button>
+              </div>
+              \${isInfoOpen ? \`
+                <div class="rt-step-info-box">
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">단계 명칭</span>
+                    <span class="rt-info-val">\${escapeHtml(row.node.fullTitle)}</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">시각 비교</span>
+                    <span class="rt-info-val">원래 \${escapeHtml(row.node.originalTimeText)} / 구성 \${format24hTime(row.customTimeMinutes)}\${row.dayOffset > 0 ? (' (+'+row.dayOffset+'일)') : ''}</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">대기 시간</span>
+                    <span class="rt-info-val">\${row.nextNode ? ('다음 단계까지 ' + waitUnit) : ('단독/마지막 진행 ' + waitUnit)}</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">타종 음원</span>
+                    <span class="rt-info-val">
+                      \${bellCode
+                        ? \`[\${escapeHtml(bellCode)}] (\${durSec}초) <button type="button" class="rt-act-chip preview-btn-wrap" style="margin-left:4px" data-preview-bell="\${escapeHtml(bellCode)}">미리듣기 (\${durSec}초)</button>\`
+                        : '13:07 영어 듣기평가 음원 재생'}
+                    </span>
+                  </div>
+                </div>
+              \` : ''}
             </div>
           \` : ''}
         \`;
@@ -6081,10 +6305,18 @@ void main(){
         openBuilderModalWithDraft();
         return;
       }
+      const infoBtnEl = e.target.closest('button[data-rt-info-key]');
+      if(infoBtnEl){
+        const k = infoBtnEl.getAttribute('data-rt-info-key');
+        expandedRtInfoKey = (expandedRtInfoKey === k) ? null : k;
+        renderRightTimetableList();
+        return;
+      }
       const toggleBtn = e.target.closest('button[data-rt-toggle-key]');
       if(toggleBtn){
         const k = toggleBtn.getAttribute('data-rt-toggle-key');
         expandedRtKey = (expandedRtKey === k) ? null : k;
+        expandedRtInfoKey = null;
         renderRightTimetableList();
         return;
       }
@@ -6109,6 +6341,7 @@ void main(){
         };
         isTemporaryStartPoint = false;
         expandedRtKey = null;
+        expandedRtInfoKey = null;
         syncUiToPresetIdle();
         showToast(row.displayTitle + ' (' + row.category + ') 단계부터 대기합니다.', 2600);
         return;
@@ -6136,6 +6369,7 @@ void main(){
         currentPreset = built;
         isTemporaryStartPoint = rowIdx > 0;
         expandedRtKey = null;
+        expandedRtInfoKey = null;
         syncUiToPresetIdle();
         activeCustomNodeId = clickedRow.node.nodeId;
         renderRightTimetableList();

@@ -24,11 +24,9 @@
       href="%BASE_URL%favicon-light.svg"
     />
     <link
-      rel="icon"
-      type="image/svg+xml"
-      href="%BASE_URL%favicon-dark.svg"
-      media="(prefers-color-scheme: dark)"
-      data-favicon-fallback="true"
+      id="app-apple-touch-icon"
+      rel="apple-touch-icon"
+      href="%BASE_URL%favicon-light.svg"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,7 +39,7 @@
       name="description"
       content="대학수학능력시험 전체 시간표와 WebGL 패브릭 아날로그 시계 애니메이션, 내장 타종 음원 및 영어 듣기평가 로컬 음원 연동을 지원하는 단일 HTML 패키징 기반 수능 안내방송 타이머"
     />
-    <meta name="version" content="1.0.3695.20261116202530" />
+    <meta name="version" content="1.0.5218.20261117174600" />
     <meta property="og:title" content="대학수학능력시험 안내방송" />
     <meta
       property="og:description"
@@ -67,25 +65,33 @@
     </style>
     <script>
       (function(){
-        try{
-          var raw=localStorage.getItem('csat_timer_custom_settings_v2');
-          var pref='auto';
-          if(raw){
-            var p=JSON.parse(raw);
-            if(p&&['auto','light','dark','sepia'].indexOf(p.themePref)!==-1) pref=p.themePref;
+        var base = '%BASE_URL%';
+        function applyEarlyThemeAndIcons(){
+          try{
+            var raw=localStorage.getItem('csat_timer_custom_settings_v2');
+            var pref='auto';
+            if(raw){
+              var p=JSON.parse(raw);
+              if(p&&['auto','light','dark','sepia'].indexOf(p.themePref)!==-1) pref=p.themePref;
+            }
+            var resolved=pref;
+            if(pref==='auto'){
+              resolved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+            }
+            document.documentElement.setAttribute('data-theme',resolved);
+            var iconHref = (resolved === 'dark') ? (base + 'favicon-dark.svg') : (base + 'favicon-light.svg');
+            var favicon = document.getElementById('app-favicon');
+            if(favicon) favicon.setAttribute('href', iconHref);
+            var touchIcon = document.getElementById('app-apple-touch-icon');
+            if(touchIcon) touchIcon.setAttribute('href', iconHref);
+          }catch(e){
+            document.documentElement.setAttribute('data-theme','light');
           }
-          var resolved=pref;
-          if(pref==='auto'){
-            resolved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
-          }
-          document.documentElement.setAttribute('data-theme',resolved);
-          var favicon = document.getElementById('app-favicon');
-          if(favicon){
-            var base = '%BASE_URL%';
-            favicon.href = (resolved === 'dark') ? (base + 'favicon-dark.svg') : (base + 'favicon-light.svg');
-          }
-        }catch(e){
-          document.documentElement.setAttribute('data-theme','light');
+        }
+        applyEarlyThemeAndIcons();
+        if(window.matchMedia){
+          var mq = window.matchMedia('(prefers-color-scheme: dark)');
+          if(mq.addEventListener) mq.addEventListener('change', applyEarlyThemeAndIcons);
         }
       })();
     </script>

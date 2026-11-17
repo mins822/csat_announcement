@@ -19,7 +19,8 @@ function runSingleHtmlPackager() {
       const mp3Path = path.join(bellsDir, item.fileName);
       if (fs.existsSync(mp3Path)) {
         const buf = fs.readFileSync(mp3Path);
-        customMp3DataUris[item.code] = `data:audio/mpeg;base64,${buf.toString('base64')}`;
+        const mime = item.fileName.toLowerCase().endsWith('.m4a') ? 'audio/mp4' : 'audio/mpeg';
+        customMp3DataUris[item.code] = `data:${mime};base64,${buf.toString('base64')}`;
         embeddedMp3Count++;
       }
     }
@@ -33,7 +34,7 @@ function runSingleHtmlPackager() {
     { name: '인라인 <script> 포함 여부', pass: html.includes('<script>') && html.includes('</script>') },
     { name: 'WebGL 축대칭 멤브레인 셰이더(evalMembrane) 및 다크/세피아 유니폼 보존 여부', pass: html.includes('vec2 evalMembrane(float r, float H)') && html.includes('uS') },
     { name: 'START 등장 간격 및 CANCEL 퇴장 간격 일치(STAGE_OUT=400, STAGE_IN=STAGE_OUT, DUR_IN=STAGE_OUT) 반영 여부', pass: html.includes('STAGE_OUT=400,STAGE_IN=STAGE_OUT,DUR_IN=STAGE_OUT') },
-    { name: '내장 타종 음원 Base64 Data URI 포함 여부', pass: html.includes('data:audio/wav;base64,') || html.includes('data:audio/mpeg;base64,') },
+    { name: '내장 타종 음원 Base64 Data URI 포함 여부', pass: html.includes('data:audio/wav;base64,') || html.includes('data:audio/mpeg;base64,') || html.includes('data:audio/mp4;base64,') },
     { name: '숨기기 버튼(#hideBtn / #showBtn / uiHidden) 완전 제거 여부', pass: !html.includes('id="hideBtn"') && !html.includes('id="showBtn"') && !html.includes('uiHidden') },
     { name: '좌측 상단 햄버거 메뉴(#hamburgerBtn / #pillDrawer) 포함 여부', pass: html.includes('id="hamburgerBtn"') && html.includes('id="pillDrawer"') },
   ];

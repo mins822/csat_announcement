@@ -13,12 +13,14 @@ export const DARK_FAVICON_DATA_URI = `data:image/svg+xml;utf8,${encodeURICompone
 
 /**
  * 사용자의 현재 테마(resolvedTheme: 'light' | 'dark' | 'sepia')에 맞춰
- * 문서 <head>의 파비콘(<link rel="icon">)을 즉시 동기화합니다.
+ * 문서 <head>의 파비콘(<link rel="icon">), 터치 아이콘(<link rel="apple-touch-icon">),
+ * 그리고 테마 색상 메타 태그를 프로그램의 라이트/다크 모드에 전격 동기화합니다.
  */
 export function syncFaviconWithTheme(resolvedTheme: 'light' | 'dark' | 'sepia'): void {
   if (typeof document === 'undefined') return;
   const isDark = resolvedTheme === 'dark';
-  const targetHref = isDark ? DARK_FAVICON_DATA_URI : LIGHT_FAVICON_DATA_URI;
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const svgFileHref = `${baseUrl}${isDark ? 'favicon-dark.svg' : 'favicon-light.svg'}`;
 
   let mainIcon = document.getElementById('app-favicon') as HTMLLinkElement | null;
   if (!mainIcon) {
@@ -29,11 +31,21 @@ export function syncFaviconWithTheme(resolvedTheme: 'light' | 'dark' | 'sepia'):
     document.head.appendChild(mainIcon);
   }
   mainIcon.removeAttribute('media');
-  if (mainIcon.getAttribute('href') !== targetHref) {
-    mainIcon.setAttribute('href', targetHref);
+  if (mainIcon.getAttribute('href') !== svgFileHref) {
+    mainIcon.setAttribute('href', svgFileHref);
   }
 
-  // 초기 media 쿼리용 보조 파비콘 링크가 있으면 사용자 설정 우선 적용을 위해 제거
+  let touchIcon = document.getElementById('app-apple-touch-icon') as HTMLLinkElement | null;
+  if (!touchIcon) {
+    touchIcon = document.createElement('link');
+    touchIcon.id = 'app-apple-touch-icon';
+    touchIcon.rel = 'apple-touch-icon';
+    document.head.appendChild(touchIcon);
+  }
+  if (touchIcon.getAttribute('href') !== svgFileHref) {
+    touchIcon.setAttribute('href', svgFileHref);
+  }
+
   const fallbackIcons = document.querySelectorAll('link[data-favicon-fallback="true"]');
   fallbackIcons.forEach((el) => el.parentNode?.removeChild(el));
 }

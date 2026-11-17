@@ -3,7 +3,7 @@
  * 형식: x.y.z.p
  * - x (Major): 1 (초기값, 사용자 명시적 요청 시에만 변경)
  * - y (Minor): 0 (초기값, 사용자 명시적 요청 시에만 변경)
- * - z (Patch / Code Revision Count): 누적 추가/수정 코드 구문 수 (4933 + 1 = 4934)
+ * - z (Patch / Code Revision Count): 누적 추가/수정 코드 구문 수 (4954 + 264 = 5218)
  * - p (Build Timestamp): YYYYMMDDHHmmss (대한민국 표준시 KST 기준)
  */
 
@@ -17,8 +17,8 @@ export interface AppVersionSpec {
 export const APP_VERSION: AppVersionSpec = {
   major: 1,
   minor: 0,
-  patch: 4946,
-  timestampKst: '20261117141500',
+  patch: 5218,
+  timestampKst: '20261117174600',
 };
 
 export function formatAppVersion(includeTimestamp: boolean): string {

@@ -36,7 +36,7 @@ export default defineConfig(() => {
               src: 'favicon-light.svg',
               sizes: 'any',
               type: 'image/svg+xml',
-              purpose: 'any',
+              purpose: 'any maskable',
             },
             {
               src: 'favicon-dark.svg',
@@ -72,7 +72,7 @@ export default defineConfig(() => {
     ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
       },
     },
     server: {

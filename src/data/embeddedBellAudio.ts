@@ -180,8 +180,8 @@ export function getBellFileUrl(item: CsatBellCueItem): string {
 let loading37Promise: Promise<Partial<Record<string, string>>> | null = null;
 
 /**
- * 브라우저 환경에서 /public/audio/bells/ 에 있는 37개 기본 타종 MP3 파일들을 모두 읽어
- * Base64 Data URI(data:audio/mpeg;base64,...) 맵으로 반환합니다.
+ * 브라우저 환경에서 /public/audio/bells/ 에 있는 37개 기본 타종 음원 파일들을 모두 읽어
+ * Base64 Data URI 맵으로 반환합니다.
  * - 단일 HTML 내보내기 시 기본 타종 음원 37개는 100% 포함되고,
  *   영어 듣기 파일 및 사용자 커스텀 설정만 제외되도록 보장합니다.
  */
@@ -203,7 +203,8 @@ export async function loadAll37BellMp3DataUris(): Promise<Partial<Record<string,
           const buf = await res.arrayBuffer();
           if (buf.byteLength === 0) return;
           const bytes = new Uint8Array(buf);
-          CUSTOM_37_BELL_MP3_DATA_URIS[item.code] = `data:audio/mpeg;base64,${uint8ArrayToBase64(bytes)}`;
+          const mime = item.fileName.toLowerCase().endsWith('.m4a') ? 'audio/mp4' : 'audio/mpeg';
+          CUSTOM_37_BELL_MP3_DATA_URIS[item.code] = `data:${mime};base64,${uint8ArrayToBase64(bytes)}`;
         } catch {
           // Ignore individual fetch error and fall back to synthesized chime
         }
