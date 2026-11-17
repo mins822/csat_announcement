@@ -249,7 +249,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 html,body{height:100%;margin:0;overflow:hidden;background:var(--stage);color:var(--ink);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;transition:background-color .35s ease,color .35s ease}
 .svg-filters{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
 canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
-#wakeLockVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.005;pointer-events:none;z-index:1;contain:strict;display:none}
+#wakeLockVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.015;pointer-events:none;z-index:1;display:none}
 #wakeLockVideo.is-active{display:block}
 #ui{position:fixed;inset:0;z-index:2;pointer-events:none;font-family:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 #title{position:absolute;left:0;right:0;text-align:center;transform:translateY(-50%);margin:0;color:var(--ink);font-family:"Noto Serif","Noto Serif KR",serif;font-optical-sizing:auto;font-weight:300;font-style:normal;letter-spacing:-.025em;white-space:nowrap;transition:color .35s ease}
@@ -2176,6 +2176,7 @@ html:not(.app-ready) #rightTimetablePanel{
 .rt-list-stage.anim-to-selected{animation:rtSwitchFromRight .3s cubic-bezier(.22,1,.36,1)}
 .rt-list-stage.anim-to-all{animation:rtSwitchFromLeft .3s cubic-bezier(.22,1,.36,1)}
 .rt-item-btn{
+  position:relative;overflow:hidden;
   width:100%;text-align:left;
   border:1px solid rgba(255,255,255,.56);
   background:linear-gradient(135deg,rgba(255,255,255,.38),rgba(255,255,255,.14));
@@ -2183,34 +2184,100 @@ html:not(.app-ready) #rightTimetablePanel{
   border-radius:15px;padding:9px 12px;min-height:50px;
   display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;
   cursor:pointer;color:var(--toll-ink);
-  transition:background .16s ease,border-color .16s ease,transform .14s ease,box-shadow .16s ease;
+  transition:
+    background .38s cubic-bezier(.22,1,.36,1),
+    border-color .38s cubic-bezier(.22,1,.36,1),
+    transform .36s cubic-bezier(.22,1,.36,1),
+    box-shadow .38s cubic-bezier(.22,1,.36,1);
 }
+.rt-item-btn::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  opacity:0;
+  transform:scale(.96);
+  background:
+    radial-gradient(125% 140% at 14% 0%,rgba(255,255,255,.62) 0%,rgba(255,255,255,0) 58%),
+    linear-gradient(135deg,rgba(104,106,114,.22) 0%,rgba(148,150,158,.14) 48%,rgba(255,255,255,.46) 100%);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.92),
+    inset 0 -1px 2px rgba(52,54,60,.12);
+  transition:
+    opacity .42s cubic-bezier(.22,1,.36,1),
+    transform .42s cubic-bezier(.22,1,.36,1);
+}
+.rt-item-btn > *{position:relative;z-index:1}
 .rt-item-btn:hover{background:linear-gradient(135deg,rgba(255,255,255,.56),rgba(255,255,255,.24));border-color:rgba(255,255,255,.88)}
 .rt-item-btn:active{transform:scale(.988)}
-.rt-item-btn.is-current{
-  border-color:rgba(45,45,48,.42);
-  background:linear-gradient(135deg,rgba(50,50,54,.14),rgba(255,255,255,.34));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 3px 12px rgba(0,0,0,.055);
+.rt-item-btn.is-current,
+.rt-item-btn.is-current:hover{
+  border-color:transparent;
+  background:linear-gradient(135deg,rgba(116,118,126,.20),rgba(164,166,174,.12) 54%,rgba(255,255,255,.38));
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.90),
+    inset 0 -1px 1.5px rgba(42,44,50,.10),
+    0 8px 22px rgba(28,30,36,.10),
+    0 2px 6px rgba(28,30,36,.06);
+  transform:translateY(-1px) scale(1.008);
 }
+.rt-item-btn.is-current::before{opacity:1;transform:scale(1)}
 [data-theme="dark"] .rt-item-btn{
   border-color:rgba(255,255,255,.11);
   background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
   box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 3px 10px rgba(0,0,0,.14);
 }
+[data-theme="dark"] .rt-item-btn::before{
+  background:
+    radial-gradient(125% 140% at 14% 0%,rgba(255,255,255,.24) 0%,rgba(255,255,255,0) 58%),
+    linear-gradient(135deg,rgba(162,166,178,.28) 0%,rgba(118,122,134,.18) 52%,rgba(255,255,255,.10) 100%);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.30),
+    inset 0 -1px 2px rgba(0,0,0,.36);
+}
 [data-theme="dark"] .rt-item-btn:hover{background:linear-gradient(135deg,rgba(255,255,255,.125),rgba(255,255,255,.045));border-color:rgba(255,255,255,.22)}
-[data-theme="dark"] .rt-item-btn.is-current{
-  border-color:rgba(255,255,255,.38);
-  background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.07));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 4px 14px rgba(0,0,0,.24);
+[data-theme="dark"] .rt-item-btn.is-current,
+[data-theme="dark"] .rt-item-btn.is-current:hover{
+  border-color:transparent;
+  background:linear-gradient(135deg,rgba(156,160,172,.24),rgba(104,108,118,.15) 54%,rgba(255,255,255,.08));
+  box-shadow:
+    inset 0 1.5px 1px rgba(255,255,255,.28),
+    inset 0 -1px 2px rgba(0,0,0,.38),
+    0 10px 26px rgba(0,0,0,.36),
+    0 2px 8px rgba(0,0,0,.22);
 }
 .rt-item-idx{
   min-width:26px;height:26px;padding:0 5px;border-radius:9px;
   display:inline-flex;align-items:center;justify-content:center;
   font-size:10px;font-weight:800;font-variant-numeric:tabular-nums;
   color:var(--toll-ink-2);background:var(--toll-glass-inner);border:1px solid var(--toll-line);
+  transition:
+    background .38s cubic-bezier(.22,1,.36,1),
+    color .38s cubic-bezier(.22,1,.36,1),
+    border-color .38s cubic-bezier(.22,1,.36,1),
+    box-shadow .38s cubic-bezier(.22,1,.36,1),
+    transform .38s cubic-bezier(.22,1,.36,1);
 }
-.rt-item-btn.is-current .rt-item-idx{background:var(--toll-button);color:#fff;border-color:transparent}
-[data-theme="dark"] .rt-item-btn.is-current .rt-item-idx{background:#f2f2f4;color:#18181a}
+.rt-item-btn.is-current .rt-item-idx{
+  background:linear-gradient(145deg,#3a3c42 0%,#1f2024 100%);
+  color:#fff;
+  border-color:rgba(255,255,255,.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    0 3px 10px rgba(24,25,30,.28),
+    0 0 0 3px rgba(110,112,120,.18);
+  transform:scale(1.08);
+}
+[data-theme="dark"] .rt-item-btn.is-current .rt-item-idx{
+  background:linear-gradient(145deg,#ffffff 0%,#d8dbe2 100%);
+  color:#151619;
+  border-color:rgba(255,255,255,.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    0 3px 12px rgba(0,0,0,.45),
+    0 0 0 3px rgba(255,255,255,.16);
+}
 .rt-item-main{min-width:0;display:flex;flex-direction:column;gap:2px}
 .rt-item-title{font-size:12px;font-weight:750;letter-spacing:-.025em;color:var(--toll-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rt-item-sub{font-size:10px;color:var(--toll-muted);letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2454,14 +2521,14 @@ html:not(.app-ready) #rightTimetablePanel{
           <label class="ui-option-toggle-row">
             <span class="ui-opt-text">
               <span>본령 종료 전 블러 애니메이션</span>
-              <span class="ui-opt-sub">종료 10분~1분 전 +5%, 1분~10초 전 +20%, 10초~0초 연속 강화 후 타종 시 완화</span>
+              <span class="ui-opt-sub">종료 10분~1분 전 +10%, 1분~10초 전 +40%, 10초~0초 +90% 연속 강화 후 타종 시 완화</span>
             </span>
             <input id="mainBellGlowToggle" type="checkbox" checked>
           </label>
           <label class="ui-option-toggle-row">
             <span class="ui-opt-text">
               <span>준비령 종료 전 블러 애니메이션</span>
-              <span class="ui-opt-sub">본령 시작 1분~10초 전 +5%, 10초~0초 +20% 연속 강화 후 타종 시 완화</span>
+              <span class="ui-opt-sub">본령 시작 1분~10초 전 +10%, 10초~0초 +40% 연속 강화 후 타종 시 완화</span>
             </span>
             <input id="prelimBellGlowToggle" type="checkbox" checked>
           </label>
@@ -2621,11 +2688,11 @@ html:not(.app-ready) #rightTimetablePanel{
           <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="eng" checked> 영어</label>
           <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="hist" checked> 한국사</label>
           <label class="subj-check-label">
+            <input id="subjInqChk" type="checkbox" checked>
             <span>탐구</span>
             <select id="subjInqCountSel" class="builder-select-sm" aria-label="탐구 선택 과목 수">
-              <option value="2">2과목 (제1·2선택)</option>
-              <option value="1">1과목 (제1선택만)</option>
-              <option value="0">미응시</option>
+              <option value="2">2과목</option>
+              <option value="1">1과목</option>
             </select>
           </label>
           <label class="subj-check-label"><input id="subjLang2Chk" type="checkbox"> 제2외국어/한문</label>
@@ -3295,6 +3362,29 @@ void main(){
     applyMenuCategoryState(null);
   });
 
+  const topLeftMenuEl = document.getElementById('topLeftMenu');
+  document.addEventListener('pointerdown', e=>{
+    if(!pillDrawer || !pillDrawer.classList.contains('open') || !topLeftMenuEl) return;
+    const t = e.target;
+    if(t && topLeftMenuEl.contains(t)) return;
+    if(t && t.closest && t.closest('#builderModalBackdrop, #modalBackdrop, #rightTimetablePanel')) return;
+    const GRACE_PX = 44;
+    const x = e.clientX;
+    const y = e.clientY;
+    const subSelectors = ['.top-left-bar', '.ld-master-col', '.ld-detail-col.has-active'];
+    for(let i=0;i<subSelectors.length;i++){
+      const el = topLeftMenuEl.querySelector(subSelectors[i]);
+      if(!el) continue;
+      const r = el.getBoundingClientRect();
+      if(r.width<=0 || r.height<=0) continue;
+      if(x >= r.left - GRACE_PX && x <= r.right + GRACE_PX && y >= r.top - GRACE_PX && y <= r.bottom + GRACE_PX){
+        return;
+      }
+    }
+    setLeftMenuOpen(false);
+    applyMenuCategoryState(null);
+  }, {passive:true});
+
   /* ---------- Theme & Sync Mode Management ---------- */
   const mediaDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
@@ -3815,19 +3905,22 @@ void main(){
         clockGlowBoostGroup.style.transform = 'scale(1)';
         clockGlowBoostGroup.style.filter = 'none';
       }else{
-        const scale = (1 + boost * 0.28).toFixed(4);
-        const sat = Math.max(0.68, 1 + boost * 1.45).toFixed(3);
-        const bri = Math.max(0.84, 1 + boost * 0.36).toFixed(3);
+        const scale = (1 + boost * 0.34).toFixed(4);
+        const sat = Math.max(0.62, 1 + boost * 1.65).toFixed(3);
+        const bri = Math.max(0.80, 1 + boost * 0.42).toFixed(3);
+        const extraBlurPx = Math.max(0, boost * 18).toFixed(2);
         clockGlowBoostGroup.style.transform = 'scale('+scale+')';
-        clockGlowBoostGroup.style.filter = 'saturate('+sat+') brightness('+bri+')';
+        clockGlowBoostGroup.style.filter = Number(extraBlurPx) > 0.05
+          ? 'blur('+extraBlurPx+'px) saturate('+sat+') brightness('+bri+')'
+          : 'saturate('+sat+') brightness('+bri+')';
       }
     }
     if(face){
       const stops = face.querySelectorAll('stop[data-base-op]');
-      const opMul = Math.max(0.4, 1 + boost * 1.55);
+      const opMul = Math.max(0.32, 1 + boost * 1.75);
       stops.forEach(stEl=>{
         const baseOp = parseFloat(stEl.getAttribute('data-base-op') || '0');
-        const nextOp = clamp(baseOp * opMul, 0, 0.96);
+        const nextOp = clamp(baseOp * opMul, 0, 0.98);
         stEl.setAttribute('stop-opacity', nextOp.toFixed(3));
       });
     }
@@ -3943,26 +4036,54 @@ void main(){
     remainDigits.textContent=formatDurationClock(finalIdleRemainMs);
     const formattedIdleCat = idleCatText.indexOf(' → ')!==-1 ? idleCatText.replace(' → ', ' 대기\n다음 방송: ') : (idleCatText+' 대기');
     stageBadge.textContent=(firstStep.periodLabel!=='-'?firstStep.periodLabel+' · ':'')+formattedIdleCat;
-    activeRowId=firstStep.id;
-    if(isCustomSeq && firstStep.id && firstStep.id.indexOf('custom_seq_')===0){
-      const rest=firstStep.id.replace(/^custom_seq_\\d+_/, '');
-      const cueList = EMBEDDED.selectableCueNodes || EMBEDDED.cueNodes || [];
-      const matchedNode=cueList.find(n=>rest===n.nodeId || rest.indexOf(n.nodeId+'_')===0);
-      activeCustomNodeId=matchedNode ? matchedNode.nodeId : null;
-    }else{
-      activeCustomNodeId=null;
-    }
+    syncActiveStepHighlight(firstStep, isCustomSeq);
     glowReleaseStartPerf = 0;
     glowReleaseFromBoost = 0;
     applyClockGlowBoost(0);
     updateClockHandsForMinutes(dispStartMin);
-    renderTimetableRows(firstStep.id);
+    renderTimetableRows(activeRowId);
     if(typeof renderRightTimetableList==='function')renderRightTimetableList();
     if(builderBtnLabel){
       builderBtnLabel.textContent = '영역 · 타종 선택 구성 (' + (customSequenceConfig.selectedNodeIds ? customSequenceConfig.selectedNodeIds.length : 0) + '개 선택)';
     }
     updateMuteStatusMeta();
     updateDockAndAuxUI();
+  }
+
+  function syncActiveStepHighlight(step, isCustomSeq){
+    if(!step)return;
+    let nextRowId = step.id;
+    let nextNodeId = step.startNodeId || null;
+    if(isCustomSeq){
+      if(!nextNodeId && step.id && step.id.indexOf('custom_seq_')===0){
+        const rest=step.id.replace(/^custom_seq_\\d+_/, '');
+        const cueList = EMBEDDED.selectableCueNodes || EMBEDDED.cueNodes || [];
+        const matchedNode=cueList.find(n=>rest===n.nodeId || rest.indexOf(n.nodeId+'_')===0);
+        nextNodeId=matchedNode ? matchedNode.nodeId : null;
+      }
+      const origMin = typeof step.originalStartMinutes==='number' ? step.originalStartMinutes : step.startMinutes;
+      const matchedFullRow = (EMBEDDED.timetable||[]).find(r=>
+        (step.startBellCode && (r.startBellCode===step.startBellCode || r.endBellCode===step.startBellCode)) ||
+        (Math.abs(r.startMinutes - origMin)<0.5 && r.periodLabel===step.periodLabel)
+      ) || (EMBEDDED.timetable||[]).find(r=>origMin>=r.startMinutes && origMin<r.endMinutes);
+      if(matchedFullRow) nextRowId = matchedFullRow.id;
+    }else{
+      if(!nextNodeId){
+        const cueList = EMBEDDED.selectableCueNodes || EMBEDDED.cueNodes || [];
+        const matchedCue = cueList.find(n=>
+          (step.startBellCode && n.bellCode===step.startBellCode) ||
+          (Math.abs(n.originalMinutes - step.startMinutes)<0.5 && n.periodLabel===step.periodLabel)
+        );
+        nextNodeId = matchedCue ? matchedCue.nodeId : null;
+      }
+    }
+    const changed = (activeRowId !== nextRowId) || (activeCustomNodeId !== nextNodeId);
+    activeRowId = nextRowId;
+    activeCustomNodeId = nextNodeId;
+    if(changed){
+      renderTimetableRows(activeRowId);
+      if(typeof renderRightTimetableList==='function') renderRightTimetableList();
+    }
   }
 
   /* ---------- A2 & B9: Trigger Cues without hardcoded 016+120s, with LATE_GRACE_SEC = 5 ---------- */
@@ -4179,24 +4300,26 @@ void main(){
         stageBadge.textContent = periodPrefix + catText + statusSuffix;
       }
 
+      syncActiveStepHighlight(activeStep, Boolean(currentPreset.isCustomSequence));
+
       if(isPrepareStage && prelimBellGlowAnim){
         if(remainSec <= 60 && remainSec > 10){
           const p = clamp((60 - remainSec) / 50, 0, 1);
-          targetStageGlowBoost = 0.05 * p;
+          targetStageGlowBoost = 0.10 * p;
         }else if(remainSec <= 10 && remainSec > 0){
           const p = clamp((10 - remainSec) / 10, 0, 1);
-          targetStageGlowBoost = 0.05 + (0.20 - 0.05) * p;
+          targetStageGlowBoost = 0.10 + (0.40 - 0.10) * p;
         }
       }else if(isMainExamStage && mainBellGlowAnim){
         if(mainRemainSec <= 600 && mainRemainSec > 60){
           const p = clamp((600 - mainRemainSec) / 540, 0, 1);
-          targetStageGlowBoost = 0.05 * p;
+          targetStageGlowBoost = 0.10 * p;
         }else if(mainRemainSec <= 60 && mainRemainSec > 10){
           const p = clamp((60 - mainRemainSec) / 50, 0, 1);
-          targetStageGlowBoost = 0.05 + (0.20 - 0.05) * p;
+          targetStageGlowBoost = 0.10 + (0.40 - 0.10) * p;
         }else if(mainRemainSec <= 10 && mainRemainSec > 0){
           const p = clamp((10 - mainRemainSec) / 10, 0, 1);
-          targetStageGlowBoost = 0.20 + (0.45 - 0.20) * p;
+          targetStageGlowBoost = 0.40 + (0.90 - 0.40) * p;
         }
       }
 
@@ -4247,13 +4370,13 @@ void main(){
     if(glowReleaseStartPerf > 0){
       const relElapsed = now - glowReleaseStartPerf;
       const REL_TOTAL = 3400;
-      if(relElapsed < REL_TOTAL && targetStageGlowBoost < 0.02){
+      if(relElapsed < REL_TOTAL && targetStageGlowBoost < 0.04){
         if(relElapsed < 1400){
           const p = easeSine(relElapsed / 1400);
-          finalGlowBoost = glowReleaseFromBoost + (-0.12 - glowReleaseFromBoost) * p;
+          finalGlowBoost = glowReleaseFromBoost + (-0.24 - glowReleaseFromBoost) * p;
         }else{
           const p = easeSine((relElapsed - 1400) / (REL_TOTAL - 1400));
-          finalGlowBoost = -0.12 * (1 - p);
+          finalGlowBoost = -0.24 * (1 - p);
         }
       }else if(relElapsed >= REL_TOTAL){
         glowReleaseStartPerf = 0;
@@ -4341,7 +4464,8 @@ void main(){
   }
 
   if(runTouchZone){
-    runTouchZone.addEventListener('pointerdown', ()=>{
+    runTouchZone.addEventListener('pointerdown', e=>{
+      if(e.target && e.target.closest && e.target.closest('#cancelBtn')) return;
       revealRunAuxControls();
     });
   }
@@ -4557,9 +4681,6 @@ void main(){
   if(wakeLockVideo){
     wakeLockVideo.addEventListener('timeupdate', ()=>{
       wakeVideoProgressMs = performance.now();
-      if(!wakeLockVideo.srcObject && isFinite(wakeLockVideo.duration) && wakeLockVideo.duration > 2 && wakeLockVideo.currentTime >= wakeLockVideo.duration - 0.75){
-        try{ wakeLockVideo.currentTime = 0.08; }catch(_){}
-      }
     });
     wakeLockVideo.addEventListener('ended', ()=>{
       if(!keepScreenAwake || wakeLockIntentionalRelease) return;
@@ -4587,9 +4708,7 @@ void main(){
     wakeLockIntentionalRelease = false;
 
     const hasActiveNative = Boolean(wakeLockSentinel && !wakeLockSentinel.released);
-    if(isAndroidUa || wakeLockNativeBlocked || !('wakeLock' in navigator) || document.hidden){
-      startWakeLockVideo();
-    }
+    startWakeLockVideo();
     if(document.hidden || hasActiveNative) return;
     if(wakeLockPendingPromise) return wakeLockPendingPromise;
 
@@ -4643,9 +4762,7 @@ void main(){
       stopWakeLockVideo();
       return;
     }
-    if(isAndroidUa || wakeLockNativeBlocked || !('wakeLock' in navigator)){
-      startWakeLockVideo();
-    }
+    startWakeLockVideo();
     if(!document.hidden){
       requestWakeLock();
     }
@@ -4653,7 +4770,7 @@ void main(){
   function handleWakeLockGestureRetry(){
     if(!keepScreenAwake) return;
     const needsNative = !document.hidden && (!wakeLockSentinel || Boolean(wakeLockSentinel.released));
-    const needsVideo = (isAndroidUa || wakeLockNativeBlocked || !('wakeLock' in navigator)) && Boolean(wakeLockVideo && wakeLockVideo.paused);
+    const needsVideo = Boolean(wakeLockVideo && wakeLockVideo.paused);
     if(needsNative || needsVideo){
       requestWakeLock();
     }
@@ -4673,17 +4790,16 @@ void main(){
   setInterval(()=>{
     if(!keepScreenAwake) return;
     const droppedNative = !document.hidden && (!wakeLockSentinel || Boolean(wakeLockSentinel.released));
-    const shouldKeepVideo = isAndroidUa || wakeLockNativeBlocked || !('wakeLock' in navigator);
-    const isVideoFrozen = shouldKeepVideo && Boolean(wakeLockVideo && !wakeLockVideo.paused && !wakeLockVideo.srcObject && wakeVideoProgressMs > 0 && performance.now() - wakeVideoProgressMs > 5500);
+    const isVideoFrozen = Boolean(wakeLockVideo && !wakeLockVideo.paused && !wakeLockVideo.srcObject && wakeVideoProgressMs > 0 && performance.now() - wakeVideoProgressMs > 5500);
     if(isVideoFrozen && wakeLockVideo){
-      try{ wakeLockVideo.currentTime = 0.05; }catch(_){}
+      attachStandaloneCanvasBackup(wakeLockVideo);
       startWakeLockVideo();
     }
-    const droppedVideo = shouldKeepVideo && Boolean(wakeLockVideo && wakeLockVideo.paused);
+    const droppedVideo = Boolean(wakeLockVideo && wakeLockVideo.paused);
     if(droppedNative || droppedVideo){
       requestWakeLock();
     }
-  }, 3000);
+  }, 2500);
   if(keepAwakeToggle){
     keepAwakeToggle.addEventListener('change', ()=>{
       keepScreenAwake = Boolean(keepAwakeToggle.checked);
@@ -4868,6 +4984,12 @@ void main(){
       requestWakeLock();
     }
   });
+  cancelBtn.addEventListener('pointerdown',e=>{
+    e.stopPropagation();
+  });
+  cancelBtn.addEventListener('touchstart',e=>{
+    e.stopPropagation();
+  },{passive:true});
   cancelBtn.addEventListener('click',e=>{
     e.stopPropagation();
     cancel();
@@ -5429,7 +5551,9 @@ void main(){
 
   function applyLiveSubjectCombinationToDraft(){
     const checkedSubjs = Array.from(document.querySelectorAll('.subj-chk:checked')).map(el=>el.value);
-    const inqCount = Number((document.getElementById('subjInqCountSel')||{}).value ?? 2);
+    const inqChecked = Boolean((document.getElementById('subjInqChk')||{}).checked);
+    const inqCountRaw = Number((document.getElementById('subjInqCountSel')||{}).value ?? 2);
+    const inqCount = inqChecked ? (inqCountRaw >= 2 ? 2 : 1) : 0;
     const lang2 = Boolean((document.getElementById('subjLang2Chk')||{}).checked);
     const density = (document.getElementById('subjDensitySel')||{}).value || 'core';
     const activeGroups = new Set(checkedSubjs);
@@ -5446,8 +5570,14 @@ void main(){
       cfg.selectedNodeIds = ids;
     });
   }
-  document.querySelectorAll('.subj-chk, #subjLang2Chk, #subjInqCountSel, #subjDensitySel').forEach(el=>{
-    el.addEventListener('change', applyLiveSubjectCombinationToDraft);
+  document.querySelectorAll('.subj-chk, #subjInqChk, #subjLang2Chk, #subjInqCountSel, #subjDensitySel').forEach(el=>{
+    el.addEventListener('change', ()=>{
+      if(el.id==='subjInqCountSel'){
+        const inqChk = document.getElementById('subjInqChk');
+        if(inqChk && !inqChk.checked) inqChk.checked = true;
+      }
+      applyLiveSubjectCombinationToDraft();
+    });
   });
   const subjAutoApplyBtn = document.getElementById('subjAutoApplyBtn');
   if(subjAutoApplyBtn){
@@ -6278,7 +6408,7 @@ void main(){
         return;
       }
       seqRows.forEach((row, idx)=>{
-        const isCurrent = activeCustomNodeId !== null && row.node.nodeId === activeCustomNodeId;
+        const isCurrent = (activeCustomNodeId !== null && row.node.nodeId === activeCustomNodeId) || (activeCustomNodeId === null && idx === 0);
         const expKey = 'sel_'+row.node.nodeId+'_'+idx;
         const isExpanded = expandedRtKey === expKey;
         const isInfoOpen = expandedRtInfoKey === expKey;
@@ -6343,6 +6473,28 @@ void main(){
       });
     }
     updatePreviewButtonsUI();
+    scrollRightTimetableToActive();
+  }
+
+  function scrollRightTimetableToActive(){
+    if(!rtScrollList || !isTimetablePanelOpen)return;
+    requestAnimationFrame(()=>{
+      const cards = Array.from(rtScrollList.querySelectorAll('.rt-row-card'));
+      if(!cards.length)return;
+      if(cards.length===1){
+        rtScrollList.scrollTo({top:0, behavior:'smooth'});
+        return;
+      }
+      let activeIdx = cards.findIndex(c=>Boolean(c.querySelector('.rt-item-btn.is-current')));
+      if(activeIdx<0) activeIdx = 0;
+      const maxTopIdx = Math.max(0, cards.length - 2);
+      const targetTopIdx = clamp(activeIdx - 1, 0, maxTopIdx);
+      const targetCard = cards[targetTopIdx];
+      const firstCard = cards[0];
+      if(!targetCard || !firstCard)return;
+      const nextScrollTop = Math.max(0, targetCard.offsetTop - firstCard.offsetTop);
+      rtScrollList.scrollTo({top:nextScrollTop, behavior:'smooth'});
+    });
   }
 
   if(rtScrollList){
@@ -6588,6 +6740,7 @@ void main(){
       rightTimetablePanel.setAttribute('aria-hidden', isTimetablePanelOpen ? 'false' : 'true');
       timetableToggleBtn.classList.toggle('is-selected', isTimetablePanelOpen);
       timetableToggleBtn.setAttribute('aria-expanded', isTimetablePanelOpen ? 'true' : 'false');
+      if(isTimetablePanelOpen) scrollRightTimetableToActive();
       startLayoutTransition();
     });
   }

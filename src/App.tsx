@@ -370,6 +370,8 @@ export default function App() {
   const engFileInputRef = useRef<HTMLInputElement | null>(null);
   const configJsonInputRef = useRef<HTMLInputElement | null>(null);
   const dockRef = useRef<HTMLDivElement | null>(null);
+  const topLeftMenuRef = useRef<HTMLDivElement | null>(null);
+  const rtScrollListRef = useRef<HTMLDivElement | null>(null);
   const builderRightPaneRef = useRef<HTMLElement | null>(null);
 
   const initialLoadRef = useRef(readStoredCustomSettings());
@@ -603,6 +605,12 @@ export default function App() {
   const timetableOpacityRef = useRef<number>(timetableOpacity);
   timetableOpacityRef.current = timetableOpacity;
 
+  const activeRowIdRef = useRef<string>(activeRowId);
+  activeRowIdRef.current = activeRowId;
+
+  const activeCustomNodeIdRef = useRef<string | null>(activeCustomNodeId);
+  activeCustomNodeIdRef.current = activeCustomNodeId;
+
   const wakeLockSentinelRef = useRef<{
     released?: boolean;
     release: () => Promise<void>;
@@ -767,7 +775,7 @@ export default function App() {
     videoEl.classList.remove('is-active');
   }, []);
 
-  // B9: Screen Wake Lock helper (Native WakeLock API + Android Chrome VideoWakeLock fallback)
+  // B9: Screen Wake Lock helper (Simultaneous Native WakeLock API + VideoWakeLock fallback across all mobile/tablet/desktop browsers)
   const requestWakeLock = useCallback(async () => {
     if (!keepScreenAwakeRef.current) return;
     if (wakeLockReacquireTimerRef.current !== null) {
@@ -776,13 +784,11 @@ export default function App() {
     }
     wakeLockIntentionalReleaseRef.current = false;
 
+    // Always run the silent VideoWakeLock fallback alongside native WakeLock so desktop-UA tablets and mobile browsers never sleep
+    startWakeLockVideo();
+
     const currentSentinel = wakeLockSentinelRef.current;
     const hasActiveNativeLock = Boolean(currentSentinel && !currentSentinel.released);
-    const androidDevice = isAndroidBrowser();
-
-    if (androidDevice || wakeLockNativeBlockedRef.current || !('wakeLock' in navigator) || document.hidden) {
-      startWakeLockVideo();
-    }
 
     if (document.hidden || hasActiveNativeLock) return;
     if (wakeLockPendingRef.current) return wakeLockPendingRef.current;
@@ -1052,6 +1058,48 @@ export default function App() {
     document.addEventListener('pointerdown', handleOutsidePointerDown, true);
     return () => document.removeEventListener('pointerdown', handleOutsidePointerDown, true);
   }, [openCustomPopup]);
+
+  // Auto-close expanded hamburger menu when touching outside #topLeftMenu (with 44px grace buffer layer)
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleOutsideMenuPointerDown = (e: PointerEvent) => {
+      if (isBuilderModalOpen || isModalOpen) return;
+      const menuEl = topLeftMenuRef.current;
+      if (!menuEl) return;
+      const target = e.target as Node | null;
+      if (target && menuEl.contains(target)) return;
+      if ((e.target as HTMLElement | null)?.closest('.custom-select-popover, .custom-time-popover')) {
+        return;
+      }
+
+      const GRACE_PX = 44;
+      const interactiveZones = menuEl.querySelectorAll<HTMLElement>(
+        '.top-left-bar, .ld-master-col, .ld-detail-col'
+      );
+      const cx = e.clientX;
+      const cy = e.clientY;
+      for (let i = 0; i < interactiveZones.length; i++) {
+        const rect = interactiveZones[i].getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) continue;
+        if (
+          cx >= rect.left - GRACE_PX &&
+          cx <= rect.right + GRACE_PX &&
+          cy >= rect.top - GRACE_PX &&
+          cy <= rect.bottom + GRACE_PX
+        ) {
+          return;
+        }
+      }
+
+      setIsMenuOpen(false);
+      setActiveMenuCategory(null);
+      setIsBookmarkCardOpen(false);
+      setOpenCustomPopup(null);
+    };
+
+    document.addEventListener('pointerdown', handleOutsideMenuPointerDown, true);
+    return () => document.removeEventListener('pointerdown', handleOutsideMenuPointerDown, true);
+  }, [isBuilderModalOpen, isMenuOpen, isModalOpen]);
 
   // Sync audio volumes when slider changes (B5)
   useEffect(() => {
@@ -1402,23 +1450,72 @@ export default function App() {
         grp.style.transform = 'scale(1)';
         grp.style.filter = 'none';
       } else {
-        const scale = (1 + boost * 0.28).toFixed(4);
-        const sat = Math.max(0.68, 1 + boost * 1.45).toFixed(3);
-        const bri = Math.max(0.84, 1 + boost * 0.36).toFixed(3);
+        const scale = (1 + boost * 0.36).toFixed(4);
+        const sat = Math.max(0.56, 1 + boost * 1.68).toFixed(3);
+        const bri = Math.max(0.76, 1 + boost * 0.44).toFixed(3);
+        const extraBlurPx = boost > 0.002 ? (boost * 14).toFixed(2) : '0';
         grp.style.transform = `scale(${scale})`;
-        grp.style.filter = `saturate(${sat}) brightness(${bri})`;
+        grp.style.filter =
+          boost > 0.002
+            ? `blur(${extraBlurPx}px) saturate(${sat}) brightness(${bri})`
+            : `saturate(${sat}) brightness(${bri})`;
       }
     }
     if (faceRef.current) {
       const stops = faceRef.current.querySelectorAll<SVGStopElement>('stop[data-base-op]');
-      const opMul = Math.max(0.4, 1 + boost * 1.55);
+      const opMul = Math.max(0.32, 1 + boost * 1.75);
       stops.forEach((stEl) => {
         const baseOp = parseFloat(stEl.getAttribute('data-base-op') || '0');
-        const nextOp = clamp(baseOp * opMul, 0, 0.96);
+        const nextOp = clamp(baseOp * opMul, 0, 0.99);
         stEl.setAttribute('stop-opacity', nextOp.toFixed(3));
       });
     }
   }, []);
+
+  const syncActiveStepHighlight = useCallback(
+    (preset: CsatSessionPreset, step: CsatTimetableRow, isAtPresetEnd = false) => {
+      let resolvedNodeId: string | null = null;
+      if (isAtPresetEnd && step.endNodeId) {
+        resolvedNodeId = step.endNodeId;
+      } else if (step.startNodeId) {
+        resolvedNodeId = step.startNodeId;
+      } else if (preset.isCustomSequence && step.id.startsWith('custom_seq_')) {
+        const rest = step.id.replace(/^custom_seq_\d+_/, '');
+        const matchedNode = (CSAT_SELECTABLE_CUE_NODES ?? []).find(
+          (n) => rest === n.nodeId || rest.startsWith(`${n.nodeId}_`)
+        );
+        resolvedNodeId = matchedNode ? matchedNode.nodeId : null;
+      } else {
+        const matchedFull = CSAT_FULL_TIMETABLE.find((r) => r.id === step.id);
+        resolvedNodeId = matchedFull?.startNodeId ?? null;
+      }
+
+      let resolvedRowId = step.id;
+      if (preset.isCustomSequence && resolvedNodeId) {
+        const matchedFullByStart = CSAT_FULL_TIMETABLE.find(
+          (r) => r.startNodeId === resolvedNodeId
+        );
+        const matchedFullByEnd = CSAT_FULL_TIMETABLE.find(
+          (r) => r.endNodeId === resolvedNodeId
+        );
+        if (matchedFullByStart) {
+          resolvedRowId = matchedFullByStart.id;
+        } else if (matchedFullByEnd) {
+          resolvedRowId = matchedFullByEnd.id;
+        }
+      }
+
+      if (activeRowIdRef.current !== resolvedRowId) {
+        activeRowIdRef.current = resolvedRowId;
+        setActiveRowId(resolvedRowId);
+      }
+      if (activeCustomNodeIdRef.current !== resolvedNodeId) {
+        activeCustomNodeIdRef.current = resolvedNodeId;
+        setActiveCustomNodeId(resolvedNodeId);
+      }
+    },
+    []
+  );
 
   // A1: Safe syncUiToPresetIdle
   const syncUiToPresetIdle = useCallback(
@@ -1528,22 +1625,13 @@ export default function App() {
           stageBadgeRef.current.textContent = `${pPrefix}${firstCat} 대기`;
         }
       }
-      setActiveRowId(firstStep.id);
-      if (preset.isCustomSequence && firstStep.id.startsWith('custom_seq_')) {
-        const rest = firstStep.id.replace(/^custom_seq_\d+_/, '');
-        const matchedNode = (CSAT_SELECTABLE_CUE_NODES ?? []).find(
-          (n) => rest === n.nodeId || rest.startsWith(`${n.nodeId}_`)
-        );
-        setActiveCustomNodeId(matchedNode ? matchedNode.nodeId : null);
-      } else {
-        setActiveCustomNodeId(null);
-      }
+      syncActiveStepHighlight(preset, firstStep, false);
       engineRef.current.glowReleaseStartPerf = 0;
       engineRef.current.glowReleaseFromBoost = 0;
       applyClockGlowBoost(0);
       updateClockHandsForMinutes(dispStartMin);
     },
-    [applyClockGlowBoost, updateClockHandsForMinutes]
+    [applyClockGlowBoost, syncActiveStepHighlight, updateClockHandsForMinutes]
   );
 
   // Component mount useEffect
@@ -1792,27 +1880,29 @@ export default function App() {
             : remainingMs / 1000;
 
         if (isPrepareStage && prelimBellGlowAnimRef.current) {
-          // 준비령: 본령 시작 1분 전(60s)~10초 전(10s) 0% -> 5%, 10초 전(10s)~0초(0s) 5% -> 20% 연속 강화
+          // 준비령 (기존 대비 2배 강화): 본령 시작 1분 전(60s)~10초 전(10s) 0% -> 10%, 10초 전(10s)~0초(0s) 10% -> 40% 연속 강화
           if (remainSec <= 60 && remainSec > 10) {
             const p = clamp((60 - remainSec) / 50, 0, 1);
-            targetStageGlowBoost = 0.05 * p;
+            targetStageGlowBoost = 0.10 * p;
           } else if (remainSec <= 10 && remainSec > 0) {
             const p = clamp((10 - remainSec) / 10, 0, 1);
-            targetStageGlowBoost = 0.05 + (0.20 - 0.05) * p;
+            targetStageGlowBoost = 0.10 + (0.40 - 0.10) * p;
           }
         } else if (isMainExamStage && mainBellGlowAnimRef.current) {
-          // 본령: 종료 10분 전(600s)~1분 전(60s) 0% -> 5%, 1분 전(60s)~10초 전(10s) 5% -> 20%, 10초 전(10s)~0초(0s) 20% -> 45% 연속 강화
+          // 본령 (기존 대비 2배 강화): 종료 10분 전(600s)~1분 전(60s) 0% -> 10%, 1분 전(60s)~10초 전(10s) 10% -> 40%, 10초 전(10s)~0초(0s) 40% -> 90% 연속 강화
           if (mainRemainSec <= 600 && mainRemainSec > 60) {
             const p = clamp((600 - mainRemainSec) / 540, 0, 1);
-            targetStageGlowBoost = 0.05 * p;
+            targetStageGlowBoost = 0.10 * p;
           } else if (mainRemainSec <= 60 && mainRemainSec > 10) {
             const p = clamp((60 - mainRemainSec) / 50, 0, 1);
-            targetStageGlowBoost = 0.05 + (0.20 - 0.05) * p;
+            targetStageGlowBoost = 0.10 + (0.40 - 0.10) * p;
           } else if (mainRemainSec <= 10 && mainRemainSec > 0) {
             const p = clamp((10 - mainRemainSec) / 10, 0, 1);
-            targetStageGlowBoost = 0.20 + (0.45 - 0.20) * p;
+            targetStageGlowBoost = 0.40 + (0.90 - 0.40) * p;
           }
         }
+
+        syncActiveStepHighlight(preset, activeStep, clampedElapsedMs >= totalDurMs);
 
         const totalStageSpanMin = Math.max(0.0001, examEndMinutes - activeStep.startMinutes);
         const stepSpanMin = Math.max(0.0001, activeStep.endMinutes - activeStep.startMinutes);
@@ -1905,10 +1995,10 @@ export default function App() {
         if (relElapsed < REL_TOTAL && targetStageGlowBoost < 0.02) {
           if (relElapsed < 1400) {
             const p = easeSine(relElapsed / 1400);
-            finalGlowBoost = st.glowReleaseFromBoost + (-0.12 - st.glowReleaseFromBoost) * p;
+            finalGlowBoost = st.glowReleaseFromBoost + (-0.24 - st.glowReleaseFromBoost) * p;
           } else {
             const p = easeSine((relElapsed - 1400) / (REL_TOTAL - 1400));
-            finalGlowBoost = -0.12 * (1 - p);
+            finalGlowBoost = -0.24 * (1 - p);
           }
         } else if (relElapsed >= REL_TOTAL) {
           st.glowReleaseStartPerf = 0;
@@ -1917,7 +2007,13 @@ export default function App() {
       }
       applyClockGlowBoost(finalGlowBoost);
     },
-    [applyClockGlowBoost, checkAndTriggerCues, releaseWakeLock, updateClockHandsForMinutes]
+    [
+      applyClockGlowBoost,
+      checkAndTriggerCues,
+      releaseWakeLock,
+      syncActiveStepHighlight,
+      updateClockHandsForMinutes,
+    ]
   );
 
   // B6: Seek running timer to arbitrary elapsed ms (for prev/next bell & ±30s adjustment)
@@ -2265,19 +2361,6 @@ export default function App() {
 
     const handleVideoTimeUpdate = () => {
       wakeVideoProgressMsRef.current = performance.now();
-      if (
-        videoEl &&
-        !videoEl.srcObject &&
-        Number.isFinite(videoEl.duration) &&
-        videoEl.duration > 2 &&
-        videoEl.currentTime >= videoEl.duration - 0.75
-      ) {
-        try {
-          videoEl.currentTime = 0.08;
-        } catch {
-          // ignore
-        }
-      }
     };
 
     const handleVideoEnded = () => {
@@ -2322,9 +2405,7 @@ export default function App() {
         stopWakeLockVideo();
         return;
       }
-      if (isAndroidBrowser() || wakeLockNativeBlockedRef.current || !('wakeLock' in navigator)) {
-        startWakeLockVideo();
-      }
+      startWakeLockVideo();
       if (!document.hidden) {
         requestWakeLock();
       }
@@ -2343,9 +2424,7 @@ export default function App() {
       if (!keepScreenAwakeRef.current) return;
       const sentinel = wakeLockSentinelRef.current;
       const needsNative = !document.hidden && (!sentinel || Boolean(sentinel.released));
-      const needsVideo =
-        (isAndroidBrowser() || wakeLockNativeBlockedRef.current || !('wakeLock' in navigator)) &&
-        Boolean(videoEl && videoEl.paused);
+      const needsVideo = Boolean(videoEl && videoEl.paused);
       if (needsNative || needsVideo) {
         requestWakeLock();
       }
@@ -2375,30 +2454,26 @@ export default function App() {
       if (!keepScreenAwakeRef.current) return;
       const sentinel = wakeLockSentinelRef.current;
       const droppedNative = !document.hidden && (!sentinel || Boolean(sentinel.released));
-      const shouldKeepVideo =
-        isAndroidBrowser() || wakeLockNativeBlockedRef.current || !('wakeLock' in navigator);
-      const isVideoFrozen =
-        shouldKeepVideo &&
-        Boolean(
-          videoEl &&
-            !videoEl.paused &&
-            !videoEl.srcObject &&
-            wakeVideoProgressMsRef.current > 0 &&
-            performance.now() - wakeVideoProgressMsRef.current > 5500
-        );
+      const isVideoFrozen = Boolean(
+        videoEl &&
+          !videoEl.paused &&
+          !videoEl.srcObject &&
+          wakeVideoProgressMsRef.current > 0 &&
+          performance.now() - wakeVideoProgressMsRef.current > 5500
+      );
       if (isVideoFrozen && videoEl) {
         try {
-          videoEl.currentTime = 0.05;
+          videoEl.currentTime = 0;
         } catch {
           // ignore
         }
         startWakeLockVideo();
       }
-      const droppedVideo = shouldKeepVideo && Boolean(videoEl && videoEl.paused);
+      const droppedVideo = Boolean(videoEl && videoEl.paused);
       if (droppedNative || droppedVideo) {
         requestWakeLock();
       }
-    }, 3000);
+    }, 2500);
 
     return () => {
       if (videoEl) {
@@ -2866,6 +2941,11 @@ export default function App() {
     if (st.phase !== 'rise' && st.phase !== 'hold') return;
     if (st.rafId) cancelAnimationFrame(st.rafId);
 
+    if (runAuxHideTimerRef.current) {
+      window.clearTimeout(runAuxHideTimerRef.current);
+      runAuxHideTimerRef.current = null;
+    }
+
     stopBell();
     stopEnglishAudio();
     if (!keepScreenAwakeRef.current) {
@@ -2968,6 +3048,54 @@ export default function App() {
     [customSequenceConfig]
   );
   const computedSequenceRows = appliedAnalysis.rows;
+
+  // Auto-scroll timetable list so the highlighted active bell is positioned 2nd from the top (1st from top = previous bell; min 2 visible at top, or 1 if only 1 selected)
+  useEffect(() => {
+    if (!isTimetablePanelOpen) return;
+    const timer = window.setTimeout(() => {
+      const scrollEl = rtScrollListRef.current;
+      if (!scrollEl) return;
+      const stageEl = scrollEl.querySelector<HTMLElement>('.rt-list-stage');
+      if (!stageEl) return;
+      const cards = Array.from(stageEl.querySelectorAll<HTMLElement>('.rt-row-card'));
+      if (cards.length === 0) {
+        stageEl.style.paddingBottom = '0px';
+        return;
+      }
+      if (cards.length === 1) {
+        stageEl.style.paddingBottom = '0px';
+        scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const activeIdx = cards.findIndex(
+        (c) => c.querySelector('.rt-item-btn.is-current') !== null
+      );
+      const targetTopIdx =
+        activeIdx >= 0 ? clamp(activeIdx - 1, 0, Math.max(0, cards.length - 2)) : 0;
+
+      const lastTwoHeight =
+        (cards[cards.length - 2]?.offsetHeight || 58) +
+        (cards[cards.length - 1]?.offsetHeight || 58) +
+        14;
+      const extraPad = Math.max(12, scrollEl.clientHeight - lastTwoHeight);
+      stageEl.style.paddingBottom = `${extraPad}px`;
+
+      const topCard = cards[targetTopIdx];
+      if (!topCard) return;
+      const stageOffsetTop = stageEl.offsetTop || 0;
+      const targetScrollTop = Math.max(0, topCard.offsetTop - stageOffsetTop);
+      scrollEl.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+    }, 65);
+
+    return () => window.clearTimeout(timer);
+  }, [
+    activeRowId,
+    activeCustomNodeId,
+    timetableViewMode,
+    isTimetablePanelOpen,
+    computedSequenceRows.length,
+  ]);
 
   const draftAnalysis = useMemo(
     () => analyzeSequenceConfig(draftSequenceConfig),
@@ -3182,7 +3310,7 @@ export default function App() {
     });
   };
 
-  // B3: Keep 응시 조합 checkboxes & 탐구 과목 수 synchronized with draftSequenceConfig.selectedNodeIds
+  // B3: Keep 응시 조합 checkboxes & 탐구 과목 수 (1과목 / 2과목) synchronized with draftSequenceConfig.selectedNodeIds
   useEffect(() => {
     const sel = new Set(draftSequenceConfig.selectedNodeIds);
     const hasGroup = (gid: CsatSubjectGroupId) =>
@@ -3198,7 +3326,11 @@ export default function App() {
       inq2: hasInq2,
       lang2: hasGroup('lang2'),
     });
-    setSubjInqCount(hasInq2 ? 2 : hasInq1 ? 1 : 0);
+    if (hasInq2) {
+      setSubjInqCount(2);
+    } else if (hasInq1) {
+      setSubjInqCount(1);
+    }
   }, [draftSequenceConfig.selectedNodeIds]);
 
   const filterGroupNodeIdsByScope = useCallback(
@@ -3241,9 +3373,40 @@ export default function App() {
     [filterGroupNodeIdsByScope, subjAutoChecked, subjAutoScope, updateDraftConfig]
   );
 
-  // B3: Live change of 탐구 과목 수 (2과목 / 1과목 / 미응시) in 응시 조합
+  // B3: Live toggle of 탐구 checkbox in 응시 조합
+  const handleSubjInqCheckboxToggle = useCallback(() => {
+    const currentlyChecked = subjAutoChecked.inq1 || subjAutoChecked.inq2;
+    const nextChecked = !currentlyChecked;
+    const targetCount = subjInqCount === 1 ? 1 : 2;
+
+    const allInqIds = CSAT_SELECTABLE_CUE_NODES.filter(
+      (n) => n.subjectGroupId === 'inq1' || n.subjectGroupId === 'inq2'
+    ).map((n) => n.nodeId);
+    const inq1Scoped = filterGroupNodeIdsByScope('inq1', subjAutoScope);
+    const inq2Scoped = filterGroupNodeIdsByScope('inq2', subjAutoScope);
+
+    updateDraftConfig((prev) => {
+      const set = new Set(prev.selectedNodeIds);
+      allInqIds.forEach((id) => set.delete(id));
+      if (nextChecked) {
+        inq1Scoped.forEach((id) => set.add(id));
+        if (targetCount >= 2) {
+          inq2Scoped.forEach((id) => set.add(id));
+        }
+      }
+      const orderedIds = CSAT_SELECTABLE_CUE_NODES.filter((n) => set.has(n.nodeId)).map(
+        (n) => n.nodeId
+      );
+      return {
+        ...prev,
+        selectedNodeIds: orderedIds,
+      };
+    });
+  }, [filterGroupNodeIdsByScope, subjAutoChecked.inq1, subjAutoChecked.inq2, subjAutoScope, subjInqCount, updateDraftConfig]);
+
+  // B3: Live change of 탐구 과목 수 (1과목 / 2과목) in 응시 조합
   const handleSubjInqCountSelect = useCallback(
-    (nextCount: number) => {
+    (nextCount: 1 | 2) => {
       setSubjInqCount(nextCount);
       setOpenCustomPopup(null);
 
@@ -3256,9 +3419,7 @@ export default function App() {
       updateDraftConfig((prev) => {
         const set = new Set(prev.selectedNodeIds);
         allInqIds.forEach((id) => set.delete(id));
-        if (nextCount >= 1) {
-          inq1Scoped.forEach((id) => set.add(id));
-        }
+        inq1Scoped.forEach((id) => set.add(id));
         if (nextCount >= 2) {
           inq2Scoped.forEach((id) => set.add(id));
         }
@@ -3280,13 +3441,14 @@ export default function App() {
       setSubjAutoScope(nextScope);
       setOpenCustomPopup(null);
 
+      const isInqActive = subjAutoChecked.inq1 || subjAutoChecked.inq2;
       const groups = new Set<CsatSubjectGroupId>();
       if (subjAutoChecked.kor) groups.add('kor');
       if (subjAutoChecked.math) groups.add('math');
       if (subjAutoChecked.eng) groups.add('eng');
       if (subjAutoChecked.hist) groups.add('hist');
-      if (subjInqCount >= 1) groups.add('inq1');
-      if (subjInqCount >= 2) groups.add('inq2');
+      if (isInqActive && subjInqCount >= 1) groups.add('inq1');
+      if (isInqActive && subjInqCount >= 2) groups.add('inq2');
       if (subjAutoChecked.lang2) groups.add('lang2');
 
       const nextIds = CSAT_SELECTABLE_CUE_NODES.filter((n) => {
@@ -3308,13 +3470,14 @@ export default function App() {
 
   // B3: Subject-based auto configuration (explicit reset intervals + apply)
   const handleApplySubjectAutoBuild = () => {
+    const isInqActive = subjAutoChecked.inq1 || subjAutoChecked.inq2;
     const groups = new Set<CsatSubjectGroupId>();
     if (subjAutoChecked.kor) groups.add('kor');
     if (subjAutoChecked.math) groups.add('math');
     if (subjAutoChecked.eng) groups.add('eng');
     if (subjAutoChecked.hist) groups.add('hist');
-    if (subjInqCount >= 1) groups.add('inq1');
-    if (subjInqCount >= 2) groups.add('inq2');
+    if (isInqActive && subjInqCount >= 1) groups.add('inq1');
+    if (isInqActive && subjInqCount >= 2) groups.add('inq2');
     if (subjAutoChecked.lang2) groups.add('lang2');
 
     if (groups.size === 0) {
@@ -4415,7 +4578,7 @@ export default function App() {
       />
 
       {/* 좌측 상단 햄버거 메뉴 바 */}
-      <div id="topLeftMenu">
+      <div id="topLeftMenu" ref={topLeftMenuRef}>
         <div className="top-left-bar">
           <button
             id="hamburgerBtn"
@@ -4701,6 +4864,8 @@ export default function App() {
                           </span>
                           <svg
                             className="chevron-icon"
+                            width="12"
+                            height="12"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -5113,7 +5278,7 @@ export default function App() {
                       <span className="ui-opt-text">
                         <span>본령 종료 전 블러 애니메이션</span>
                         <span className="ui-opt-sub">
-                          종료 10분~1분 전 +5%, 1분~10초 전 +20%, 10초~0초 연속 강화 후 타종 시 완화
+                          종료 10분~1분 전 +10%, 1분~10초 전 +40%, 10초~0초 +90% 연속 강화 후 타종 시 완화
                         </span>
                       </span>
                       <input
@@ -5153,7 +5318,7 @@ export default function App() {
                       <span className="ui-opt-text">
                         <span>준비령 종료 전 블러 애니메이션</span>
                         <span className="ui-opt-sub">
-                          본령 시작 1분~10초 전 +5%, 10초~0초 +20% 연속 강화 후 타종 시 완화
+                          본령 시작 1분~10초 전 +10%, 10초~0초 +40% 연속 강화 후 타종 시 완화
                         </span>
                       </span>
                       <input
@@ -5424,19 +5589,23 @@ export default function App() {
           </div>
         </div>
 
-        <div className="rt-scroll-list">
+        <div className="rt-scroll-list" ref={rtScrollListRef}>
           <div
             key={timetableViewMode}
             className={`rt-list-stage ${timetableSwitchAnim !== 'none' ? `anim-${timetableSwitchAnim}` : ''}`}
           >
             {timetableViewMode === 'all' ? (
               CSAT_FULL_TIMETABLE.map((row, idx) => {
-                const isCurrent = row.id === activeRowId;
+                const matchedNode = CSAT_SELECTABLE_CUE_NODES[idx] || null;
+                const isCurrent =
+                  row.id === activeRowId ||
+                  (activeCustomNodeId !== null &&
+                    (row.startNodeId === activeCustomNodeId ||
+                      matchedNode?.nodeId === activeCustomNodeId));
                 const rowKey = `all_${row.id}`;
                 const isExpanded = expandedTimetableKey === rowKey;
                 const isInfoOpen = expandedInfoKey === rowKey;
                 const prefix = row.periodLabel !== '-' ? `${row.periodLabel} · ` : '';
-                const matchedNode = CSAT_SELECTABLE_CUE_NODES[idx] || null;
                 const bellItem = matchedNode?.bellCode
                   ? CSAT_37_BELL_FILES.find((b) => b.code === matchedNode.bellCode)
                   : null;
@@ -5527,7 +5696,10 @@ export default function App() {
             ) : (
               computedSequenceRows.map((row, idx) => {
                 const isCurrent =
-                  activeCustomNodeId !== null ? row.node.nodeId === activeCustomNodeId : false;
+                  activeCustomNodeId !== null
+                    ? row.node.nodeId === activeCustomNodeId
+                    : CSAT_FULL_TIMETABLE.find((r) => r.id === activeRowId)?.startNodeId ===
+                      row.node.nodeId;
                 const rowKey = `sel_${row.node.nodeId}`;
                 const isExpanded = expandedTimetableKey === rowKey;
                 const isInfoOpen = expandedInfoKey === rowKey;
@@ -5662,13 +5834,14 @@ export default function App() {
         </div>
 
         <div id="primaryRow">
-          {/* B6: PAUSE, CANCEL 주변 투명 터치 레이어 (1회 터치 시 보조 컨트롤 노출, 3초 비활성 시 자동 숨김) */}
+          {/* B6: PAUSE, CANCEL 주변 투명 터치 레이어 (1회 터치 시 보조 컨트롤 노출, 3초 비활성 시 자동 숨김; CANCEL 터치 시에는 노출 제외) */}
           <div
             id="runTouchZone"
             className={`interactive-zone ${isRunningUi ? '' : 'is-disabled'} ${
               isRunningUi && isRunAuxRevealed ? 'is-revealed' : ''
             }`}
-            onPointerDown={() => {
+            onPointerDown={(e) => {
+              if ((e.target as HTMLElement | null)?.closest('#cancelBtn')) return;
               if (isRunningUi) {
                 revealRunAuxControls();
               }
@@ -5779,7 +5952,14 @@ export default function App() {
                 >
                   {pauseLabel}
                 </button>
-                <button id="cancelBtn" className="lg-btn" type="button" onClick={handleCancel}>
+                <button
+                  id="cancelBtn"
+                  className="lg-btn"
+                  type="button"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onClick={handleCancel}
+                >
                   CANCEL
                 </button>
               </div>
@@ -5951,8 +6131,26 @@ export default function App() {
                   </label>
                 ))}
 
-                <div className="subj-check-label">
-                  <span>탐구</span>
+                <div
+                  className={`subj-check-label ${
+                    subjAutoChecked.inq1 || subjAutoChecked.inq2 ? 'is-checked' : ''
+                  }`}
+                >
+                  <label
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 5,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={subjAutoChecked.inq1 || subjAutoChecked.inq2}
+                      onChange={handleSubjInqCheckboxToggle}
+                    />
+                    <span>탐구</span>
+                  </label>
                   <div className="custom-select-wrap">
                     <button
                       type="button"
@@ -5964,13 +6162,13 @@ export default function App() {
                       }
                       aria-haspopup="listbox"
                       aria-expanded={openCustomPopup === 'subj_inq'}
-                      aria-label="탐구 응시 과목 수 선택"
+                      aria-label="탐구 응시 과목 수 선택 (1과목 또는 2과목)"
                     >
-                      <span>
-                        {subjInqCount === 2 ? '2과목' : subjInqCount === 1 ? '1과목' : '미응시'}
-                      </span>
+                      <span>{subjInqCount === 1 ? '1과목' : '2과목'}</span>
                       <svg
                         className="chevron-icon"
+                        width="12"
+                        height="12"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -5984,11 +6182,12 @@ export default function App() {
 
                     {openCustomPopup === 'subj_inq' && (
                       <div className="custom-select-popover" role="listbox" aria-label="탐구 과목 수">
-                        {[
-                          { value: 2, label: '2과목', badge: '탐구 1·2' },
-                          { value: 1, label: '1과목', badge: '탐구 1' },
-                          { value: 0, label: '미응시', badge: '제외' },
-                        ].map((opt) => (
+                        {(
+                          [
+                            { value: 2 as const, label: '2과목', badge: '탐구 1·2' },
+                            { value: 1 as const, label: '1과목', badge: '탐구 1' },
+                          ]
+                        ).map((opt) => (
                           <button
                             key={opt.value}
                             type="button"
@@ -6043,6 +6242,8 @@ export default function App() {
                       </span>
                       <svg
                         className="chevron-icon"
+                        width="12"
+                        height="12"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -6569,6 +6770,8 @@ export default function App() {
                                 </span>
                                 <svg
                                   className="chevron-icon"
+                                  width="12"
+                                  height="12"
                                   viewBox="0 0 24 24"
                                   fill="none"
                                   stroke="currentColor"
