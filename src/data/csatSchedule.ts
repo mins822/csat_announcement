@@ -1298,24 +1298,15 @@ export function buildCueTimeline(preset: CsatSessionPreset): CueTimelineEvent[] 
       const startOffsetSec = Math.round(step.startMinutes * 60);
       const endOffsetSec = Math.round(step.endMinutes * 60);
 
-      if (step.stopsEnglishAudioAtStart) {
-        const ck = `custom_eng_stop_start_${i}_${step.id}`;
-        events.push({
-          key: ck,
-          cueKey: ck,
-          offsetSec: startOffsetSec,
-          kind: 'english_stop',
-          title: '영어 듣기 종료',
-          label: '영어 듣기 종료',
-          periodLabel: step.periodLabel,
-          stopsEnglishAudio: true,
-        });
-      }
-
       if (step.startBellCode) {
         const bellItem = CSAT_37_BELL_FILES.find((b) => b.code === step.startBellCode);
         if (bellItem) {
           const ck = `custom_bell_start_${i}_${step.id}_${bellItem.code}`;
+          const shouldStopEng =
+            Boolean(step.stopsEnglishAudioAtStart) ||
+            bellItem.periodLabel !== '3교시' ||
+            Boolean(bellItem.isEndBell) ||
+            ['014', '015', '016', '018'].includes(bellItem.code);
           events.push({
             key: ck,
             cueKey: ck,
@@ -1328,6 +1319,7 @@ export function buildCueTimeline(preset: CsatSessionPreset): CueTimelineEvent[] 
             periodLabel: bellItem.periodLabel,
             fallbackBellType: bellItem.fallbackBellType,
             timeText: bellItem.timeText,
+            stopsEnglishAudio: shouldStopEng,
           });
         }
       }
@@ -1350,23 +1342,15 @@ export function buildCueTimeline(preset: CsatSessionPreset): CueTimelineEvent[] 
       }
 
       if (i === preset.steps.length - 1) {
-        if (step.stopsEnglishAudioAtEnd) {
-          const ck = `custom_eng_stop_end_${i}_${step.id}`;
-          events.push({
-            key: ck,
-            cueKey: ck,
-            offsetSec: endOffsetSec,
-            kind: 'english_stop',
-            title: '영어 듣기 종료',
-            label: '영어 듣기 종료',
-            periodLabel: step.periodLabel,
-            stopsEnglishAudio: true,
-          });
-        }
         if (step.endBellCode) {
           const endBellItem = CSAT_37_BELL_FILES.find((b) => b.code === step.endBellCode);
           if (endBellItem) {
             const ck = `custom_bell_end_${i}_${step.id}_${endBellItem.code}`;
+            const shouldStopEngEnd =
+              Boolean(step.stopsEnglishAudioAtEnd) ||
+              endBellItem.periodLabel !== '3교시' ||
+              Boolean(endBellItem.isEndBell) ||
+              ['014', '015', '016', '018'].includes(endBellItem.code);
             events.push({
               key: ck,
               cueKey: ck,
@@ -1379,6 +1363,7 @@ export function buildCueTimeline(preset: CsatSessionPreset): CueTimelineEvent[] 
               periodLabel: endBellItem.periodLabel,
               fallbackBellType: endBellItem.fallbackBellType,
               timeText: endBellItem.timeText,
+              stopsEnglishAudio: shouldStopEngEnd,
             });
           }
         }
@@ -1408,6 +1393,10 @@ export function buildCueTimeline(preset: CsatSessionPreset): CueTimelineEvent[] 
     }
     const offsetSec = Math.round((bellItem.triggerMinutes - baseStartMin) * 60);
     const ck = `bell37_${bellItem.code}`;
+    const shouldStopEng =
+      bellItem.periodLabel !== '3교시' ||
+      Boolean(bellItem.isEndBell) ||
+      ['014', '015', '016', '018'].includes(bellItem.code);
     events.push({
       key: ck,
       cueKey: ck,
@@ -1420,6 +1409,7 @@ export function buildCueTimeline(preset: CsatSessionPreset): CueTimelineEvent[] 
       periodLabel: bellItem.periodLabel,
       fallbackBellType: bellItem.fallbackBellType,
       timeText: bellItem.timeText,
+      stopsEnglishAudio: shouldStopEng,
     });
   }
 
@@ -1455,20 +1445,6 @@ export function buildCueTimeline(preset: CsatSessionPreset): CueTimelineEvent[] 
       periodLabel: '3교시',
       timeText: '13:10',
       triggersEnglishAudio: true,
-    });
-  }
-
-  if (baseStartMin < ENG_END_MIN && baseEndMin >= ENG_END_MIN) {
-    const ck = 'eng_listening_1420_end';
-    events.push({
-      key: ck,
-      cueKey: ck,
-      offsetSec: Math.round((ENG_END_MIN - baseStartMin) * 60),
-      kind: 'english_stop',
-      title: '영어 듣기 종료',
-      label: '영어 듣기 종료',
-      periodLabel: '3교시',
-      stopsEnglishAudio: true,
     });
   }
 

@@ -83,6 +83,7 @@ interface StoredCustomSettings {
   keepScreenAwake: boolean;
   mainBellGlowAnim: boolean;
   prelimBellGlowAnim: boolean;
+  timetableOpacity?: number;
   updatedAt?: string;
 }
 
@@ -133,6 +134,10 @@ function readStoredCustomSettings(): {
       typeof parsed?.mainBellGlowAnim === 'boolean' ? parsed.mainBellGlowAnim : true;
     const prelimBellGlowAnim =
       typeof parsed?.prelimBellGlowAnim === 'boolean' ? parsed.prelimBellGlowAnim : true;
+    const timetableOpacity =
+      typeof parsed?.timetableOpacity === 'number' && !Number.isNaN(parsed.timetableOpacity)
+        ? Math.min(98, Math.max(45, Math.round(parsed.timetableOpacity)))
+        : 82;
 
     return {
       settings: {
@@ -147,6 +152,7 @@ function readStoredCustomSettings(): {
         keepScreenAwake,
         mainBellGlowAnim,
         prelimBellGlowAnim,
+        timetableOpacity,
       },
       correctedCount,
     };
@@ -460,6 +466,13 @@ export default function App() {
   const [prelimBellGlowAnim, setPrelimBellGlowAnim] = useState<boolean>(() =>
     initialStored ? initialStored.prelimBellGlowAnim : true
   );
+  const [timetableOpacity, setTimetableOpacity] = useState<number>(() =>
+    initialStored && typeof initialStored.timetableOpacity === 'number'
+      ? initialStored.timetableOpacity
+      : 82
+  );
+  const [openCustomPopup, setOpenCustomPopup] = useState<string | null>(null);
+  const [customTimeDraftText, setCustomTimeDraftText] = useState<string>('');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() => {
     if (typeof document === 'undefined') return false;
     const doc = document as Document & { webkitFullscreenElement?: Element | null };
@@ -586,6 +599,9 @@ export default function App() {
 
   const prelimBellGlowAnimRef = useRef<boolean>(prelimBellGlowAnim);
   prelimBellGlowAnimRef.current = prelimBellGlowAnim;
+
+  const timetableOpacityRef = useRef<number>(timetableOpacity);
+  timetableOpacityRef.current = timetableOpacity;
 
   const wakeLockSentinelRef = useRef<{
     released?: boolean;
@@ -986,7 +1002,8 @@ export default function App() {
       nextEngVol: number = englishVolumeRef.current,
       nextKeepAwake: boolean = keepScreenAwakeRef.current,
       nextMainGlow: boolean = mainBellGlowAnimRef.current,
-      nextPrelimGlow: boolean = prelimBellGlowAnimRef.current
+      nextPrelimGlow: boolean = prelimBellGlowAnimRef.current,
+      nextTtOpacity: number = timetableOpacityRef.current
     ) => {
       try {
         const validTheme: ThemePreference = VALID_THEME_PREFS.includes(nextThemePref)
@@ -1007,6 +1024,7 @@ export default function App() {
           keepScreenAwake: Boolean(nextKeepAwake),
           mainBellGlowAnim: Boolean(nextMainGlow),
           prelimBellGlowAnim: Boolean(nextPrelimGlow),
+          timetableOpacity: clamp(Math.round(nextTtOpacity), 45, 98),
           updatedAt: new Date().toISOString(),
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -1016,6 +1034,24 @@ export default function App() {
     },
     [devMode, selectedPresetId]
   );
+
+  // Sync timetable panel opacity CSS custom property
+  useEffect(() => {
+    const alpha = clamp(timetableOpacity / 100, 0.45, 0.98);
+    document.documentElement.style.setProperty('--tt-panel-alpha', alpha.toFixed(2));
+  }, [timetableOpacity]);
+
+  // Close custom popovers on outside click
+  useEffect(() => {
+    if (!openCustomPopup) return;
+    const handleOutsidePointerDown = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && target.closest('.custom-select-wrap')) return;
+      setOpenCustomPopup(null);
+    };
+    document.addEventListener('pointerdown', handleOutsidePointerDown, true);
+    return () => document.removeEventListener('pointerdown', handleOutsidePointerDown, true);
+  }, [openCustomPopup]);
 
   // Sync audio volumes when slider changes (B5)
   useEffect(() => {
@@ -1391,29 +1427,82 @@ export default function App() {
       if (!firstStep) return;
       const isCustomSeq = Boolean(preset.isCustomSequence);
 
+      const matchedStartNode = firstStep.startNodeId
+        ? CSAT_SELECTABLE_CUE_NODES.find((n) => n.nodeId === firstStep.startNodeId)
+        : null;
+      const firstCat = firstStep.category || '';
+      const isFirstPrepare =
+        matchedStartNode?.stageType === 'prepare' ||
+        firstStep.bellAtStart === 'prepare' ||
+        firstCat.startsWith('준비령') ||
+        (firstCat.includes('준비령') && !firstCat.includes('→ 준비령'));
+      const isFirstMainExam =
+        !isFirstPrepare &&
+        (matchedStartNode?.stageType === 'main' ||
+          matchedStartNode?.stageType === 'listening' ||
+          firstStep.bellAtStart === 'main' ||
+          firstStep.bellAtStart === 'listening_intro' ||
+          firstCat.startsWith('본령') ||
+          firstCat.includes('듣기평가 안내방송 및 본령'));
+
+      let examEndStep: CsatTimetableRow | null = null;
+      let nextWarnLabel: string | null = null;
+      if (isFirstMainExam && (preset.steps.length > 1 || isCustomSeq)) {
+        for (let j = 1; j < preset.steps.length; j++) {
+          const nxt = preset.steps[j];
+          const nxtCat = nxt.category || '';
+          const nxtNode = nxt.startNodeId
+            ? CSAT_SELECTABLE_CUE_NODES.find((n) => n.nodeId === nxt.startNodeId)
+            : null;
+          const isSameGroup =
+            nxt.displayTitle === firstStep.displayTitle ||
+            (nxt.periodLabel !== '-' && nxt.periodLabel === firstStep.periodLabel);
+          const isWarnFollow =
+            nxtNode?.stageType === 'warn' ||
+            nxt.bellAtStart === 'warn_10m' ||
+            nxt.bellAtStart === 'warn_5m' ||
+            nxtCat.startsWith('종료 10분 전') ||
+            nxtCat.startsWith('종료 5분 전');
+          if (isSameGroup && isWarnFollow) {
+            examEndStep = nxt;
+            if (!nextWarnLabel) {
+              nextWarnLabel =
+                nxtNode?.stageShortLabel || (nxtCat.split(' → ')[0] || '종료 10분 전');
+            }
+          } else {
+            break;
+          }
+        }
+      }
+
       const dispStartMin = isCustomSeq
         ? syncMode === 'original_csat_time'
           ? (firstStep.originalStartMinutes ?? preset.startMinutes)
           : (firstStep.customStartMinutes ?? preset.startMinutes)
         : preset.startMinutes;
 
+      const targetEndRow = examEndStep || firstStep;
       const dispEndMin = isCustomSeq
         ? syncMode === 'original_csat_time'
-          ? (firstStep.originalEndMinutes ?? preset.endMinutes)
-          : (firstStep.customEndMinutes ?? preset.endMinutes)
-        : preset.endMinutes;
+          ? (targetEndRow.originalEndMinutes ?? preset.endMinutes)
+          : (targetEndRow.customEndMinutes ?? preset.endMinutes)
+        : examEndStep
+          ? examEndStep.endMinutes
+          : preset.endMinutes;
 
-      const stepDurSec =
-        firstStep.durationSeconds ??
-        (firstStep.durationMinutes ?? preset.endMinutes - preset.startMinutes) * 60;
-      const idleRemainMs = isCustomSeq
-        ? stepDurSec * 1000
-        : (preset.endMinutes - preset.startMinutes) * 60 * 1000;
+      const stepDurSec = examEndStep
+        ? Math.max(0, (examEndStep.endMinutes - firstStep.startMinutes) * 60)
+        : firstStep.durationSeconds ??
+          (firstStep.durationMinutes ?? preset.endMinutes - preset.startMinutes) * 60;
+      const idleRemainMs =
+        isCustomSeq || examEndStep
+          ? stepDurSec * 1000
+          : (preset.endMinutes - preset.startMinutes) * 60 * 1000;
 
       if (titleRef.current) {
         titleRef.current.textContent = preset.displayTitle;
       }
-      document.title = '대학수학능력시험 안내방송';
+      document.title = '2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림';
       if (startLabRef.current) {
         startLabRef.current.innerHTML = `START - TIME<br>${formatAmPmTime(dispStartMin)}`;
         startLabRef.current.style.opacity = '1';
@@ -1427,7 +1516,17 @@ export default function App() {
       }
       if (stageBadgeRef.current) {
         const pPrefix = firstStep.periodLabel !== '-' ? `${firstStep.periodLabel} · ` : '';
-        stageBadgeRef.current.textContent = `${pPrefix}${firstStep.category} 대기`;
+        if (examEndStep && nextWarnLabel) {
+          const mainStageTitle = firstCat.includes('듣기평가')
+            ? '듣기평가 안내방송 및 본령'
+            : '본령';
+          stageBadgeRef.current.textContent = `${pPrefix}${mainStageTitle} 대기\n다음 방송: ${nextWarnLabel}`;
+        } else if (firstCat.includes(' → ')) {
+          const [curStage, nxtStage] = firstCat.split(' → ');
+          stageBadgeRef.current.textContent = `${pPrefix}${curStage} 대기\n다음 방송: ${nxtStage}`;
+        } else {
+          stageBadgeRef.current.textContent = `${pPrefix}${firstCat} 대기`;
+        }
       }
       setActiveRowId(firstStep.id);
       if (preset.isCustomSequence && firstStep.id.startsWith('custom_seq_')) {
@@ -1596,21 +1695,8 @@ export default function App() {
         if (titleRef.current) {
           titleRef.current.textContent = activeStep.displayTitle;
         }
-        const stepRemainMs = Math.max(0, (activeStep.endMinutes - simMinutes) * 60000);
-        const dispRemainMs =
-          preset.steps.length > 1 || preset.isCustomSequence ? stepRemainMs : remainingMs;
-        if (remainDigitsRef.current) {
-          remainDigitsRef.current.textContent = formatDurationClock(dispRemainMs);
-        }
-        if (stageBadgeRef.current) {
-          const pPrefix = activeStep.periodLabel !== '-' ? `${activeStep.periodLabel} · ` : '';
-          const speedPrefix = playbackSpeedRef.current > 1 ? `[×${playbackSpeedRef.current}] ` : '';
-          const statusSuffix = st.isPaused ? ' (일시정지)' : ' 진행 중';
-          stageBadgeRef.current.textContent = `${speedPrefix}${pPrefix}${activeStep.category}${statusSuffix}`;
-        }
 
-        // Stage-specific Clock Background Blur Animation (본령 & 준비령)
-        const remainSec = dispRemainMs / 1000;
+        // Stage-specific detection (본령, 준비령, 및 종료령까지 남은 시간 계산)
         const matchedStartNode = activeStep.startNodeId
           ? CSAT_SELECTABLE_CUE_NODES.find((n) => n.nodeId === activeStep.startNodeId)
           : null;
@@ -1635,6 +1721,9 @@ export default function App() {
             catText.includes('듣기평가 안내방송 및 본령'));
 
         let examEndMinutes = activeStep.endMinutes;
+        let examEndStep: CsatTimetableRow | null = null;
+        let nextWarnLabel: string | null = null;
+
         if (isMainExamStage && (preset.steps.length > 1 || preset.isCustomSequence)) {
           for (let j = activeStepIdx + 1; j < preset.steps.length; j++) {
             const nxt = preset.steps[j];
@@ -1653,15 +1742,54 @@ export default function App() {
               nxtCat.startsWith('종료 5분 전');
             if (isSameGroup && isWarnFollow) {
               examEndMinutes = nxt.endMinutes;
+              examEndStep = nxt;
+              if (!nextWarnLabel) {
+                nextWarnLabel =
+                  nxtNode?.stageShortLabel || (nxtCat.split(' → ')[0] || '종료 10분 전');
+              }
             } else {
               break;
             }
           }
         }
+
+        const stepRemainMs = Math.max(0, (activeStep.endMinutes - simMinutes) * 60000);
+        const examRemainMs = Math.max(0, (examEndMinutes - simMinutes) * 60000);
+        // 본령 진행 중에는 종료 10분/5분 전이 아닌 '종료령'까지 남은 시간을 표시
+        const dispRemainMs =
+          preset.steps.length > 1 || preset.isCustomSequence
+            ? examEndMinutes > activeStep.endMinutes
+              ? examRemainMs
+              : stepRemainMs
+            : remainingMs;
+
+        if (remainDigitsRef.current) {
+          remainDigitsRef.current.textContent = formatDurationClock(dispRemainMs);
+        }
+
+        if (stageBadgeRef.current) {
+          const pPrefix = activeStep.periodLabel !== '-' ? `${activeStep.periodLabel} · ` : '';
+          const speedPrefix = playbackSpeedRef.current > 1 ? `[×${playbackSpeedRef.current}] ` : '';
+          const statusSuffix = st.isPaused ? ' (일시정지)' : ' 진행 중';
+
+          if (examEndMinutes > activeStep.endMinutes && nextWarnLabel) {
+            const mainStageTitle = catText.includes('듣기평가')
+              ? '듣기평가 안내방송 및 본령'
+              : '본령';
+            stageBadgeRef.current.textContent = `${speedPrefix}${pPrefix}${mainStageTitle}${statusSuffix}\n다음 방송: ${nextWarnLabel}`;
+          } else if (catText.includes(' → ')) {
+            const [curStage, nxtStage] = catText.split(' → ');
+            stageBadgeRef.current.textContent = `${speedPrefix}${pPrefix}${curStage}${statusSuffix}\n다음 방송: ${nxtStage}`;
+          } else {
+            stageBadgeRef.current.textContent = `${speedPrefix}${pPrefix}${catText}${statusSuffix}`;
+          }
+        }
+
+        const remainSec = stepRemainMs / 1000;
         const mainRemainSec =
           preset.steps.length > 1 || preset.isCustomSequence
-            ? Math.max(0, (examEndMinutes - simMinutes) * 60)
-            : remainSec;
+            ? examRemainMs / 1000
+            : remainingMs / 1000;
 
         if (isPrepareStage && prelimBellGlowAnimRef.current) {
           // 준비령: 본령 시작 1분 전(60s)~10초 전(10s) 0% -> 5%, 10초 전(10s)~0초(0s) 5% -> 20% 연속 강화
@@ -1686,26 +1814,33 @@ export default function App() {
           }
         }
 
+        const totalStageSpanMin = Math.max(0.0001, examEndMinutes - activeStep.startMinutes);
         const stepSpanMin = Math.max(0.0001, activeStep.endMinutes - activeStep.startMinutes);
         const stageElapsedMin = clamp(simMinutes - activeStep.startMinutes, 0, stepSpanMin);
-        const stepProgress = clamp(stageElapsedMin / stepSpanMin, 0, 1);
+        const overallProgress = clamp(
+          (simMinutes - activeStep.startMinutes) / totalStageSpanMin,
+          0,
+          1
+        );
 
-        const emphasisShift = sm(0.35, 0.65, stepProgress);
+        const emphasisShift = sm(0.35, 0.65, overallProgress);
         const startOpacity = 1 - emphasisShift * (1 - 0.38);
         const endOpacity = 0.38 + emphasisShift * (1 - 0.38);
 
         let dispStartMin = activeStep.startMinutes;
-        let dispEndMin = activeStep.endMinutes;
+        let dispEndMin = examEndStep ? examEndStep.endMinutes : activeStep.endMinutes;
 
         if (preset.isCustomSequence) {
+          const targetEndStep = examEndStep || activeStep;
           if (st.clockSyncMode === 'original_csat_time') {
             dispStartMin = activeStep.originalStartMinutes ?? activeStep.startMinutes;
-            dispEndMin = activeStep.originalEndMinutes ?? activeStep.endMinutes;
+            dispEndMin = targetEndStep.originalEndMinutes ?? targetEndStep.endMinutes;
+            const stepOrigEnd = activeStep.originalEndMinutes ?? activeStep.endMinutes;
             clockHandMinutes =
-              clampedElapsedMs >= totalDurMs ? dispEndMin : dispStartMin + stageElapsedMin;
+              clampedElapsedMs >= totalDurMs ? dispEndMin : Math.min(stepOrigEnd, dispStartMin + stageElapsedMin);
           } else {
             dispStartMin = activeStep.customStartMinutes ?? activeStep.startMinutes;
-            dispEndMin = activeStep.customEndMinutes ?? activeStep.endMinutes;
+            dispEndMin = targetEndStep.customEndMinutes ?? targetEndStep.endMinutes;
             clockHandMinutes = dispStartMin + stageElapsedMin;
           }
         }
@@ -2633,14 +2768,21 @@ export default function App() {
 
     setIsMenuOpen(false);
     setIsRunningUi(true);
-    setIsRunAuxRevealed(false);
+    revealRunAuxControls();
     setPauseLabel('PAUSE');
 
     unlockAudioOnGesture();
 
     checkAndTriggerCues(0, 0);
     st.rafId = requestAnimationFrame(stepAnimationFrame);
-  }, [checkAndTriggerCues, requestWakeLock, stepAnimationFrame, stopPreviewBell, unlockAudioOnGesture]);
+  }, [
+    checkAndTriggerCues,
+    requestWakeLock,
+    revealRunAuxControls,
+    stepAnimationFrame,
+    stopPreviewBell,
+    unlockAudioOnGesture,
+  ]);
 
   // B8: Scheduled Start countdown effect
   useEffect(() => {
@@ -3040,7 +3182,131 @@ export default function App() {
     });
   };
 
-  // B3: Subject-based auto configuration
+  // B3: Keep 응시 조합 checkboxes & 탐구 과목 수 synchronized with draftSequenceConfig.selectedNodeIds
+  useEffect(() => {
+    const sel = new Set(draftSequenceConfig.selectedNodeIds);
+    const hasGroup = (gid: CsatSubjectGroupId) =>
+      CSAT_SELECTABLE_CUE_NODES.some((n) => n.subjectGroupId === gid && sel.has(n.nodeId));
+    const hasInq1 = hasGroup('inq1');
+    const hasInq2 = hasGroup('inq2');
+    setSubjAutoChecked({
+      kor: hasGroup('kor'),
+      math: hasGroup('math'),
+      eng: hasGroup('eng'),
+      hist: hasGroup('hist'),
+      inq1: hasInq1,
+      inq2: hasInq2,
+      lang2: hasGroup('lang2'),
+    });
+    setSubjInqCount(hasInq2 ? 2 : hasInq1 ? 1 : 0);
+  }, [draftSequenceConfig.selectedNodeIds]);
+
+  const filterGroupNodeIdsByScope = useCallback(
+    (groupId: CsatSubjectGroupId, scope: 'all' | 'core' | 'real') =>
+      CSAT_SELECTABLE_CUE_NODES.filter((n) => {
+        if (n.subjectGroupId !== groupId) return false;
+        if (scope === 'core') return Boolean(n.isCoreExamStage);
+        if (scope === 'real') return ['main', 'warn', 'end', 'listening'].includes(n.stageType);
+        return true;
+      }).map((n) => n.nodeId),
+    []
+  );
+
+  // B3: Live toggle of a subject checkbox in 응시 조합 (immediately syncs selectedNodeIds)
+  const handleSubjComboCheckboxToggle = useCallback(
+    (groupId: CsatSubjectGroupId) => {
+      const nextCheckedVal = !subjAutoChecked[groupId];
+      setSubjAutoChecked((prev) => ({ ...prev, [groupId]: nextCheckedVal }));
+
+      const allGroupIds = CSAT_SELECTABLE_CUE_NODES.filter(
+        (n) => n.subjectGroupId === groupId
+      ).map((n) => n.nodeId);
+      const scopedGroupIds = filterGroupNodeIdsByScope(groupId, subjAutoScope);
+
+      updateDraftConfig((prev) => {
+        const set = new Set(prev.selectedNodeIds);
+        allGroupIds.forEach((id) => set.delete(id));
+        if (nextCheckedVal) {
+          scopedGroupIds.forEach((id) => set.add(id));
+        }
+        const orderedIds = CSAT_SELECTABLE_CUE_NODES.filter((n) => set.has(n.nodeId)).map(
+          (n) => n.nodeId
+        );
+        return {
+          ...prev,
+          selectedNodeIds: orderedIds,
+        };
+      });
+    },
+    [filterGroupNodeIdsByScope, subjAutoChecked, subjAutoScope, updateDraftConfig]
+  );
+
+  // B3: Live change of 탐구 과목 수 (2과목 / 1과목 / 미응시) in 응시 조합
+  const handleSubjInqCountSelect = useCallback(
+    (nextCount: number) => {
+      setSubjInqCount(nextCount);
+      setOpenCustomPopup(null);
+
+      const allInqIds = CSAT_SELECTABLE_CUE_NODES.filter(
+        (n) => n.subjectGroupId === 'inq1' || n.subjectGroupId === 'inq2'
+      ).map((n) => n.nodeId);
+      const inq1Scoped = filterGroupNodeIdsByScope('inq1', subjAutoScope);
+      const inq2Scoped = filterGroupNodeIdsByScope('inq2', subjAutoScope);
+
+      updateDraftConfig((prev) => {
+        const set = new Set(prev.selectedNodeIds);
+        allInqIds.forEach((id) => set.delete(id));
+        if (nextCount >= 1) {
+          inq1Scoped.forEach((id) => set.add(id));
+        }
+        if (nextCount >= 2) {
+          inq2Scoped.forEach((id) => set.add(id));
+        }
+        const orderedIds = CSAT_SELECTABLE_CUE_NODES.filter((n) => set.has(n.nodeId)).map(
+          (n) => n.nodeId
+        );
+        return {
+          ...prev,
+          selectedNodeIds: orderedIds,
+        };
+      });
+    },
+    [filterGroupNodeIdsByScope, subjAutoScope, updateDraftConfig]
+  );
+
+  // B3: Live change of 밀도 (전체 타종 / 핵심 단계 / 실전 최소) in 응시 조합
+  const handleSubjScopeSelect = useCallback(
+    (nextScope: 'all' | 'core' | 'real') => {
+      setSubjAutoScope(nextScope);
+      setOpenCustomPopup(null);
+
+      const groups = new Set<CsatSubjectGroupId>();
+      if (subjAutoChecked.kor) groups.add('kor');
+      if (subjAutoChecked.math) groups.add('math');
+      if (subjAutoChecked.eng) groups.add('eng');
+      if (subjAutoChecked.hist) groups.add('hist');
+      if (subjInqCount >= 1) groups.add('inq1');
+      if (subjInqCount >= 2) groups.add('inq2');
+      if (subjAutoChecked.lang2) groups.add('lang2');
+
+      const nextIds = CSAT_SELECTABLE_CUE_NODES.filter((n) => {
+        if (!groups.has(n.subjectGroupId)) return false;
+        if (nextScope === 'core') return Boolean(n.isCoreExamStage);
+        if (nextScope === 'real') {
+          return ['main', 'warn', 'end', 'listening'].includes(n.stageType);
+        }
+        return true;
+      }).map((n) => n.nodeId);
+
+      updateDraftConfig((prev) => ({
+        ...prev,
+        selectedNodeIds: nextIds,
+      }));
+    },
+    [subjAutoChecked, subjInqCount, updateDraftConfig]
+  );
+
+  // B3: Subject-based auto configuration (explicit reset intervals + apply)
   const handleApplySubjectAutoBuild = () => {
     const groups = new Set<CsatSubjectGroupId>();
     if (subjAutoChecked.kor) groups.add('kor');
@@ -3619,6 +3885,7 @@ export default function App() {
       keepScreenAwake,
       mainBellGlowAnim,
       prelimBellGlowAnim,
+      timetableOpacity,
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {
       type: 'application/json;charset=utf-8',
@@ -3658,6 +3925,7 @@ export default function App() {
         let nextKeepAwake = keepScreenAwake;
         let nextMainGlow = mainBellGlowAnim;
         let nextPrelimGlow = prelimBellGlowAnim;
+        let nextTtOpacity = timetableOpacity;
 
         if (data.themePref && VALID_THEME_PREFS.includes(data.themePref)) {
           nextTheme = data.themePref as ThemePreference;
@@ -3710,6 +3978,11 @@ export default function App() {
           setPrelimBellGlowAnim(nextPrelimGlow);
           prelimBellGlowAnimRef.current = nextPrelimGlow;
         }
+        if (typeof data.timetableOpacity === 'number' && !Number.isNaN(data.timetableOpacity)) {
+          nextTtOpacity = clamp(Math.round(data.timetableOpacity), 45, 98);
+          setTimetableOpacity(nextTtOpacity);
+          timetableOpacityRef.current = nextTtOpacity;
+        }
         if (data.presetId && engineRef.current.phase === 'idle') {
           if (data.presetId === 'custom_checkbox_sequence') {
             const built = buildCustomSequencePreset(nextSeqConfig);
@@ -3747,7 +4020,8 @@ export default function App() {
           nextEngVol,
           nextKeepAwake,
           nextMainGlow,
-          nextPrelimGlow
+          nextPrelimGlow,
+          nextTtOpacity
         );
         showToast(
           correctedTotal > 0
@@ -3883,6 +4157,16 @@ export default function App() {
         aria-hidden="true"
         tabIndex={-1}
       />
+
+      {/* 검색 엔진(Google 등) 및 웹 접근성을 위한 시맨틱 설명 영역 (시계 화면은 깔끔하게 유지) */}
+      <section className="seo-semantic-region" aria-label="2027학년도 대학수학능력시험 시험장 안내방송 소개">
+        <h1>2027학년도 대학수학능력시험 시험장 안내방송 구현</h1>
+        <p>
+          수능 타종 · 수능 방송 · 수능 알림 · 실제 수능 시험장 안내방송 37개 공식 타종 음원과 3교시 영어
+          듣기평가 자동 재생, 영역별 타종 체크박스 선택 및 시간 간격·시각 설정을 지원하는 수능 시계 및
+          실전 모의고사 타이머 웹 애플리케이션입니다.
+        </p>
+      </section>
 
       <div id="ui">
         <h1 id="title" ref={titleRef} style={{ opacity: 0 }}>
@@ -4377,21 +4661,161 @@ export default function App() {
                     </label>
                   </div>
 
-                  {/* B8: 예약 시작 설정 */}
-                  <div className="drawer-card-panel" aria-label="예약 시작 설정">
+                  {/* B8: 예약 시작 설정 (커스텀 시간 선택 팝업 적용) */}
+                  <div
+                    className="drawer-card-panel"
+                    aria-label="예약 시작 설정"
+                    style={{ position: 'relative', zIndex: openCustomPopup === 'sched_time' ? 60 : 1 }}
+                  >
                     <div className="drawer-card-title">
                       <span>예약 시작 (실제 시각 기준)</span>
                       {scheduledTargetMs !== null && <span>대기 중</span>}
                     </div>
                     <div className="sched-control-row">
-                      <input
-                        type="time"
-                        step={1}
-                        className="sched-time-input"
-                        value={scheduleTimeInput}
-                        onChange={(e) => setScheduleTimeInput(e.target.value)}
-                        aria-label="예약 시작 시각"
-                      />
+                      <div className="custom-select-wrap" style={{ flex: 1 }}>
+                        <button
+                          type="button"
+                          className={`custom-time-trigger ${
+                            openCustomPopup === 'sched_time' ? 'is-open' : ''
+                          }`}
+                          style={{ width: '100%', justifyContent: 'space-between' }}
+                          onClick={() => {
+                            if (openCustomPopup === 'sched_time') {
+                              setOpenCustomPopup(null);
+                            } else {
+                              setCustomTimeDraftText(scheduleTimeInput);
+                              setOpenCustomPopup('sched_time');
+                            }
+                          }}
+                          aria-label="예약 시작 시각 선택"
+                        >
+                          <span>
+                            {(() => {
+                              const [hh = 8, mm = 25, ss = 0] = scheduleTimeInput
+                                .split(':')
+                                .map((n) => Number(n) || 0);
+                              const ampm = hh < 12 ? '오전' : '오후';
+                              const h12 = hh % 12 === 0 ? 12 : hh % 12;
+                              return `${ampm} ${h12}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+                            })()}
+                          </span>
+                          <svg
+                            className="chevron-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+
+                        {openCustomPopup === 'sched_time' && (
+                          <div
+                            className="custom-time-popover"
+                            style={{ left: 0, right: 'auto' }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="custom-time-head">
+                              <span className="custom-time-title">예약 시작 시각 설정</span>
+                              <button
+                                type="button"
+                                className="custom-time-close"
+                                onClick={() => setOpenCustomPopup(null)}
+                              >
+                                닫기
+                              </button>
+                            </div>
+
+                            <div className="custom-time-ampm-row">
+                              {(['AM', 'PM'] as const).map((period) => {
+                                const [hh = 8, mm = 25, ss = 0] = scheduleTimeInput
+                                  .split(':')
+                                  .map((n) => Number(n) || 0);
+                                const isAm = hh < 12;
+                                const active = (period === 'AM' && isAm) || (period === 'PM' && !isAm);
+                                return (
+                                  <button
+                                    key={period}
+                                    type="button"
+                                    className={`custom-time-ampm-btn ${active ? 'is-active' : ''}`}
+                                    onClick={() => {
+                                      let nextH = hh;
+                                      if (period === 'AM' && hh >= 12) nextH = hh - 12;
+                                      if (period === 'PM' && hh < 12) nextH = hh + 12;
+                                      const nextStr = `${String(nextH).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+                                      setScheduleTimeInput(nextStr);
+                                      setCustomTimeDraftText(nextStr);
+                                    }}
+                                  >
+                                    {period === 'AM' ? '오전 (AM)' : '오후 (PM)'}
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            <div className="custom-time-quick-grid">
+                              {[
+                                { label: '08:05 입실', val: '08:05:00' },
+                                { label: '08:25 1교시', val: '08:25:00' },
+                                { label: '10:20 2교시', val: '10:20:00' },
+                                { label: '13:00 3교시', val: '13:00:00' },
+                                { label: '14:40 4교시', val: '14:40:00' },
+                                { label: '1분 뒤 시작', val: '__PLUS_1M__' },
+                              ].map((presetItem) => (
+                                <button
+                                  key={presetItem.label}
+                                  type="button"
+                                  className="custom-time-nudge-btn"
+                                  onClick={() => {
+                                    if (presetItem.val === '__PLUS_1M__') {
+                                      const d = new Date(Date.now() + 60000);
+                                      const s = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+                                      setScheduleTimeInput(s);
+                                      setCustomTimeDraftText(s);
+                                    } else {
+                                      setScheduleTimeInput(presetItem.val);
+                                      setCustomTimeDraftText(presetItem.val);
+                                    }
+                                  }}
+                                >
+                                  {presetItem.label}
+                                </button>
+                              ))}
+                            </div>
+
+                            <div className="custom-time-direct-row">
+                              <input
+                                type="text"
+                                className="custom-time-direct-input"
+                                value={customTimeDraftText}
+                                placeholder="08:25:00"
+                                onChange={(e) => setCustomTimeDraftText(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    setScheduleTimeInput(customTimeDraftText.trim() || '08:25:00');
+                                    setOpenCustomPopup(null);
+                                  }
+                                }}
+                              />
+                              <button
+                                type="button"
+                                className="custom-time-apply-btn"
+                                onClick={() => {
+                                  setScheduleTimeInput(customTimeDraftText.trim() || '08:25:00');
+                                  setOpenCustomPopup(null);
+                                }}
+                              >
+                                확인
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
                       {scheduledTargetMs === null ? (
                         <button
                           type="button"
@@ -4763,6 +5187,38 @@ export default function App() {
                           );
                         }}
                       />
+                    </label>
+
+                    <label className="vol-control-row" style={{ marginTop: 4 }}>
+                      <span>시간표 투명도</span>
+                      <input
+                        type="range"
+                        min={45}
+                        max={98}
+                        value={timetableOpacity}
+                        className="vol-slider"
+                        aria-label="수능 시간표 창 불투명도 조절"
+                        onChange={(e) => {
+                          const v = Number(e.target.value);
+                          setTimetableOpacity(v);
+                          timetableOpacityRef.current = v;
+                          saveCustomSettingsToStorage(
+                            themePref,
+                            selectedPresetId,
+                            devMode,
+                            clockSyncMode,
+                            customSequenceConfig,
+                            bookmarks,
+                            bellVolume,
+                            englishVolume,
+                            keepScreenAwake,
+                            mainBellGlowAnim,
+                            prelimBellGlowAnim,
+                            v
+                          );
+                        }}
+                      />
+                      <span className="vol-val">{timetableOpacity}%</span>
                     </label>
                   </div>
                 </>
@@ -5470,7 +5926,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* B3: 응시 조합 자동 구성 */}
+            {/* B3: 응시 조합 실시간 동기화 및 커스텀 선택 팝업 */}
             <div className="quick-line">
               <span className="quick-label">응시 조합</span>
               <div className="subj-auto-box">
@@ -5489,27 +5945,68 @@ export default function App() {
                     <input
                       type="checkbox"
                       checked={subjAutoChecked[s.id]}
-                      onChange={() =>
-                        setSubjAutoChecked((prev) => ({ ...prev, [s.id]: !prev[s.id] }))
-                      }
+                      onChange={() => handleSubjComboCheckboxToggle(s.id)}
                     />
                     <span>{s.label}</span>
                   </label>
                 ))}
 
-                <label className="subj-check-label">
+                <div className="subj-check-label">
                   <span>탐구</span>
-                  <select
-                    className="builder-select-sm"
-                    value={subjInqCount}
-                    onChange={(e) => setSubjInqCount(Number(e.target.value))}
-                    aria-label="탐구 응시 과목 수"
-                  >
-                    <option value={2}>2과목</option>
-                    <option value={1}>1과목</option>
-                    <option value={0}>미응시</option>
-                  </select>
-                </label>
+                  <div className="custom-select-wrap">
+                    <button
+                      type="button"
+                      className={`custom-select-trigger ${
+                        openCustomPopup === 'subj_inq' ? 'is-open' : ''
+                      }`}
+                      onClick={() =>
+                        setOpenCustomPopup((prev) => (prev === 'subj_inq' ? null : 'subj_inq'))
+                      }
+                      aria-haspopup="listbox"
+                      aria-expanded={openCustomPopup === 'subj_inq'}
+                      aria-label="탐구 응시 과목 수 선택"
+                    >
+                      <span>
+                        {subjInqCount === 2 ? '2과목' : subjInqCount === 1 ? '1과목' : '미응시'}
+                      </span>
+                      <svg
+                        className="chevron-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+
+                    {openCustomPopup === 'subj_inq' && (
+                      <div className="custom-select-popover" role="listbox" aria-label="탐구 과목 수">
+                        {[
+                          { value: 2, label: '2과목', badge: '탐구 1·2' },
+                          { value: 1, label: '1과목', badge: '탐구 1' },
+                          { value: 0, label: '미응시', badge: '제외' },
+                        ].map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            role="option"
+                            aria-selected={subjInqCount === opt.value}
+                            className={`custom-select-option ${
+                              subjInqCount === opt.value ? 'is-selected' : ''
+                            }`}
+                            onClick={() => handleSubjInqCountSelect(opt.value)}
+                          >
+                            <span>{opt.label}</span>
+                            <span className="opt-sub-badge">{opt.badge}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 <label
                   className={`subj-check-label ${subjAutoChecked.lang2 ? 'is-checked' : ''}`}
@@ -5517,35 +6014,81 @@ export default function App() {
                   <input
                     type="checkbox"
                     checked={subjAutoChecked.lang2}
-                    onChange={() =>
-                      setSubjAutoChecked((prev) => ({ ...prev, lang2: !prev.lang2 }))
-                    }
+                    onChange={() => handleSubjComboCheckboxToggle('lang2')}
                   />
                   <span>제2외국어/한문</span>
                 </label>
 
-                <label className="subj-check-label">
+                <div className="subj-check-label">
                   <span>밀도</span>
-                  <select
-                    className="builder-select-sm"
-                    value={subjAutoScope}
-                    onChange={(e) =>
-                      setSubjAutoScope(e.target.value as 'all' | 'core' | 'real')
-                    }
-                    aria-label="포함할 타종 단계 밀도"
-                  >
-                    <option value="all">전체 타종</option>
-                    <option value="core">핵심 단계</option>
-                    <option value="real">실전 최소</option>
-                  </select>
-                </label>
+                  <div className="custom-select-wrap">
+                    <button
+                      type="button"
+                      className={`custom-select-trigger ${
+                        openCustomPopup === 'subj_scope' ? 'is-open' : ''
+                      }`}
+                      onClick={() =>
+                        setOpenCustomPopup((prev) => (prev === 'subj_scope' ? null : 'subj_scope'))
+                      }
+                      aria-haspopup="listbox"
+                      aria-expanded={openCustomPopup === 'subj_scope'}
+                      aria-label="포함할 타종 단계 밀도 선택"
+                    >
+                      <span>
+                        {subjAutoScope === 'all'
+                          ? '전체 타종'
+                          : subjAutoScope === 'core'
+                            ? '핵심 단계'
+                            : '실전 최소'}
+                      </span>
+                      <svg
+                        className="chevron-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+
+                    {openCustomPopup === 'subj_scope' && (
+                      <div className="custom-select-popover" role="listbox" aria-label="타종 밀도">
+                        {(
+                          [
+                            { value: 'all', label: '전체 타종', badge: '전 단계' },
+                            { value: 'core', label: '핵심 단계', badge: '준비·본령·종료' },
+                            { value: 'real', label: '실전 최소', badge: '본령·종료' },
+                          ] as const
+                        ).map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            role="option"
+                            aria-selected={subjAutoScope === opt.value}
+                            className={`custom-select-option ${
+                              subjAutoScope === opt.value ? 'is-selected' : ''
+                            }`}
+                            onClick={() => handleSubjScopeSelect(opt.value)}
+                          >
+                            <span>{opt.label}</span>
+                            <span className="opt-sub-badge">{opt.badge}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 <button
                   type="button"
                   className="chip"
                   onClick={handleApplySubjectAutoBuild}
+                  title="현재 체크된 응시 조합으로 간격을 공식 시간표 기준으로 초기화하고 재정렬합니다."
                 >
-                  조합 자동 구성
+                  조합 간격 초기화
                 </button>
               </div>
             </div>
@@ -5972,10 +6515,17 @@ export default function App() {
                   const timeErr = rowInputErrors[`time_${row.node.nodeId}`];
                   const omittedKey = `after_${row.node.nodeId}`;
 
+                  const rowPopupId = `row_time:${row.node.nodeId}`;
+                  const isRowPopupOpen = openCustomPopup === rowPopupId;
+                  const rowHmStr = format24hInputTime(row.customTimeMinutes);
+                  const [rowHh = 8, rowMm = 5] = rowHmStr.split(':').map((n) => Number(n) || 0);
+                  const rowAmPm = rowHh < 12 ? '오전' : '오후';
+                  const rowH12 = rowHh % 12 === 0 ? 12 : rowHh % 12;
+
                   return (
                     <article
                       key={row.node.nodeId}
-                      className="schedule-item"
+                      className={`schedule-item ${isRowPopupOpen ? 'is-popover-open' : ''}`}
                       data-node-id={row.node.nodeId}
                     >
                       <div className="alarm-card">
@@ -5995,16 +6545,186 @@ export default function App() {
                           </div>
                         </div>
                         <div>
-                          <label className="clock-control">
+                          <div className="clock-control">
                             <span>연쇄 시각</span>
-                            <input
-                              type="time"
-                              className={`time-input ${timeErr ? 'input-invalid' : ''}`}
-                              value={format24hInputTime(row.customTimeMinutes)}
-                              onChange={(e) => handleDirectTimeInputChange(idx, e.target.value)}
-                              title="시각을 직접 입력하면 직전 항목과의 간격 및 이후 시각이 자동 계산됩니다."
-                            />
-                          </label>
+                            <div className="custom-select-wrap">
+                              <button
+                                type="button"
+                                className={`custom-time-trigger ${isRowPopupOpen ? 'is-open' : ''} ${
+                                  timeErr ? 'input-invalid' : ''
+                                }`}
+                                onClick={() => {
+                                  if (isRowPopupOpen) {
+                                    setOpenCustomPopup(null);
+                                  } else {
+                                    setCustomTimeDraftText(rowHmStr);
+                                    setOpenCustomPopup(rowPopupId);
+                                  }
+                                }}
+                                title="클릭하여 커스텀 시각 설정 팝업 열기"
+                              >
+                                <span>
+                                  {rowAmPm} {String(rowH12).padStart(2, '0')}:
+                                  {String(rowMm).padStart(2, '0')}
+                                </span>
+                                <svg
+                                  className="chevron-icon"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2.2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                              </button>
+
+                              {isRowPopupOpen && (
+                                <div
+                                  className="custom-time-popover"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="custom-time-head">
+                                    <span className="custom-time-title">
+                                      #{idx + 1} 연쇄 시각 설정 ({rowHmStr})
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="custom-time-close"
+                                      onClick={() => setOpenCustomPopup(null)}
+                                    >
+                                      닫기
+                                    </button>
+                                  </div>
+
+                                  <div className="custom-time-ampm-row">
+                                    {(['AM', 'PM'] as const).map((period) => {
+                                      const isAm = rowHh < 12;
+                                      const active =
+                                        (period === 'AM' && isAm) || (period === 'PM' && !isAm);
+                                      return (
+                                        <button
+                                          key={period}
+                                          type="button"
+                                          className={`custom-time-ampm-btn ${
+                                            active ? 'is-active' : ''
+                                          }`}
+                                          onClick={() => {
+                                            let nextH = rowHh;
+                                            if (period === 'AM' && rowHh >= 12) nextH = rowHh - 12;
+                                            if (period === 'PM' && rowHh < 12) nextH = rowHh + 12;
+                                            const nextHm = `${String(nextH).padStart(2, '0')}:${String(rowMm).padStart(2, '0')}`;
+                                            setCustomTimeDraftText(nextHm);
+                                            handleDirectTimeInputChange(idx, nextHm);
+                                          }}
+                                        >
+                                          {period === 'AM' ? '오전 (AM)' : '오후 (PM)'}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+
+                                  <div className="custom-time-quick-grid">
+                                    {[
+                                      { label: '−10분', deltaMin: -10 },
+                                      { label: '−5분', deltaMin: -5 },
+                                      { label: '−1분', deltaMin: -1 },
+                                      { label: '+1분', deltaMin: 1 },
+                                      { label: '+5분', deltaMin: 5 },
+                                      { label: '+10분', deltaMin: 10 },
+                                    ].map((nudgeItem) => (
+                                      <button
+                                        key={nudgeItem.label}
+                                        type="button"
+                                        className="custom-time-nudge-btn"
+                                        onClick={() => {
+                                          if (idx === 0) {
+                                            const nextMin = clamp(
+                                              Math.round(row.customTimeMinutes + nudgeItem.deltaMin),
+                                              0,
+                                              23 * 60 + 59
+                                            );
+                                            updateDraftConfig((prev) => ({
+                                              ...prev,
+                                              firstNodeCustomMinutes: nextMin,
+                                            }));
+                                            setCustomTimeDraftText(format24hInputTime(nextMin));
+                                          } else {
+                                            const prevRow = draftRows[idx - 1];
+                                            if (prevRow) {
+                                              const nextSec = Math.max(
+                                                10,
+                                                prevRow.intervalAfterSeconds +
+                                                  nudgeItem.deltaMin * 60
+                                              );
+                                              handleSetIntervalSeconds(
+                                                prevRow.node,
+                                                row.node,
+                                                nextSec
+                                              );
+                                              setCustomTimeDraftText(
+                                                format24hInputTime(
+                                                  prevRow.customTimeMinutes + nextSec / 60
+                                                )
+                                              );
+                                            }
+                                          }
+                                        }}
+                                      >
+                                        {nudgeItem.label}
+                                      </button>
+                                    ))}
+                                  </div>
+
+                                  <div className="custom-time-direct-row">
+                                    <input
+                                      type="text"
+                                      className="custom-time-direct-input"
+                                      value={customTimeDraftText}
+                                      placeholder="HH:MM (예: 08:40)"
+                                      onChange={(e) => setCustomTimeDraftText(e.target.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                          e.preventDefault();
+                                          handleDirectTimeInputChange(
+                                            idx,
+                                            customTimeDraftText.trim()
+                                          );
+                                          setOpenCustomPopup(null);
+                                        }
+                                      }}
+                                    />
+                                    <button
+                                      type="button"
+                                      className="custom-time-apply-btn"
+                                      onClick={() => {
+                                        handleDirectTimeInputChange(
+                                          idx,
+                                          customTimeDraftText.trim()
+                                        );
+                                        setOpenCustomPopup(null);
+                                      }}
+                                    >
+                                      적용
+                                    </button>
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    className="custom-time-nudge-btn"
+                                    onClick={() => {
+                                      handleDirectTimeInputChange(idx, row.node.originalTimeText);
+                                      setCustomTimeDraftText(row.node.originalTimeText);
+                                      setOpenCustomPopup(null);
+                                    }}
+                                  >
+                                    공식 수능 시각({row.node.originalTimeText})으로 맞추기
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                           {timeErr && <div className="field-error-msg">{timeErr}</div>}
                         </div>
                         <div className="alarm-actions-col">
@@ -6341,9 +7061,9 @@ export default function App() {
               borderRadius: 26,
               border: '1px solid var(--modal-border)',
               background: 'var(--modal-bg)',
-              WebkitBackdropFilter: 'blur(30px) saturate(190%)',
-              backdropFilter: 'blur(30px) saturate(190%)',
-              boxShadow: '0 24px 60px -12px rgba(0,0,0,.32)',
+              WebkitBackdropFilter: 'blur(48px) saturate(190%)',
+              backdropFilter: 'blur(48px) saturate(190%)',
+              boxShadow: '0 24px 60px -12px rgba(0,0,0,.38)',
               color: 'var(--modal-ink)',
               display: 'flex',
               flexDirection: 'column',
@@ -6398,6 +7118,24 @@ export default function App() {
                 gap: 18,
               }}
             >
+              {/* 웹페이지 내부 실제 설명 표시 배너 (<h1>, <p>) */}
+              <div className="info-seo-banner">
+                <h1>2027학년도 대학수학능력시험 시험장 안내방송 구현</h1>
+                <p>
+                  수능 타종 · 수능 방송 · 수능 알림 · 실제 수능 시험장의 1교시 국어부터 5교시 제2외국어/한문까지
+                  37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 영역별 맞춤 시간표 구성을 완벽히 구현한
+                  실전 수능 시계 및 모의고사 타이머입니다.
+                </p>
+                <div className="info-seo-tags">
+                  <span className="info-seo-tag">2027학년도 대학수학능력시험 시험장 안내방송 구현</span>
+                  <span className="info-seo-tag">수능 타종</span>
+                  <span className="info-seo-tag">수능 방송</span>
+                  <span className="info-seo-tag">수능 알림</span>
+                  <span className="info-seo-tag">수능 시계 · 모의고사 타이머</span>
+                  <span className="info-seo-tag">영어 듣기평가 자동 재생</span>
+                </div>
+              </div>
+
               <div>
                 <p
                   style={{

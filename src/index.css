@@ -11,65 +11,66 @@
   --tick-minor: #a9a9a9;
   --min-hand: #171717;
   --sec-hand: #4d4d4d; /* 검은색 70% + 흰색 30% 진한 회색 */
-  --glass-fill: rgba(255, 255, 255, 0.025);
-  --glass-rim: rgba(255, 255, 255, 0.66);
-  --glint: rgba(255, 255, 255, 0.84);
+  --glass-fill: rgba(255, 255, 255, 0.24);
+  --glass-rim: rgba(255, 255, 255, 0.68);
+  --glint: rgba(255, 255, 255, 0.86);
   --btn-shadow:
     0 9px 24px rgba(35, 43, 58, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
     inset 0 -1px 0 rgba(40, 48, 62, 0.08);
   --btn-shadow-hover:
     0 13px 30px rgba(31, 39, 54, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
     inset 0 -1px 0 rgba(40, 48, 62, 0.07);
   --btn-before:
     radial-gradient(
       ellipse 43% 72% at var(--px, 50%) var(--py, 12%),
-      rgba(255, 255, 255, 0.115),
+      rgba(255, 255, 255, 0.16),
       transparent 100%
     ),
     linear-gradient(
       150deg,
-      rgba(255, 255, 255, 0.075),
+      rgba(255, 255, 255, 0.11),
       transparent 43%,
-      rgba(255, 255, 255, 0.018) 76%,
-      rgba(255, 255, 255, 0.055)
+      rgba(255, 255, 255, 0.03) 76%,
+      rgba(255, 255, 255, 0.08)
     );
   --btn-after-opacity: 0.28;
   --btn-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.24);
   --focus-ring: #7c9cc5;
-  --modal-bg: linear-gradient(155deg, rgba(255, 255, 255, 0.72) 0%, rgba(246, 246, 244, 0.60) 100%);
-  --modal-border: rgba(255, 255, 255, 0.78);
+  --modal-bg: linear-gradient(155deg, rgba(252, 252, 254, 0.93) 0%, rgba(244, 244, 242, 0.90) 100%);
+  --modal-border: rgba(255, 255, 255, 0.82);
   --modal-ink: #1a1a1a;
   --modal-muted: #52525b;
-  --modal-surface: rgba(0, 0, 0, 0.045);
-  --modal-card-bg: rgba(255, 255, 255, 0.42);
+  --modal-surface: rgba(0, 0, 0, 0.055);
+  --modal-card-bg: rgba(255, 255, 255, 0.66);
 
-  /* Toll Schedule Liquid Glass Modal Tokens (Light — Enhanced Show-Through) */
+  /* Toll Schedule Liquid Glass Modal Tokens (Light — High Blur & Anti-Bleed Opacity) */
   --toll-ink: #1c1c1d;
-  --toll-ink-2: #444446;
-  --toll-muted: #68686c;
-  --toll-line: rgba(24, 24, 25, 0.09);
-  --toll-glass: rgba(246, 246, 248, 0.60);
-  --toll-glass-strong: rgba(255, 255, 255, 0.15);
-  --toll-glass-soft: rgba(255, 255, 255, 0.28);
-  --toll-glass-inner: rgba(255, 255, 255, 0.38);
-  --toll-glass-edge: rgba(255, 255, 255, 0.76);
-  --toll-glass-edge-low: rgba(24, 24, 25, 0.11);
-  --toll-highlight: rgba(255, 255, 255, 0.86);
+  --toll-ink-2: #3c3c3e;
+  --toll-muted: #626266;
+  --toll-line: rgba(24, 24, 25, 0.10);
+  --toll-glass: rgba(245, 245, 247, 0.88);
+  --toll-glass-strong: rgba(255, 255, 255, 0.36);
+  --toll-glass-soft: rgba(255, 255, 255, 0.56);
+  --toll-glass-inner: rgba(255, 255, 255, 0.68);
+  --toll-glass-edge: rgba(255, 255, 255, 0.82);
+  --toll-glass-edge-low: rgba(24, 24, 25, 0.12);
+  --toll-highlight: rgba(255, 255, 255, 0.90);
   --toll-glass-shadow:
-    0 26px 74px rgba(0, 0, 0, 0.16),
-    0 5px 20px rgba(0, 0, 0, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.86);
-  --toll-selected: rgba(60, 60, 62, 0.10);
-  --toll-selected-edge: rgba(35, 35, 36, 0.18);
-  --toll-pill: rgba(255, 255, 255, 0.38);
-  --toll-pill-hover: rgba(255, 255, 255, 0.64);
+    0 28px 80px rgba(0, 0, 0, 0.22),
+    0 6px 24px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  --toll-selected: rgba(45, 45, 48, 0.12);
+  --toll-selected-edge: rgba(35, 35, 36, 0.22);
+  --toll-pill: rgba(255, 255, 255, 0.64);
+  --toll-pill-hover: rgba(255, 255, 255, 0.86);
   --toll-button: #242425;
   --toll-button-text: #ffffff;
-  --toll-scroll: rgba(50, 50, 52, 0.28);
+  --toll-scroll: rgba(50, 50, 52, 0.32);
   --toll-warn: #926018;
-  --toll-warn-bg: rgba(214, 158, 76, 0.14);
+  --toll-warn-bg: rgba(214, 158, 76, 0.16);
+  --tt-panel-bg: rgba(245, 245, 247, var(--tt-panel-alpha, 0.82));
 
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
@@ -84,59 +85,60 @@
   --tick-minor: #636366;
   --min-hand: #f1f1f1;
   --sec-hand: #4d4d4d; /* 검은색 70% + 흰색 30% 진한 회색 */
-  --glass-fill: rgba(255, 255, 255, 0.075);
-  --glass-rim: rgba(255, 255, 255, 0.23);
-  --glint: rgba(255, 255, 255, 0.24);
+  --glass-fill: rgba(28, 28, 32, 0.52);
+  --glass-rim: rgba(255, 255, 255, 0.24);
+  --glint: rgba(255, 255, 255, 0.26);
   --btn-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.17),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+    0 8px 24px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.24);
   --btn-shadow-hover:
-    0 12px 28px rgba(0, 0, 0, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    0 12px 28px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
   --btn-before:
     linear-gradient(
       120deg,
       rgba(255, 255, 255, 0.16),
       transparent 48%,
-      rgba(255, 255, 255, 0.035)
+      rgba(255, 255, 255, 0.04)
     );
   --btn-after-opacity: 0.22;
   --btn-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   --focus-ring: #e2e2e2;
-  --modal-bg: rgba(30, 30, 30, 0.92);
-  --modal-border: rgba(255, 255, 255, 0.23);
+  --modal-bg: rgba(24, 24, 26, 0.95);
+  --modal-border: rgba(255, 255, 255, 0.24);
   --modal-ink: #f1f1f1;
   --modal-muted: #a3a3a3;
-  --modal-surface: rgba(38, 38, 38, 0.74);
-  --modal-card-bg: rgba(46, 46, 46, 0.60);
+  --modal-surface: rgba(42, 42, 46, 0.82);
+  --modal-card-bg: rgba(48, 48, 52, 0.76);
 
   /* Toll Schedule Liquid Glass Modal Tokens (Dark) */
   --toll-ink: #f1f1f1;
-  --toll-ink-2: #d2d2d2;
-  --toll-muted: #a3a3a3;
-  --toll-line: rgba(255, 255, 255, 0.11);
-  --toll-glass: rgba(30, 30, 30, 0.92);
-  --toll-glass-strong: rgba(20, 20, 20, 0.20);
-  --toll-glass-soft: rgba(38, 38, 38, 0.74);
-  --toll-glass-inner: rgba(46, 46, 46, 0.60);
-  --toll-glass-edge: rgba(255, 255, 255, 0.23);
-  --toll-glass-edge-low: rgba(255, 255, 255, 0.13);
-  --toll-highlight: rgba(255, 255, 255, 0.24);
+  --toll-ink-2: #d8d8dc;
+  --toll-muted: #a6a6ab;
+  --toll-line: rgba(255, 255, 255, 0.12);
+  --toll-glass: rgba(24, 24, 26, 0.94);
+  --toll-glass-strong: rgba(20, 20, 22, 0.42);
+  --toll-glass-soft: rgba(38, 38, 42, 0.82);
+  --toll-glass-inner: rgba(46, 46, 50, 0.74);
+  --toll-glass-edge: rgba(255, 255, 255, 0.25);
+  --toll-glass-edge-low: rgba(255, 255, 255, 0.15);
+  --toll-highlight: rgba(255, 255, 255, 0.26);
   --toll-glass-shadow:
-    0 26px 74px rgba(0, 0, 0, 0.48),
-    0 5px 20px rgba(0, 0, 0, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.17);
-  --toll-selected: rgba(255, 255, 255, 0.085);
-  --toll-selected-edge: rgba(255, 255, 255, 0.20);
-  --toll-pill: rgba(255, 255, 255, 0.075);
-  --toll-pill-hover: rgba(255, 255, 255, 0.13);
+    0 28px 80px rgba(0, 0, 0, 0.56),
+    0 6px 24px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --toll-selected: rgba(255, 255, 255, 0.11);
+  --toll-selected-edge: rgba(255, 255, 255, 0.24);
+  --toll-pill: rgba(255, 255, 255, 0.10);
+  --toll-pill-hover: rgba(255, 255, 255, 0.17);
   --toll-button: #e7e7e7;
   --toll-button-text: #171717;
-  --toll-scroll: rgba(128, 128, 128, 0.34);
+  --toll-scroll: rgba(140, 140, 145, 0.38);
   --toll-warn: #d6b27e;
-  --toll-warn-bg: rgba(214, 178, 126, 0.10);
+  --toll-warn-bg: rgba(214, 178, 126, 0.12);
+  --tt-panel-bg: rgba(24, 24, 26, var(--tt-panel-alpha, 0.86));
 }
 
 [data-theme="sepia"] {
@@ -147,65 +149,66 @@
   --tick-minor: #9c8873;
   --min-hand: #2b1f16;
   --sec-hand: #4d4d4d; /* 검은색 70% + 흰색 30% 진한 회색 */
-  --glass-fill: rgba(255, 248, 235, 0.03);
-  --glass-rim: rgba(255, 248, 235, 0.66);
-  --glint: rgba(255, 248, 235, 0.82);
+  --glass-fill: rgba(255, 248, 235, 0.28);
+  --glass-rim: rgba(255, 248, 235, 0.70);
+  --glint: rgba(255, 248, 235, 0.84);
   --btn-shadow:
-    0 9px 24px rgba(54, 41, 30, 0.09),
-    inset 0 1px 0 rgba(255, 248, 235, 0.68),
+    0 9px 24px rgba(54, 41, 30, 0.10),
+    inset 0 1px 0 rgba(255, 248, 235, 0.72),
     inset 0 -1px 0 rgba(54, 41, 30, 0.08);
   --btn-shadow-hover:
-    0 13px 30px rgba(54, 41, 30, 0.12),
-    inset 0 1px 0 rgba(255, 248, 235, 0.82),
+    0 13px 30px rgba(54, 41, 30, 0.13),
+    inset 0 1px 0 rgba(255, 248, 235, 0.84),
     inset 0 -1px 0 rgba(54, 41, 30, 0.07);
   --btn-before:
     radial-gradient(
       ellipse 43% 72% at var(--px, 50%) var(--py, 12%),
-      rgba(255, 248, 235, 0.115),
+      rgba(255, 248, 235, 0.15),
       transparent 100%
     ),
     linear-gradient(
       150deg,
-      rgba(255, 248, 235, 0.075),
+      rgba(255, 248, 235, 0.10),
       transparent 43%,
-      rgba(255, 248, 235, 0.018) 76%,
-      rgba(255, 248, 235, 0.055)
+      rgba(255, 248, 235, 0.025) 76%,
+      rgba(255, 248, 235, 0.07)
     );
   --btn-after-opacity: 0.26;
   --btn-text-shadow: 0 1px 2px rgba(255, 248, 235, 0.24);
   --focus-ring: #8c6d53;
-  --modal-bg: linear-gradient(155deg, rgba(248, 240, 225, 0.95) 0%, rgba(238, 228, 208, 0.9) 100%);
-  --modal-border: rgba(255, 248, 235, 0.8);
+  --modal-bg: linear-gradient(155deg, rgba(248, 240, 225, 0.96) 0%, rgba(238, 228, 208, 0.93) 100%);
+  --modal-border: rgba(255, 248, 235, 0.84);
   --modal-ink: #36291e;
   --modal-muted: #6e5a49;
-  --modal-surface: rgba(54, 41, 30, 0.06);
-  --modal-card-bg: rgba(255, 248, 235, 0.5);
+  --modal-surface: rgba(54, 41, 30, 0.075);
+  --modal-card-bg: rgba(255, 248, 235, 0.68);
 
   /* Toll Schedule Liquid Glass Modal Tokens (Sepia) */
   --toll-ink: #2c2117;
-  --toll-ink-2: #4e3d2e;
-  --toll-muted: #786452;
-  --toll-line: rgba(54, 41, 30, 0.12);
-  --toll-glass: rgba(245, 236, 220, 0.88);
-  --toll-glass-strong: rgba(255, 250, 240, 0.22);
-  --toll-glass-soft: rgba(255, 250, 240, 0.44);
-  --toll-glass-inner: rgba(255, 250, 240, 0.56);
-  --toll-glass-edge: rgba(255, 250, 242, 0.84);
-  --toll-glass-edge-low: rgba(54, 41, 30, 0.15);
-  --toll-highlight: rgba(255, 250, 242, 0.90);
+  --toll-ink-2: #483829;
+  --toll-muted: #705c4b;
+  --toll-line: rgba(54, 41, 30, 0.13);
+  --toll-glass: rgba(244, 235, 218, 0.91);
+  --toll-glass-strong: rgba(255, 250, 240, 0.36);
+  --toll-glass-soft: rgba(255, 250, 240, 0.62);
+  --toll-glass-inner: rgba(255, 250, 240, 0.72);
+  --toll-glass-edge: rgba(255, 250, 242, 0.86);
+  --toll-glass-edge-low: rgba(54, 41, 30, 0.16);
+  --toll-highlight: rgba(255, 250, 242, 0.92);
   --toll-glass-shadow:
-    0 26px 74px rgba(42, 31, 21, 0.20),
-    0 5px 20px rgba(42, 31, 21, 0.09),
-    inset 0 1px 0 rgba(255, 250, 242, 0.92);
-  --toll-selected: rgba(74, 56, 40, 0.11);
-  --toll-selected-edge: rgba(54, 41, 30, 0.18);
-  --toll-pill: rgba(255, 250, 242, 0.54);
-  --toll-pill-hover: rgba(255, 250, 242, 0.82);
+    0 28px 80px rgba(42, 31, 21, 0.24),
+    0 6px 24px rgba(42, 31, 21, 0.11),
+    inset 0 1px 0 rgba(255, 250, 242, 0.94);
+  --toll-selected: rgba(74, 56, 40, 0.13);
+  --toll-selected-edge: rgba(54, 41, 30, 0.22);
+  --toll-pill: rgba(255, 250, 242, 0.68);
+  --toll-pill-hover: rgba(255, 250, 242, 0.90);
   --toll-button: #36291e;
   --toll-button-text: #ffffff;
-  --toll-scroll: rgba(74, 56, 40, 0.28);
+  --toll-scroll: rgba(74, 56, 40, 0.32);
   --toll-warn: #8c5a18;
   --toll-warn-bg: rgba(205, 148, 66, 0.16);
+  --tt-panel-bg: rgba(244, 235, 218, var(--tt-panel-alpha, 0.85));
 }
 
 *,
@@ -448,13 +451,17 @@ body {
 
 #stageBadge {
   font-weight: 600;
-  font-size: 0.76em;
-  letter-spacing: 0.01em;
-  opacity: 0.68;
-  white-space: nowrap;
+  font-size: 0.74em;
+  letter-spacing: -0.01em;
+  line-height: 1.34;
+  opacity: 0.78;
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+  text-overflow: clip;
+  text-align: center;
 }
 
 /* ---------- Top-Left Hamburger Menu & List-Detail Pill Tray ---------- */
@@ -537,25 +544,19 @@ body {
   flex-direction: row;
   align-items: flex-start;
   gap: 10px;
-  transform-origin: top left;
-  transition:
-    opacity 0.28s var(--ease),
-    transform 0.28s var(--spring),
-    visibility 0.28s;
 }
 
 #pillDrawer.closed {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  transform: translateY(-8px) scale(0.95);
 }
 
 #pillDrawer.open {
   opacity: 1;
   pointer-events: auto;
   visibility: visible;
-  transform: translateY(0) scale(1);
+  transform: none;
 }
 
 .ld-master-col {
@@ -571,19 +572,8 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  transform-origin: left top;
-  animation: ldSubPaneIn 0.24s var(--spring);
-}
-
-@keyframes ldSubPaneIn {
-  from {
-    opacity: 0;
-    transform: translateX(-8px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
+  opacity: 1;
+  transform: none;
 }
 
 .ld-cat-btn {
@@ -631,33 +621,42 @@ body {
   }
 }
 
-/* ---------- Liquid Glass — Material Study (Low Tint / Edge Refraction) ---------- */
+/* ---------- Liquid Glass — Unified Frosted Blur (Zero Delay) ---------- */
 .lg-btn,
-.pill-group-row {
+.pill-group-row,
+.drawer-card-panel,
+.bookmark-drawer-card {
   --px: 50%;
   --py: 12%;
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  border-radius: 999px;
   border: 1px solid var(--glass-rim);
   background: var(--glass-fill);
   box-shadow: var(--btn-shadow);
-  -webkit-backdrop-filter: blur(0.8px) saturate(1.38) contrast(1.02);
-  backdrop-filter: blur(0.8px) saturate(1.38) contrast(1.02);
+  -webkit-backdrop-filter: blur(18px) saturate(1.42) contrast(1.02);
+  backdrop-filter: blur(18px) saturate(1.42) contrast(1.02);
+  transform: translateZ(0);
+  will-change: backdrop-filter, transform;
   color: var(--btn);
   text-shadow: var(--btn-text-shadow);
   -webkit-tap-highlight-color: transparent;
+}
+
+.lg-btn,
+.pill-group-row {
+  border-radius: 999px;
   transition:
-    transform 0.34s var(--spring),
-    box-shadow 0.32s var(--ease),
-    border-color 0.28s ease,
-    color 0.25s ease,
-    opacity 0.3s ease;
+    transform 0.26s var(--spring),
+    box-shadow 0.26s var(--ease),
+    border-color 0.24s ease,
+    color 0.22s ease;
 }
 
 .lg-btn::before,
-.pill-group-row::before {
+.pill-group-row::before,
+.drawer-card-panel::before,
+.bookmark-drawer-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -665,11 +664,13 @@ body {
   border-radius: inherit;
   pointer-events: none;
   background: var(--btn-before);
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
 .lg-btn::after,
-.pill-group-row::after {
+.pill-group-row::after,
+.drawer-card-panel::after,
+.bookmark-drawer-card::after {
   content: "";
   position: absolute;
   inset: 1px;
@@ -683,21 +684,10 @@ body {
   mix-blend-mode: screen;
 }
 
-@supports (backdrop-filter: url("#glass-lens-light")) {
-  .lg-btn,
-  .pill-group-row {
-    -webkit-backdrop-filter: url("#glass-lens-light") blur(0.8px) saturate(1.38) contrast(1.02);
-    backdrop-filter: url("#glass-lens-light") blur(0.8px) saturate(1.38) contrast(1.02);
-  }
-  [data-theme="dark"] .lg-btn,
-  [data-theme="dark"] .pill-group-row {
-    -webkit-backdrop-filter: url("#glass-lens-dark") blur(0.8px) saturate(1.34);
-    backdrop-filter: url("#glass-lens-dark") blur(0.8px) saturate(1.34);
-  }
-}
-
 .lg-btn > *,
-.pill-group-row > * {
+.pill-group-row > *,
+.drawer-card-panel > *,
+.bookmark-drawer-card > * {
   position: relative;
   z-index: 2;
 }
@@ -899,9 +889,9 @@ body {
   inset: 0;
   height: 100dvh;
   max-height: 100dvh;
-  background: rgba(15, 15, 18, 0.45);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: rgba(18, 18, 22, 0.62);
+  -webkit-backdrop-filter: blur(42px) saturate(150%);
+  backdrop-filter: blur(42px) saturate(150%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -920,7 +910,7 @@ body {
   cursor: pointer;
 }
 
-/* ---------- Toll Schedule Liquid Glass UI (GPU-Accelerated Popup Animation) ---------- */
+/* ---------- Toll Schedule Liquid Glass UI (High-Blur Anti-Bleed Popup) ---------- */
 .toll-scrim {
   position: fixed;
   inset: 0;
@@ -928,9 +918,9 @@ body {
   height: 100dvh;
   max-height: 100dvh;
   z-index: 52;
-  background: rgba(14, 14, 18, 0.18);
-  backdrop-filter: blur(18px) saturate(142%);
-  -webkit-backdrop-filter: blur(18px) saturate(142%);
+  background: rgba(216, 215, 212, 0.64);
+  backdrop-filter: blur(44px) saturate(155%);
+  -webkit-backdrop-filter: blur(44px) saturate(155%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -940,19 +930,21 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition:
-    opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.22s,
-    background 0.35s ease;
 }
 
 [data-theme="dark"] .toll-scrim {
   background:
     radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.05), transparent 28%),
     radial-gradient(circle at 82% 84%, rgba(255, 255, 255, 0.035), transparent 30%),
-    rgba(10, 10, 12, 0.62);
-  backdrop-filter: blur(36px) saturate(140%);
-  -webkit-backdrop-filter: blur(36px) saturate(140%);
+    rgba(8, 8, 10, 0.78);
+  backdrop-filter: blur(48px) saturate(150%);
+  -webkit-backdrop-filter: blur(48px) saturate(150%);
+}
+
+[data-theme="sepia"] .toll-scrim {
+  background: rgba(214, 202, 182, 0.66);
+  backdrop-filter: blur(44px) saturate(155%);
+  -webkit-backdrop-filter: blur(44px) saturate(155%);
 }
 
 .toll-scrim.open {
@@ -984,25 +976,43 @@ body {
   background: var(--toll-glass);
   border: 1px solid var(--toll-glass-edge);
   box-shadow: var(--toll-glass-shadow);
-  backdrop-filter: blur(22px) saturate(148%);
-  -webkit-backdrop-filter: blur(22px) saturate(148%);
-  transform: translate3d(0, 14px, 0) scale(0.965);
-  opacity: 0;
+  backdrop-filter: blur(48px) saturate(165%);
+  -webkit-backdrop-filter: blur(48px) saturate(165%);
+  transform: translate3d(0, 10px, 0) scale(0.98);
   transition:
-    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.35s ease,
-    border-color 0.35s ease;
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 
 [data-theme="dark"] .toll-dialog {
-  backdrop-filter: blur(34px) saturate(145%);
-  -webkit-backdrop-filter: blur(34px) saturate(145%);
+  backdrop-filter: blur(52px) saturate(160%);
+  -webkit-backdrop-filter: blur(52px) saturate(160%);
 }
 
 .toll-scrim.open .toll-dialog {
   transform: translate3d(0, 0, 0) scale(1);
-  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  :root,
+  [data-theme="light"] {
+    --toll-glass: rgba(245, 245, 247, 0.94);
+  }
+  [data-theme="dark"] {
+    --toll-glass: rgba(22, 22, 24, 0.96);
+  }
+  [data-theme="sepia"] {
+    --toll-glass: rgba(244, 235, 218, 0.95);
+  }
+  .toll-scrim {
+    backdrop-filter: blur(52px) saturate(165%);
+    -webkit-backdrop-filter: blur(52px) saturate(165%);
+  }
+  .toll-dialog {
+    backdrop-filter: blur(56px) saturate(170%);
+    -webkit-backdrop-filter: blur(56px) saturate(170%);
+  }
 }
 
 .toll-dialog::before {
@@ -1117,16 +1127,18 @@ body {
 }
 
 .toll-dialog .quickbar {
+  position: relative;
+  z-index: 30;
   padding: 10px 22px;
   border-bottom: 1px solid var(--toll-line);
   display: flex;
   flex-direction: column;
   gap: 7px;
-  background: rgba(255, 255, 255, 0.075);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 [data-theme="dark"] .toll-dialog .quickbar {
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .toll-dialog .quick-line {
@@ -1172,11 +1184,11 @@ body {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.045);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .toll-dialog .workspace {
-  background: rgba(255, 255, 255, 0.01);
+  background: rgba(255, 255, 255, 0.015);
 }
 
 .toll-dialog .left-pane,
@@ -1223,7 +1235,7 @@ body {
 .toll-dialog .area-card {
   padding: 10px 10px 8px;
   border-radius: 18px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.09));
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.14));
   border: 1px solid var(--toll-glass-edge-low);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56), 0 3px 12px rgba(0, 0, 0, 0.02);
   margin-bottom: 10px;
@@ -1231,7 +1243,7 @@ body {
 }
 
 [data-theme="dark"] .toll-dialog .area-card {
-  background: linear-gradient(145deg, rgba(44, 44, 44, 0.72), rgba(31, 31, 31, 0.56));
+  background: linear-gradient(145deg, rgba(44, 44, 44, 0.78), rgba(31, 31, 31, 0.62));
   border-color: var(--toll-glass-edge-low);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 3px 12px rgba(0, 0, 0, 0.16);
 }
@@ -1300,33 +1312,33 @@ body {
   margin-top: 2px;
   cursor: pointer;
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.18);
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
 .toll-dialog .stage-row:hover {
-  background: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.38);
   border-color: rgba(255, 255, 255, 0.68);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .toll-dialog .stage-row.selected {
-  background: linear-gradient(125deg, rgba(75, 75, 78, 0.11), rgba(255, 255, 255, 0.20));
+  background: linear-gradient(125deg, rgba(75, 75, 78, 0.13), rgba(255, 255, 255, 0.24));
   border-color: rgba(35, 35, 36, 0.22);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
 }
 
 [data-theme="dark"] .toll-dialog .stage-row {
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 [data-theme="dark"] .toll-dialog .stage-row:hover {
-  background: rgba(255, 255, 255, 0.065);
+  background: rgba(255, 255, 255, 0.07);
   border-color: rgba(255, 255, 255, 0.13);
 }
 
 [data-theme="dark"] .toll-dialog .stage-row.selected {
-  background: linear-gradient(125deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04));
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.05));
   border-color: rgba(255, 255, 255, 0.20);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
@@ -1410,8 +1422,12 @@ body {
 }
 
 .toll-dialog .schedule-item {
+  position: relative;
   margin: 0 0 10px;
-  contain: layout style;
+}
+
+.toll-dialog .schedule-item.is-popover-open {
+  z-index: 45;
 }
 
 .toll-dialog .alarm-card {
@@ -1423,16 +1439,16 @@ body {
   padding: 9px 12px;
   border: 1px solid var(--toll-glass-edge-low);
   border-radius: 18px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.12));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.18));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.72),
     0 5px 14px rgba(0, 0, 0, 0.028);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 [data-theme="dark"] .toll-dialog .alarm-card {
-  background: linear-gradient(135deg, rgba(48, 48, 48, 0.78), rgba(34, 34, 34, 0.58));
+  background: linear-gradient(135deg, rgba(48, 48, 48, 0.84), rgba(34, 34, 34, 0.64));
   border-color: rgba(255, 255, 255, 0.14);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
@@ -1614,28 +1630,28 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 5;
+  z-index: 25;
   min-height: 68px;
   padding: 10px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.58);
-  background: rgba(246, 246, 248, 0.64);
-  backdrop-filter: blur(18px) saturate(145%);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  border-top: 1px solid rgba(255, 255, 255, 0.68);
+  background: rgba(246, 246, 248, 0.88);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.68),
-    0 -8px 26px rgba(0, 0, 0, 0.05);
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 -8px 26px rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="dark"] .toll-dialog .dialog-footer {
-  border-top-color: rgba(255, 255, 255, 0.14);
-  background: rgba(24, 24, 24, 0.90);
+  border-top-color: rgba(255, 255, 255, 0.16);
+  background: rgba(24, 24, 24, 0.94);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.11),
-    0 -8px 26px rgba(0, 0, 0, 0.25);
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 -8px 26px rgba(0, 0, 0, 0.32);
 }
 
 .toll-dialog .summary {
@@ -1926,23 +1942,13 @@ body {
 }
 
 .bookmark-drawer-card {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
   border-radius: 18px;
-  border: 1px solid var(--glass-rim);
-  background: var(--glass-fill);
-  box-shadow: var(--btn-shadow);
-  -webkit-backdrop-filter: blur(14px) saturate(1.38) contrast(1.02);
-  backdrop-filter: blur(14px) saturate(1.38) contrast(1.02);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 286px;
   max-width: calc(100vw - 44px);
-  transform-origin: top left;
-  animation: ldSubPaneIn 0.22s var(--spring);
 }
 
 .bookmark-drawer-head {
@@ -2313,34 +2319,32 @@ html:not(.app-ready) #rightTimetablePanel {
   overflow: hidden;
   border-radius: 24px;
   border: 1px solid var(--toll-glass-edge);
-  background: var(--toll-glass);
+  background: var(--tt-panel-bg, var(--toll-glass));
   box-shadow: var(--toll-glass-shadow);
-  -webkit-backdrop-filter: blur(20px) saturate(148%);
-  backdrop-filter: blur(20px) saturate(148%);
+  -webkit-backdrop-filter: blur(36px) saturate(155%);
+  backdrop-filter: blur(36px) saturate(155%);
+  will-change: transform, backdrop-filter;
   color: var(--toll-ink);
   word-break: keep-all;
   overflow-wrap: break-word;
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   transform: translate3d(calc(100% + 28px), 0, 0);
-  opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition:
-    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.26s ease,
-    visibility 0.38s,
-    background 0.35s ease,
-    border-color 0.35s ease;
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.34s,
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
 [data-theme="dark"] #rightTimetablePanel {
-  -webkit-backdrop-filter: blur(42px) saturate(148%);
-  backdrop-filter: blur(42px) saturate(148%);
+  -webkit-backdrop-filter: blur(44px) saturate(155%);
+  backdrop-filter: blur(44px) saturate(155%);
 }
 
 #rightTimetablePanel.open {
   transform: translate3d(0, 0, 0);
-  opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
@@ -3022,15 +3026,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 /* ---------- Drawer Sub-Cards: Audio Volume (B5), Scheduled Start (B8), Wake Lock (B9) ---------- */
 .drawer-card-panel {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
   border-radius: 18px;
-  border: 1px solid var(--glass-rim);
-  background: var(--glass-fill);
-  box-shadow: var(--btn-shadow);
-  -webkit-backdrop-filter: blur(14px) saturate(1.38) contrast(1.02);
-  backdrop-filter: blur(14px) saturate(1.38) contrast(1.02);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -3590,4 +3586,280 @@ html:not(.app-ready) #rightTimetablePanel {
   padding-top: 4px;
   border-top: 1px dashed var(--toll-line);
 }
+
+/* ---------- Custom Liquid Glass Select & Time Picker Popovers ---------- */
+.custom-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.custom-select-trigger {
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--toll-glass-edge);
+  background: var(--toll-pill);
+  color: var(--toll-ink);
+  padding: 0 10px 0 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 var(--toll-highlight);
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.14s ease;
+}
+
+.custom-select-trigger:hover {
+  background: var(--toll-pill-hover);
+}
+
+.custom-select-trigger.is-open {
+  border-color: var(--focus-ring);
+  background: var(--toll-pill-hover);
+}
+
+.custom-select-chevron {
+  width: 11px;
+  height: 11px;
+  opacity: 0.72;
+  transition: transform 0.18s ease;
+}
+
+.custom-select-trigger.is-open .custom-select-chevron {
+  transform: rotate(180deg);
+}
+
+.custom-select-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 132px;
+  z-index: 90;
+  padding: 5px;
+  border-radius: 16px;
+  border: 1px solid var(--toll-glass-edge);
+  background: var(--modal-bg);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.24),
+    0 4px 12px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 var(--toll-highlight);
+  -webkit-backdrop-filter: blur(36px) saturate(165%);
+  backdrop-filter: blur(36px) saturate(165%);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.custom-select-popover.align-right {
+  left: auto;
+  right: 0;
+}
+
+.custom-select-option {
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--toll-ink);
+  border-radius: 11px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 650;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.custom-select-option:hover {
+  background: var(--toll-selected);
+}
+
+.custom-select-option.is-selected {
+  background: var(--toll-selected);
+  border-color: var(--toll-selected-edge);
+  font-weight: 800;
+}
+
+.custom-time-trigger {
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--toll-glass-edge);
+  background: var(--toll-pill);
+  color: var(--toll-ink);
+  padding: 0 11px;
+  font-size: 11px;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 var(--toll-highlight);
+}
+
+.custom-time-trigger:hover,
+.custom-time-trigger.is-open {
+  background: var(--toll-pill-hover);
+  border-color: var(--focus-ring);
+}
+
+.custom-time-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 248px;
+  z-index: 95;
+  padding: 10px 11px;
+  border-radius: 18px;
+  border: 1px solid var(--toll-glass-edge);
+  background: var(--modal-bg);
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.28),
+    0 5px 16px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 var(--toll-highlight);
+  -webkit-backdrop-filter: blur(40px) saturate(170%);
+  backdrop-filter: blur(40px) saturate(170%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-time-popover.align-left {
+  right: auto;
+  left: 0;
+}
+
+.ctp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 750;
+  color: var(--toll-ink);
+}
+
+.ctp-ampm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.ctp-chip {
+  height: 27px;
+  border-radius: 999px;
+  border: 1px solid var(--toll-line);
+  background: var(--toll-pill);
+  color: var(--toll-ink-2);
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.ctp-chip:hover {
+  background: var(--toll-pill-hover);
+}
+
+.ctp-chip.active {
+  background: var(--toll-button);
+  color: var(--toll-button-text);
+  border-color: transparent;
+}
+
+.ctp-grid-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--toll-muted);
+}
+
+.ctp-hour-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+
+.ctp-min-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+
+.ctp-fine-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--toll-line);
+}
+
+.ctp-direct-input {
+  width: 68px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid var(--toll-line);
+  background: var(--toll-glass-inner);
+  color: var(--toll-ink);
+  font-size: 11px;
+  font-weight: 750;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+/* ---------- SEO Semantic Crawler Region & Info Modal Intro Banner ---------- */
+.seo-semantic-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  pointer-events: none;
+}
+
+.info-seo-banner {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--modal-border);
+  background: var(--modal-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-seo-banner h1 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--modal-ink);
+}
+
+.info-seo-banner p {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--modal-muted);
+  word-break: keep-all;
+}
+
 

@@ -54,14 +54,19 @@ export function buildStandaloneCsatHtml(
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="application-name" content="대학수학능력시험 안내방송">
+<meta name="application-name" content="2027학년도 대학수학능력시험 시험장 안내방송">
+<meta name="description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 · 수능 타종 · 수능 방송 · 수능 알림 · 37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 과목별 시간표 구성을 지원하는 수능 시계 및 모의고사 타이머">
+<meta name="keywords" content="2027학년도 대학수학능력시험 시험장 안내방송 구현, 수능 타종, 수능 방송, 수능 알림, 수능 시계, 수능 타이머, 모의고사 타이머, 수능 안내방송, 수능 시간표, 수능 영어 듣기평가">
+<meta property="og:title" content="2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림">
+<meta property="og:description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 · 수능 타종 · 수능 방송 · 수능 알림 · 37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 과목별 시간표 구성을 지원하는 수능 시계 및 모의고사 타이머">
+<meta property="og:type" content="website">
 <meta name="version" content="${fullVersionString}">
 <meta id="theme-color-meta" name="theme-color" content="#ecebe9">
 <link id="app-favicon" rel="icon" type="image/svg+xml" href="${LIGHT_FAVICON_DATA_URI}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&family=Noto+Serif:ital,opsz,wght@0,6..144,200..900&display=swap" rel="stylesheet">
-<title>대학수학능력시험 안내방송</title>
+<title>2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림</title>
 <script>
 (function(){
   var LIGHT_FAV=${JSON.stringify(LIGHT_FAVICON_DATA_URI)};
@@ -98,7 +103,7 @@ export function buildStandaloneCsatHtml(
   --tick-minor:#a9a9a9;
   --min-hand:#171717;
   --sec-hand:#4d4d4d;
-  --glass-fill:rgba(255,255,255,.025);
+  --glass-fill:rgba(246,246,248,.24);
   --glass-rim:rgba(255,255,255,.66);
   --glint:rgba(255,255,255,.84);
   --btn-shadow:0 9px 24px rgba(35,43,58,.09),inset 0 1px 0 rgba(255,255,255,.68),inset 0 -1px 0 rgba(40,48,62,.08);
@@ -107,29 +112,29 @@ export function buildStandaloneCsatHtml(
   --btn-after-opacity:.28;
   --btn-text-shadow:0 1px 2px rgba(255,255,255,.24);
   --focus-ring:#7c9cc5;
-  --modal-bg:linear-gradient(155deg,rgba(255,255,255,.72) 0%,rgba(246,246,244,.62) 100%);
+  --modal-bg:linear-gradient(155deg,rgba(255,255,255,.88) 0%,rgba(244,244,246,.82) 100%);
   --modal-border:rgba(255,255,255,.85);
   --modal-ink:#1a1a1a;
   --modal-muted:#52525b;
   --modal-surface:rgba(0,0,0,.045);
-  --modal-card-bg:rgba(255,255,255,.42);
+  --modal-card-bg:rgba(255,255,255,.58);
   --toll-ink:#1c1c1d;
   --toll-ink-2:#444446;
   --toll-muted:#717174;
   --toll-line:rgba(24,24,25,.10);
   --toll-line-soft:rgba(24,24,25,.07);
-  --toll-glass:rgba(246,246,248,.34);
-  --toll-glass-strong:rgba(255,255,255,.09);
-  --toll-glass-soft:rgba(255,255,255,.15);
-  --toll-glass-inner:rgba(255,255,255,.22);
+  --toll-glass:rgba(246,246,248,.82);
+  --toll-glass-strong:rgba(255,255,255,.78);
+  --toll-glass-soft:rgba(255,255,255,.46);
+  --toll-glass-inner:rgba(255,255,255,.56);
   --toll-glass-edge:rgba(255,255,255,.78);
   --toll-glass-edge-low:rgba(255,255,255,.62);
   --toll-highlight:rgba(255,255,255,.90);
   --toll-glass-shadow:0 28px 80px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.86);
   --toll-selected:rgba(60,60,62,.105);
   --toll-selected-edge:rgba(35,35,36,.15);
-  --toll-pill:rgba(255,255,255,.24);
-  --toll-pill-hover:rgba(255,255,255,.48);
+  --toll-pill:rgba(255,255,255,.42);
+  --toll-pill-hover:rgba(255,255,255,.68);
   --toll-button:#242425;
   --toll-button-text:#1c1c1d;
   --toll-scroll:rgba(50,50,52,.28);
@@ -148,7 +153,7 @@ export function buildStandaloneCsatHtml(
   --tick-minor:#636363;
   --min-hand:#f1f1f1;
   --sec-hand:#686868;
-  --glass-fill:rgba(255,255,255,.075);
+  --glass-fill:rgba(28,28,30,.52);
   --glass-rim:rgba(255,255,255,.23);
   --glint:rgba(255,255,255,.42);
   --btn-shadow:0 6px 18px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.17),inset 0 -1px 0 rgba(255,255,255,.03);
@@ -157,29 +162,29 @@ export function buildStandaloneCsatHtml(
   --btn-after-opacity:.18;
   --btn-text-shadow:0 1px 2px rgba(0,0,0,.32);
   --focus-ring:#e2e2e2;
-  --modal-bg:rgba(30,30,30,.92);
+  --modal-bg:rgba(26,26,28,.94);
   --modal-border:rgba(255,255,255,.23);
   --modal-ink:#f1f1f1;
   --modal-muted:#9f9f9f;
   --modal-surface:rgba(255,255,255,.075);
-  --modal-card-bg:rgba(38,38,38,.74);
+  --modal-card-bg:rgba(38,38,38,.82);
   --toll-ink:#f1f1f1;
   --toll-ink-2:#d2d2d2;
   --toll-muted:#9f9f9f;
   --toll-line:rgba(255,255,255,.11);
   --toll-line-soft:rgba(255,255,255,.075);
-  --toll-glass:rgba(30,30,30,.92);
-  --toll-glass-strong:rgba(26,26,26,.92);
-  --toll-glass-soft:rgba(38,38,38,.74);
-  --toll-glass-inner:rgba(46,46,46,.60);
+  --toll-glass:rgba(24,24,26,.94);
+  --toll-glass-strong:rgba(22,22,24,.95);
+  --toll-glass-soft:rgba(38,38,38,.82);
+  --toll-glass-inner:rgba(46,46,46,.72);
   --toll-glass-edge:rgba(255,255,255,.23);
   --toll-glass-edge-low:rgba(255,255,255,.13);
   --toll-highlight:rgba(255,255,255,.24);
   --toll-glass-shadow:0 34px 96px rgba(0,0,0,.62),0 8px 26px rgba(0,0,0,.40),inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.05);
   --toll-selected:rgba(255,255,255,.12);
   --toll-selected-edge:rgba(255,255,255,.28);
-  --toll-pill:rgba(255,255,255,.075);
-  --toll-pill-hover:rgba(255,255,255,.14);
+  --toll-pill:rgba(255,255,255,.095);
+  --toll-pill-hover:rgba(255,255,255,.16);
   --toll-button:#f0f0f0;
   --toll-button-text:#171717;
   --toll-scroll:rgba(255,255,255,.23);
@@ -195,7 +200,7 @@ export function buildStandaloneCsatHtml(
   --tick-minor:#9c8873;
   --min-hand:#2b1f16;
   --sec-hand:#4d4d4d;
-  --glass-fill:rgba(255,248,235,.03);
+  --glass-fill:rgba(246,238,224,.28);
   --glass-rim:rgba(255,248,235,.66);
   --glint:rgba(255,248,235,.82);
   --btn-shadow:0 9px 24px rgba(54,41,30,.09),inset 0 1px 0 rgba(255,248,235,.68),inset 0 -1px 0 rgba(54,41,30,.08);
@@ -209,30 +214,35 @@ export function buildStandaloneCsatHtml(
   --modal-ink:#36291e;
   --modal-muted:#6e5a49;
   --modal-surface:rgba(54,41,30,.06);
-  --modal-card-bg:rgba(255,248,235,.5);
+  --modal-card-bg:rgba(255,248,235,.62);
   --toll-ink:#2c2117;
   --toll-ink-2:#4e3d2e;
   --toll-muted:#786452;
   --toll-line:rgba(54,41,30,.12);
   --toll-line-soft:rgba(54,41,30,.08);
-  --toll-glass:rgba(245,236,220,.86);
-  --toll-glass-strong:rgba(255,250,240,.18);
-  --toll-glass-soft:rgba(255,250,240,.38);
-  --toll-glass-inner:rgba(255,250,240,.52);
+  --toll-glass:rgba(245,236,220,.90);
+  --toll-glass-strong:rgba(255,250,240,.82);
+  --toll-glass-soft:rgba(255,250,240,.48);
+  --toll-glass-inner:rgba(255,250,240,.62);
   --toll-glass-edge:rgba(255,250,242,.82);
   --toll-glass-edge-low:rgba(255,250,242,.68);
   --toll-highlight:rgba(255,250,242,.90);
   --toll-glass-shadow:0 28px 80px rgba(42,31,21,.22),0 6px 20px rgba(42,31,21,.10),inset 0 1px 0 rgba(255,250,242,.90);
   --toll-selected:rgba(74,56,40,.11);
   --toll-selected-edge:rgba(54,41,30,.16);
-  --toll-pill:rgba(255,250,242,.52);
-  --toll-pill-hover:rgba(255,250,242,.80);
+  --toll-pill:rgba(255,250,242,.56);
+  --toll-pill-hover:rgba(255,250,242,.82);
   --toll-button:#36291e;
   --toll-button-text:#2c2117;
   --toll-scroll:rgba(54,41,30,.28);
   --toll-warn:#9a5b13;
   --toll-warn-bg:rgba(214,178,126,.16);
   --toll-warn-line:rgba(154,91,19,.28);
+}
+@media (max-width:1024px){
+  :root,[data-theme="light"]{--toll-glass:rgba(246,246,248,.94);--modal-bg:linear-gradient(155deg,rgba(252,252,254,.96) 0%,rgba(244,244,246,.94) 100%)}
+  [data-theme="dark"]{--toll-glass:rgba(22,22,24,.96);--modal-bg:rgba(22,22,24,.96)}
+  [data-theme="sepia"]{--toll-glass:rgba(245,236,220,.95);--modal-bg:linear-gradient(155deg,rgba(248,240,225,.97) 0%,rgba(238,228,208,.95) 100%)}
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -282,13 +292,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
 }
 #stageBadge{
   font-weight:600;
-  font-size:.76em;
+  font-size:.74em;
   letter-spacing:.01em;
-  opacity:.68;
-  white-space:nowrap;
+  line-height:1.32;
+  opacity:.74;
+  white-space:pre-line;
+  word-break:keep-all;
+  overflow-wrap:break-word;
   max-width:100%;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  overflow:visible;
+  text-overflow:clip;
 }
 
 /* ---------- Top-Left Hamburger Bar & List-Detail Pill Menu ---------- */
@@ -355,20 +368,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   flex-direction:row;
   align-items:flex-start;
   gap:10px;
-  transform-origin:top left;
-  transition:opacity .28s var(--ease),transform .28s var(--spring),visibility .28s;
 }
 #pillDrawer.closed{
-  opacity:0;
+  display:none;
   pointer-events:none;
   visibility:hidden;
-  transform:translateY(-8px) scale(.95);
 }
 #pillDrawer.open{
-  opacity:1;
+  display:flex;
   pointer-events:auto;
   visibility:visible;
-  transform:translateY(0) scale(1);
 }
 .ld-master-col{
   display:flex;
@@ -431,7 +440,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
 }
 
 /* ---------- Liquid Glass — Material Study (Low Tint / Edge Refraction) ---------- */
-.lg-btn,.pill-group-row{
+.lg-btn,.pill-group-row,.drawer-card-panel,.bookmark-drawer-card{
   --px:50%;
   --py:12%;
   position:relative;
@@ -441,14 +450,14 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   border:1px solid var(--glass-rim);
   background:var(--glass-fill);
   box-shadow:var(--btn-shadow);
-  -webkit-backdrop-filter:blur(.8px) saturate(1.38) contrast(1.02);
-  backdrop-filter:blur(.8px) saturate(1.38) contrast(1.02);
+  -webkit-backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
+  backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
   color:var(--btn);
   text-shadow:var(--btn-text-shadow);
   -webkit-tap-highlight-color:transparent;
-  transition:transform .34s var(--spring),box-shadow .32s var(--ease),border-color .28s ease,color .25s ease,opacity .3s ease;
+  transition:transform .24s var(--spring),box-shadow .24s var(--ease),border-color .22s ease,color .22s ease;
 }
-.lg-btn::before,.pill-group-row::before{
+.lg-btn::before,.pill-group-row::before,.drawer-card-panel::before,.bookmark-drawer-card::before{
   content:"";
   position:absolute;
   inset:0;
@@ -458,7 +467,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   background:var(--btn-before);
   opacity:.9;
 }
-.lg-btn::after,.pill-group-row::after{
+.lg-btn::after,.pill-group-row::after,.drawer-card-panel::after,.bookmark-drawer-card::after{
   content:"";
   position:absolute;
   inset:1px;
@@ -470,16 +479,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   mix-blend-mode:screen;
 }
 @supports (backdrop-filter: url("#glass-lens-light")){
-  .lg-btn,.pill-group-row{
-    -webkit-backdrop-filter:url("#glass-lens-light") blur(.8px) saturate(1.38) contrast(1.02);
-    backdrop-filter:url("#glass-lens-light") blur(.8px) saturate(1.38) contrast(1.02);
+  .lg-btn,.pill-group-row,.drawer-card-panel,.bookmark-drawer-card{
+    -webkit-backdrop-filter:url("#glass-lens-light") blur(18px) saturate(1.42) contrast(1.02);
+    backdrop-filter:url("#glass-lens-light") blur(18px) saturate(1.42) contrast(1.02);
   }
-  [data-theme="dark"] .lg-btn,[data-theme="dark"] .pill-group-row{
-    -webkit-backdrop-filter:url("#glass-lens-dark") blur(.8px) saturate(1.34);
-    backdrop-filter:url("#glass-lens-dark") blur(.8px) saturate(1.34);
+  [data-theme="dark"] .lg-btn,[data-theme="dark"] .pill-group-row,[data-theme="dark"] .drawer-card-panel,[data-theme="dark"] .bookmark-drawer-card{
+    -webkit-backdrop-filter:url("#glass-lens-dark") blur(18px) saturate(1.38);
+    backdrop-filter:url("#glass-lens-dark") blur(18px) saturate(1.38);
   }
 }
-.lg-btn > *,.pill-group-row > *{
+.lg-btn > *,.pill-group-row > *,.drawer-card-panel > *,.bookmark-drawer-card > *{
   position:relative;
   z-index:2;
 }
@@ -2247,7 +2256,7 @@ html:not(.app-ready) #rightTimetablePanel{
 .dock-status-badges{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 74px);transform:translate3d(calc(-50% + var(--tt-shift-x,0px)),var(--dock-shift-y,0px),0);z-index:23;display:flex;align-items:center;gap:6px;pointer-events:auto;transition:transform .52s cubic-bezier(.22,1,.36,1)}
 .status-pill-badge{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;background:var(--toll-pill);border:1px solid var(--toll-glass-edge);color:var(--toll-ink);font-size:11px;font-weight:700;backdrop-filter:blur(12px)}
 .status-pill-badge button{appearance:none;border:none;background:transparent;color:inherit;font-size:11px;font-weight:800;cursor:pointer;padding:0 2px;text-decoration:underline}
-.drawer-card-panel{width:280px;max-width:calc(100vw - 44px);padding:10px 12px;border-radius:16px;background:var(--modal-bg);border:1px solid var(--modal-border);backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:8px}
+.drawer-card-panel{width:280px;max-width:calc(100vw - 44px);padding:11px 13px;border-radius:18px;display:flex;flex-direction:column;gap:8px;overflow:visible}
 .drawer-card-title{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:700;color:var(--toll-muted)}
 .ui-option-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px;font-size:11.5px;font-weight:600;color:var(--toll-ink);cursor:pointer}
 .ui-option-toggle-row .ui-opt-text{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -3904,14 +3913,36 @@ void main(){
       ? (firstStep.durationMinutes * 60 * 1000)
       : ((currentPreset.endMinutes-currentPreset.startMinutes)*60*1000);
 
+    const idleCatText = firstStep.category || '';
+    const isIdleMainExam =
+      firstStep.stageType==='main' ||
+      firstStep.stageType==='listening' ||
+      idleCatText.indexOf('본령')===0 ||
+      idleCatText.indexOf('듣기평가 안내방송 및 본령')!==-1;
+    let idleExamEndMin = firstStep.endMinutes;
+    if(isIdleMainExam && (currentPreset.steps.length>1 || isCustomSeq)){
+      for(let j=1;j<currentPreset.steps.length;j++){
+        const nxt=currentPreset.steps[j];
+        const nxtCat=nxt.category||'';
+        const isSameGroup = nxt.displayTitle===firstStep.displayTitle || (nxt.periodLabel!=='-' && nxt.periodLabel===firstStep.periodLabel);
+        const isWarnFollow = nxt.stageType==='warn' || nxtCat.indexOf('종료 10분 전')===0 || nxtCat.indexOf('종료 5분 전')===0;
+        if(isSameGroup && isWarnFollow) idleExamEndMin = nxt.endMinutes;
+        else break;
+      }
+    }
+    const finalIdleRemainMs = (isIdleMainExam && idleExamEndMin > firstStep.endMinutes)
+      ? ((idleExamEndMin - firstStep.startMinutes)*60*1000)
+      : idleRemainMs;
+
     title.textContent=currentPreset.displayTitle;
-    document.title='대학수학능력시험 안내방송';
+    document.title='2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림';
     startLab.innerHTML='START - TIME<br>'+formatAmPm(dispStartMin);
     startLab.style.opacity='1';
     endLab.innerHTML='END - TIME<br>'+formatAmPm(dispEndMin);
     endLab.style.opacity='0.38';
-    remainDigits.textContent=formatDurationClock(idleRemainMs);
-    stageBadge.textContent=(firstStep.periodLabel!=='-'?firstStep.periodLabel+' · ':'')+firstStep.category+' 대기';
+    remainDigits.textContent=formatDurationClock(finalIdleRemainMs);
+    const formattedIdleCat = idleCatText.indexOf(' → ')!==-1 ? idleCatText.replace(' → ', ' 대기\n다음 방송: ') : (idleCatText+' 대기');
+    stageBadge.textContent=(firstStep.periodLabel!=='-'?firstStep.periodLabel+' · ':'')+formattedIdleCat;
     activeRowId=firstStep.id;
     if(isCustomSeq && firstStep.id && firstStep.id.indexOf('custom_seq_')===0){
       const rest=firstStep.id.replace(/^custom_seq_\\d+_/, '');
@@ -4070,11 +4101,6 @@ void main(){
       title.textContent=activeStep.displayTitle;
       const stepRemainMs=Math.max(0,(activeStep.endMinutes-simMinutes)*60000);
       const dispRemainMs=(currentPreset.steps.length>1||currentPreset.isCustomSequence)?stepRemainMs:remainingMs;
-      remainDigits.textContent=formatDurationClock(dispRemainMs);
-      const speedBadge = playbackSpeed>1 ? ' (×'+playbackSpeed+')' : '';
-      const statusSuffix=(isPaused?' (일시정지)':' 진행 중')+speedBadge;
-      stageBadge.textContent=(activeStep.periodLabel!=='-'?activeStep.periodLabel+' · ':'')+activeStep.category+statusSuffix;
-
       const remainSec = dispRemainMs / 1000;
       const catText = activeStep.category || '';
       const matchedStartNode = activeStep.startNodeId
@@ -4103,6 +4129,7 @@ void main(){
         );
 
       let examEndMinutes = activeStep.endMinutes;
+      let nextWarnBroadcastLabel = null;
       if(isMainExamStage && (currentPreset.steps.length>1 || currentPreset.isCustomSequence)){
         for(let j=activeStepIdx+1;j<currentPreset.steps.length;j++){
           const nxt = currentPreset.steps[j];
@@ -4118,6 +4145,10 @@ void main(){
             nxtCat.indexOf('종료 5분 전')===0;
           if(isSameGroup && isWarnFollow){
             examEndMinutes = nxt.endMinutes;
+            if(!nextWarnBroadcastLabel){
+              if(nxtCat.indexOf('종료 10분 전')!==-1 || nxt.bellAtStart==='warn_10m') nextWarnBroadcastLabel = '종료 10분 전';
+              else if(nxtCat.indexOf('종료 5분 전')!==-1 || nxt.bellAtStart==='warn_5m') nextWarnBroadcastLabel = '종료 5분 전';
+            }
           }else{
             break;
           }
@@ -4126,6 +4157,27 @@ void main(){
       const mainRemainSec = (currentPreset.steps.length>1 || currentPreset.isCustomSequence)
         ? Math.max(0, (examEndMinutes - simMinutes) * 60)
         : remainSec;
+      const isMainBeforeWarn =
+        isMainExamStage &&
+        catText.indexOf('종료 10분 전')===-1 &&
+        catText.indexOf('종료 5분 전')===-1 &&
+        examEndMinutes > activeStep.endMinutes;
+      const finalDisplayRemainMs = isMainBeforeWarn ? mainRemainSec * 1000 : dispRemainMs;
+      remainDigits.textContent=formatDurationClock(finalDisplayRemainMs);
+
+      const speedBadge = playbackSpeed>1 ? ' (×'+playbackSpeed+')' : '';
+      const statusSuffix=(isPaused?' (일시정지)':' 진행 중')+speedBadge;
+      const periodPrefix = activeStep.periodLabel!=='-' ? (activeStep.periodLabel+' · ') : '';
+      if(isMainBeforeWarn){
+        const mainStageTitle = catText.indexOf('듣기평가')!==-1 ? '듣기평가 및 본령' : '본령';
+        const nextLabel = nextWarnBroadcastLabel || '종료 10분 전';
+        stageBadge.textContent = periodPrefix + mainStageTitle + statusSuffix + '\n다음 방송: ' + nextLabel;
+      }else if(catText.indexOf(' → ')!==-1){
+        const parts = catText.split(' → ');
+        stageBadge.textContent = periodPrefix + parts[0] + statusSuffix + '\n다음 방송: ' + parts.slice(1).join(' → ');
+      }else{
+        stageBadge.textContent = periodPrefix + catText + statusSuffix;
+      }
 
       if(isPrepareStage && prelimBellGlowAnim){
         if(remainSec <= 60 && remainSec > 10){
@@ -4781,6 +4833,7 @@ void main(){
     }
 
     checkAndTriggerCues(0,0);
+    revealRunAuxControls();
     requestAnimationFrame(frame);
   }
 
@@ -5374,34 +5427,33 @@ void main(){
     }
   });
 
+  function applyLiveSubjectCombinationToDraft(){
+    const checkedSubjs = Array.from(document.querySelectorAll('.subj-chk:checked')).map(el=>el.value);
+    const inqCount = Number((document.getElementById('subjInqCountSel')||{}).value ?? 2);
+    const lang2 = Boolean((document.getElementById('subjLang2Chk')||{}).checked);
+    const density = (document.getElementById('subjDensitySel')||{}).value || 'core';
+    const activeGroups = new Set(checkedSubjs);
+    if(inqCount >= 1) activeGroups.add('inq1');
+    if(inqCount >= 2) activeGroups.add('inq2');
+    if(lang2) activeGroups.add('lang2');
+    const ids = EMBEDDED.selectableCueNodes.filter(n=>{
+      if(!activeGroups.has(n.subjectGroupId)) return false;
+      if(density==='all') return true;
+      if(density==='core') return Boolean(n.isCoreExamStage);
+      return n.stageType==='main' || n.stageType==='listening' || n.stageType==='warn10' || n.stageType==='end';
+    }).map(n=>n.nodeId);
+    mutateDraftConfig(cfg=>{
+      cfg.selectedNodeIds = ids;
+    });
+  }
+  document.querySelectorAll('.subj-chk, #subjLang2Chk, #subjInqCountSel, #subjDensitySel').forEach(el=>{
+    el.addEventListener('change', applyLiveSubjectCombinationToDraft);
+  });
   const subjAutoApplyBtn = document.getElementById('subjAutoApplyBtn');
   if(subjAutoApplyBtn){
     subjAutoApplyBtn.addEventListener('click', ()=>{
-      const checkedSubjs = Array.from(document.querySelectorAll('.subj-chk:checked')).map(el=>el.value);
-      const inqCount = Number((document.getElementById('subjInqCountSel')||{}).value ?? 2);
-      const lang2 = Boolean((document.getElementById('subjLang2Chk')||{}).checked);
-      const density = (document.getElementById('subjDensitySel')||{}).value || 'core';
-      const activeGroups = new Set(checkedSubjs);
-      if(inqCount >= 1) activeGroups.add('inq1');
-      if(inqCount >= 2) activeGroups.add('inq2');
-      if(lang2) activeGroups.add('lang2');
-      const ids = EMBEDDED.selectableCueNodes.filter(n=>{
-        if(!activeGroups.has(n.subjectGroupId)) return false;
-        if(density==='all') return true;
-        if(density==='core') return Boolean(n.isCoreExamStage);
-        return n.stageType==='main' || n.stageType==='listening' || n.stageType==='warn10' || n.stageType==='end';
-      }).map(n=>n.nodeId);
-      if(!ids.length){
-        showToast('최소 1개 이상의 응시 과목을 선택해 주세요.', 2600);
-        return;
-      }
-      mutateDraftConfig(cfg=>{
-        cfg.selectedNodeIds = ids;
-        cfg.intervalMap = {};
-        cfg.intervalSecondsMap = {};
-        cfg.firstNodeCustomMinutes = null;
-      });
-      showToast('응시 과목 조합('+ids.length+'개 타종)으로 자동 구성되었습니다.', 2400);
+      applyLiveSubjectCombinationToDraft();
+      showToast('응시 과목 조합이 동기화되었습니다.', 2200);
     });
   }
 

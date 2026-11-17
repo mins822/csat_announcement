@@ -1,6 +1,6 @@
 {
   "name": "수능 타종 및 시계 타이머",
-  "description": "대학수학능력시험 전체 시간표와 WebGL 패브릭 아날로그 시계 애니메이션, 내장 타종 음원 및 영어 듣기평가 로컬 음원 연동을 지원하는 단일 HTML 패키징 기반 수능 타이머 웹 애플리케이션",
+  "description": "2027학년도 대학수학능력시험 시험장 안내방송 구현 · 수능 타종 · 수능 방송 · 수능 알림 · 37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 과목별 시간표 구성을 지원하는 수능 시계 및 모의고사 타이머",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

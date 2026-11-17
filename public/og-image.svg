@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f2f1ef" />
+      <stop offset="55%" stop-color="#e8e6e2" />
+      <stop offset="100%" stop-color="#dcd9d3" />
+    </linearGradient>
+    <radialGradient id="dialGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.92" />
+      <stop offset="70%" stop-color="#f5f4f2" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#e5e3de" stop-opacity="0" />
+    </radialGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#18181b" flood-opacity="0.10" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+
+  <!-- Subtle architectural grid lines -->
+  <line x1="80" y1="0" x2="80" y2="630" stroke="#1a1a1a" stroke-opacity="0.06" stroke-width="1" />
+  <line x1="1120" y1="0" x2="1120" y2="630" stroke="#1a1a1a" stroke-opacity="0.06" stroke-width="1" />
+  <line x1="0" y1="84" x2="1200" y2="84" stroke="#1a1a1a" stroke-opacity="0.06" stroke-width="1" />
+  <line x1="0" y1="546" x2="1200" y2="546" stroke="#1a1a1a" stroke-opacity="0.06" stroke-width="1" />
+
+  <!-- Main Glass Card -->
+  <rect x="64" y="56" width="1072" height="518" rx="36" fill="#ffffff" fill-opacity="0.66" stroke="#ffffff" stroke-width="2" filter="url(#cardShadow)" />
+
+  <!-- Left Content Column -->
+  <g transform="translate(116, 128)">
+    <rect x="0" y="0" width="248" height="36" rx="18" fill="#1a1a1a" fill-opacity="0.08" />
+    <text x="124" y="24" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="15" font-weight="700" fill="#27272a" letter-spacing="0.06em">2027 CSAT OFFICIAL TIMER</text>
+
+    <text x="0" y="102" font-family="'Noto Serif KR', 'Apple SD Gothic Neo', serif" font-size="44" font-weight="700" fill="#161618" letter-spacing="-0.03em">2027학년도 대학수학능력시험</text>
+    <text x="0" y="162" font-family="'Noto Serif KR', 'Apple SD Gothic Neo', serif" font-size="44" font-weight="700" fill="#161618" letter-spacing="-0.03em">시험장 안내방송 구현</text>
+
+    <text x="0" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="22" font-weight="500" fill="#4b4b52" letter-spacing="-0.01em">37개 공식 타종 음원 · 3교시 영어 듣기평가 · 실전 시계 및 시간표</text>
+
+    <!-- Keyword Pills -->
+    <g transform="translate(0, 272)">
+      <rect x="0" y="0" width="128" height="44" rx="22" fill="#1c1c1e" />
+      <text x="64" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="18" font-weight="700" fill="#ffffff">수능 타종</text>
+
+      <rect x="142" y="0" width="128" height="44" rx="22" fill="#1c1c1e" />
+      <text x="206" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="18" font-weight="700" fill="#ffffff">수능 방송</text>
+
+      <rect x="284" y="0" width="128" height="44" rx="22" fill="#1c1c1e" />
+      <text x="348" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="18" font-weight="700" fill="#ffffff">수능 알림</text>
+
+      <rect x="426" y="0" width="144" height="44" rx="22" fill="#ffffff" fill-opacity="0.85" stroke="#1c1c1e" stroke-opacity="0.2" stroke-width="1.5" />
+      <text x="498" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="18" font-weight="700" fill="#1c1c1e">수능 시계</text>
+    </g>
+
+    <text x="0" y="368" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" font-weight="600" fill="#71717a" letter-spacing="0.04em">08:10 입실 · 08:25 예비령 · 08:35 준비령 · 08:40 본령 · 종료령</text>
+  </g>
+
+  <!-- Right Analog Clock Emblem -->
+  <g transform="translate(918, 315)">
+    <circle cx="0" cy="0" r="185" fill="url(#dialGlow)" />
+    <circle cx="0" cy="0" r="156" fill="#f7f6f4" stroke="#ffffff" stroke-width="4" filter="url(#cardShadow)" />
+    <circle cx="0" cy="0" r="142" fill="none" stroke="#1a1a1a" stroke-opacity="0.12" stroke-width="1.5" />
+
+    <!-- 12 Hour Ticks -->
+    <g stroke="#3f3f46" stroke-linecap="round">
+      <line x1="0" y1="-134" x2="0" y2="-116" stroke-width="4" />
+      <line x1="67" y1="-116" x2="58" y2="-100" stroke-width="2.5" />
+      <line x1="116" y1="-67" x2="100" y2="-58" stroke-width="2.5" />
+      <line x1="134" y1="0" x2="116" y2="0" stroke-width="4" />
+      <line x1="116" y1="67" x2="100" y2="58" stroke-width="2.5" />
+      <line x1="67" y1="116" x2="58" y2="100" stroke-width="2.5" />
+      <line x1="0" y1="134" x2="0" y2="116" stroke-width="4" />
+      <line x1="-67" y1="116" x2="-58" y2="100" stroke-width="2.5" />
+      <line x1="-116" y1="67" x2="-100" y2="58" stroke-width="2.5" />
+      <line x1="-134" y1="0" x2="-116" y2="0" stroke-width="4" />
+      <line x1="-116" y1="-67" x2="-100" y2="-58" stroke-width="2.5" />
+      <line x1="-67" y1="-116" x2="-58" y2="-100" stroke-width="2.5" />
+    </g>
+
+    <!-- 08:40 Exam Start Hand Position -->
+    <!-- Hour hand (~8:40 -> 260 deg) -->
+    <g transform="rotate(260)">
+      <line x1="0" y1="18" x2="0" y2="-78" stroke="#d9568a" stroke-width="8" stroke-linecap="round" />
+    </g>
+    <!-- Minute hand (40 min -> 240 deg) -->
+    <g transform="rotate(240)">
+      <line x1="0" y1="22" x2="0" y2="-112" stroke="#18181b" stroke-width="5.5" stroke-linecap="round" />
+    </g>
+    <!-- Second hand (0 sec -> 0 deg) -->
+    <g transform="rotate(35)">
+      <line x1="0" y1="26" x2="0" y2="-122" stroke="#52525b" stroke-width="2" stroke-linecap="round" />
+    </g>
+    <circle cx="0" cy="0" r="7" fill="#18181b" />
+    <circle cx="0" cy="0" r="3" fill="#ffffff" />
+  </g>
+</svg>
