@@ -33,6 +33,12 @@ export default defineConfig(() => {
           lang: 'ko',
           icons: [
             {
+              src: 'favicon-light.svg',
+              sizes: 'any',
+              type: 'image/svg+xml',
+              purpose: 'any',
+            },
+            {
               src: 'favicon-dark.svg',
               sizes: 'any',
               type: 'image/svg+xml',
