@@ -223,6 +223,7 @@ html {
 
 html,
 body {
+  width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
@@ -232,6 +233,24 @@ body {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+:fullscreen,
+:-webkit-full-screen,
+html:fullscreen,
+html:-webkit-full-screen {
+  background: var(--stage);
+  background-color: var(--stage);
+}
+
+::backdrop,
+:fullscreen::backdrop,
+:-webkit-full-screen::backdrop,
+html::backdrop,
+html:fullscreen::backdrop,
+html:-webkit-full-screen::backdrop {
+  background: var(--stage);
+  background-color: var(--stage);
 }
 
 .svg-filters {
@@ -249,6 +268,7 @@ body {
   height: 100%;
   display: block;
   z-index: 0;
+  background-color: var(--stage);
 }
 
 #wakeLockVideo {
@@ -1043,6 +1063,146 @@ body {
   transform: scale(0.96);
 }
 
+.toll-dialog .builder-stepper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px 22px;
+  border-bottom: 1px solid var(--toll-line);
+  background: rgba(255, 255, 255, 0.16);
+  flex: none;
+}
+
+[data-theme="dark"] .toll-dialog .builder-stepper {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.toll-dialog .builder-step-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 11px;
+  border-radius: 14px;
+  border: 1px solid var(--toll-glass-edge-low);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.16));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  color: var(--toll-ink-2);
+  font-size: 10.5px;
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, transform 0.15s, box-shadow 0.18s;
+}
+
+.toll-dialog .builder-step-tab:hover {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.60), rgba(255, 255, 255, 0.28));
+  border-color: rgba(255, 255, 255, 0.88);
+}
+
+.toll-dialog .builder-step-tab:active {
+  transform: scale(0.985);
+}
+
+.toll-dialog .builder-step-tab .step-badge {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 800;
+  background: rgba(80, 80, 85, 0.12);
+  color: var(--toll-ink-2);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.toll-dialog .builder-step-tab .step-title {
+  min-width: 0;
+  line-height: 1.32;
+  word-break: keep-all;
+}
+
+.toll-dialog .builder-step-tab.is-active {
+  color: var(--toll-ink);
+  font-weight: 760;
+  border-color: rgba(45, 45, 48, 0.34);
+  background: linear-gradient(145deg, rgba(60, 60, 64, 0.18), rgba(255, 255, 255, 0.42));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.toll-dialog .builder-step-tab.is-active .step-badge {
+  background: var(--toll-ink);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.toll-dialog .builder-step-tab.is-done {
+  color: var(--toll-ink);
+}
+
+.toll-dialog .builder-step-tab.is-done .step-badge {
+  background: rgba(60, 60, 64, 0.22);
+  color: var(--toll-ink);
+}
+
+[data-theme="dark"] .toll-dialog .builder-step-tab {
+  color: var(--toll-ink-2);
+  border-color: rgba(255, 255, 255, 0.13);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .toll-dialog .builder-step-tab:hover {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05));
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="dark"] .toll-dialog .builder-step-tab .step-badge {
+  background: rgba(255, 255, 255, 0.10);
+  color: var(--toll-ink);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="dark"] .toll-dialog .builder-step-tab.is-active {
+  color: #f6f6f6;
+  border-color: rgba(255, 255, 255, 0.36);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.08));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    0 4px 12px rgba(0, 0, 0, 0.24);
+}
+
+[data-theme="dark"] .toll-dialog .builder-step-tab.is-active .step-badge {
+  background: #f2f2f2;
+  color: #1c1c1c;
+}
+
+[data-theme="dark"] .toll-dialog .builder-step-tab.is-done .step-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #f4f4f4;
+}
+
+.toll-dialog .builder-step-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--toll-scroll) transparent;
+  padding: 16px 22px 96px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .toll-dialog .builder-step-body {
+  background: rgba(255, 255, 255, 0.015);
+}
+
 .toll-dialog .quickbar {
   position: relative;
   z-index: 30;
@@ -1052,6 +1212,55 @@ body {
   flex-direction: column;
   gap: 7px;
   background: rgba(255, 255, 255, 0.22);
+}
+
+.toll-dialog .quickbar.quickbar-step {
+  padding: 0 0 28px;
+  border-bottom: 0;
+  background: transparent;
+  gap: 11px;
+}
+
+.toll-dialog .quickbar.quickbar-step .quick-line {
+  position: relative;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--toll-glass-edge-low);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.14));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.58), 0 3px 12px rgba(0, 0, 0, 0.025);
+}
+
+.toll-dialog .quickbar.quickbar-step .quick-line.has-popover-open {
+  z-index: 60;
+}
+
+[data-theme="dark"] .toll-dialog .quickbar.quickbar-step {
+  background: transparent;
+}
+
+[data-theme="dark"] .toll-dialog .quickbar.quickbar-step .quick-line {
+  background: linear-gradient(145deg, rgba(44, 44, 44, 0.78), rgba(31, 31, 31, 0.62));
+  border-color: var(--toll-glass-edge-low);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 3px 12px rgba(0, 0, 0, 0.16);
+}
+
+.toll-dialog .step1-subject-preview-bar {
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px dashed var(--toll-line);
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--toll-ink-2);
+}
+
+.toll-dialog .step1-subject-preview-bar strong {
+  color: var(--toll-ink);
+  font-weight: 760;
+}
+
+[data-theme="dark"] .toll-dialog .step1-subject-preview-bar {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 [data-theme="dark"] .toll-dialog .quickbar {
@@ -1124,6 +1333,24 @@ body {
 
 .toll-dialog .right-pane {
   padding: 15px 18px 92px 18px;
+}
+
+.toll-dialog .left-pane.step-single-pane,
+.toll-dialog .right-pane.step-single-pane {
+  padding: 0;
+  border-right: 0;
+  overflow: visible;
+}
+
+.toll-dialog .area-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.toll-dialog .area-cards-grid .area-card {
+  margin-bottom: 0;
 }
 
 .toll-dialog .pane-title {
@@ -1721,6 +1948,18 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
+.toll-dialog .footer-btn.step-next-btn {
+  color: var(--toll-ink);
+  border-color: rgba(45, 45, 48, 0.34);
+  background: linear-gradient(145deg, rgba(60, 60, 64, 0.16), rgba(255, 255, 255, 0.44));
+}
+
+[data-theme="dark"] .toll-dialog .footer-btn.step-next-btn {
+  color: #f6f6f6;
+  border-color: rgba(255, 255, 255, 0.34);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.07));
+}
+
 .toll-dialog .footer-btn.primary {
   color: #ffffff;
   border: 1px solid rgba(36, 36, 38, 0.75);
@@ -1788,6 +2027,12 @@ body {
   }
 }
 
+@media (max-width: 760px) {
+  .toll-dialog .area-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 680px) {
   .toll-scrim {
     inset: 0;
@@ -1808,9 +2053,37 @@ body {
   .toll-dialog .dialog-heading p {
     font-size: 10px;
   }
+  .toll-dialog .builder-stepper {
+    padding: 8px 10px;
+    gap: 5px;
+  }
+  .toll-dialog .builder-step-tab {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px 8px;
+    font-size: 9.5px;
+    border-radius: 12px;
+  }
+  .toll-dialog .builder-step-tab .step-badge {
+    width: 19px;
+    height: 19px;
+    font-size: 9px;
+  }
+  .toll-dialog .builder-step-body {
+    padding: 12px 12px 96px;
+  }
   .toll-dialog .quickbar {
     padding: 8px 12px;
     gap: 6px;
+  }
+  .toll-dialog .quickbar.quickbar-step {
+    padding: 0 0 22px;
+    gap: 8px;
+  }
+  .toll-dialog .quickbar.quickbar-step .quick-line {
+    padding: 10px 11px;
+    border-radius: 15px;
   }
   .toll-dialog .quick-label {
     min-width: 48px;
@@ -1835,6 +2108,12 @@ body {
     flex: 1 1 auto;
     padding: 10px 12px 92px;
   }
+  .toll-dialog .left-pane.step-single-pane,
+  .toll-dialog .right-pane.step-single-pane {
+    flex: none;
+    border-bottom: 0;
+    padding: 0;
+  }
   .toll-dialog .dialog-footer {
     min-height: 60px;
     padding: 8px 12px;
@@ -1846,6 +2125,14 @@ body {
   }
   .toll-dialog .footer-actions {
     margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .toll-dialog .footer-btn {
+    height: 34px;
+    padding: 0 13px;
+    font-size: 10px;
   }
 }
 

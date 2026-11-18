@@ -81,7 +81,7 @@
       content="2027학년도 대학수학능력시험 시험장 안내방송 구현, 수능 타종, 수능 방송, 수능 알림, 수능 시계, 수능 타이머, 모의고사 타이머, 수능 안내방송, 수능 시간표, 수능 영어 듣기평가, 수능 예비령 준비령 본령 종료령, 아날로그 수능 시계"
     />
     <meta name="robots" content="index, follow" />
-    <meta name="version" content="1.0.6053.20261118084150" />
+    <meta name="version" content="1.0.6563.20261118095435" />
     <meta
       property="og:title"
       content="2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림"
@@ -127,6 +127,12 @@
       html{background:#ecebe9;color-scheme:light}
       html[data-theme="dark"]{background:#121212;color-scheme:dark}
       html[data-theme="sepia"]{background:#e6dcc8;color-scheme:light}
+      html:fullscreen,html:-webkit-full-screen,:fullscreen,:-webkit-full-screen{background:#ecebe9}
+      html[data-theme="dark"]:fullscreen,html[data-theme="dark"]:-webkit-full-screen{background:#121212}
+      html[data-theme="sepia"]:fullscreen,html[data-theme="sepia"]:-webkit-full-screen{background:#e6dcc8}
+      ::backdrop,:fullscreen::backdrop,:-webkit-full-screen::backdrop,html::backdrop,html:fullscreen::backdrop{background:#ecebe9}
+      html[data-theme="dark"]::backdrop,html[data-theme="dark"]:fullscreen::backdrop,[data-theme="dark"] ::backdrop{background:#121212}
+      html[data-theme="sepia"]::backdrop,html[data-theme="sepia"]:fullscreen::backdrop,[data-theme="sepia"] ::backdrop{background:#e6dcc8}
       html:not(.app-ready) body{background:inherit}
       html:not(.app-ready) #c,
       html:not(.app-ready) #ui,

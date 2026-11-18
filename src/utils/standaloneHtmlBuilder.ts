@@ -246,9 +246,11 @@ export function buildStandaloneCsatHtml(
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-html,body{height:100%;margin:0;overflow:hidden;background:var(--stage);color:var(--ink);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;transition:background-color .35s ease,color .35s ease}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage);color:var(--ink);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;transition:background-color .35s ease,color .35s ease}
+:fullscreen,:-webkit-full-screen,html:fullscreen,html:-webkit-full-screen{background:var(--stage);background-color:var(--stage)}
+::backdrop,:fullscreen::backdrop,:-webkit-full-screen::backdrop,html::backdrop,html:fullscreen::backdrop,html:-webkit-full-screen::backdrop{background:var(--stage);background-color:var(--stage)}
 .svg-filters{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background-color:var(--stage)}
 #wakeLockVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.015;pointer-events:none;z-index:1;display:none}
 #wakeLockVideo.is-active{display:block}
 #ui{position:fixed;inset:0;z-index:2;pointer-events:none;font-family:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif}
@@ -917,6 +919,120 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   cursor:not-allowed;
 }
 .toll-dialog .icon-button:active:not(:disabled){transform:scale(.95)}
+.toll-dialog .builder-stepper{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  padding:10px 22px;
+  border-bottom:1px solid var(--toll-line);
+  background:rgba(255,255,255,.16);
+  flex:none;
+}
+[data-theme="dark"] .toll-dialog .builder-stepper{
+  background:rgba(255,255,255,.025);
+}
+.toll-dialog .builder-step-tab{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  padding:8px 11px;
+  border-radius:14px;
+  border:1px solid var(--toll-glass-edge-low);
+  background:linear-gradient(145deg,rgba(255,255,255,.42),rgba(255,255,255,.16));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+  color:var(--toll-ink-2);
+  font-size:10.5px;
+  font-weight:680;
+  letter-spacing:-.025em;
+  text-align:left;
+  cursor:pointer;
+  transition:background .18s,border-color .18s,transform .15s,box-shadow .18s;
+}
+.toll-dialog .builder-step-tab:hover{
+  background:linear-gradient(145deg,rgba(255,255,255,.60),rgba(255,255,255,.28));
+  border-color:rgba(255,255,255,.88);
+}
+.toll-dialog .builder-step-tab:active{transform:scale(.985)}
+.toll-dialog .builder-step-tab .step-badge{
+  flex:none;
+  width:22px;
+  height:22px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  font-size:10px;
+  font-weight:800;
+  background:rgba(80,80,85,.12);
+  color:var(--toll-ink-2);
+  border:1px solid rgba(255,255,255,.65);
+}
+.toll-dialog .builder-step-tab .step-title{
+  min-width:0;
+  line-height:1.32;
+  word-break:keep-all;
+}
+.toll-dialog .builder-step-tab.is-active{
+  color:var(--toll-ink);
+  font-weight:760;
+  border-color:rgba(45,45,48,.34);
+  background:linear-gradient(145deg,rgba(60,60,64,.18),rgba(255,255,255,.42));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 4px 12px rgba(0,0,0,.06);
+}
+.toll-dialog .builder-step-tab.is-active .step-badge{
+  background:var(--toll-ink);
+  color:#ffffff;
+  border-color:transparent;
+}
+.toll-dialog .builder-step-tab.is-done{color:var(--toll-ink)}
+.toll-dialog .builder-step-tab.is-done .step-badge{
+  background:rgba(60,60,64,.22);
+  color:var(--toll-ink);
+}
+[data-theme="dark"] .toll-dialog .builder-step-tab{
+  color:var(--toll-ink-2);
+  border-color:rgba(255,255,255,.13);
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+}
+[data-theme="dark"] .toll-dialog .builder-step-tab:hover{
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
+  border-color:rgba(255,255,255,.25);
+}
+[data-theme="dark"] .toll-dialog .builder-step-tab .step-badge{
+  background:rgba(255,255,255,.10);
+  color:var(--toll-ink);
+  border-color:rgba(255,255,255,.18);
+}
+[data-theme="dark"] .toll-dialog .builder-step-tab.is-active{
+  color:#f6f6f6;
+  border-color:rgba(255,255,255,.36);
+  background:linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.08));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 4px 12px rgba(0,0,0,.24);
+}
+[data-theme="dark"] .toll-dialog .builder-step-tab.is-active .step-badge{
+  background:#f2f2f2;
+  color:#1c1c1c;
+}
+[data-theme="dark"] .toll-dialog .builder-step-tab.is-done .step-badge{
+  background:rgba(255,255,255,.22);
+  color:#f4f4f4;
+}
+.toll-dialog .builder-step-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:var(--toll-scroll) transparent;
+  padding:16px 22px 96px;
+  background:rgba(255,255,255,.045);
+}
+[data-theme="dark"] .toll-dialog .builder-step-body{
+  background:rgba(0,0,0,.12);
+}
+.toll-dialog .is-step-hidden{display:none!important}
 .toll-dialog .quickbar{
   padding:11px 22px 11px;
   border-bottom:1px solid var(--toll-line);
@@ -926,8 +1042,61 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   background:rgba(255,255,255,.075);
   flex:none;
 }
+.toll-dialog .quickbar.quickbar-step{
+  padding:0 0 24px;
+  border-bottom:0;
+  background:transparent;
+  gap:11px;
+}
+.toll-dialog .quickbar.quickbar-step .quick-line{
+  position:relative;
+  padding:12px 14px;
+  border-radius:18px;
+  border:1px solid var(--toll-glass-edge-low);
+  background:linear-gradient(145deg,rgba(255,255,255,.32),rgba(255,255,255,.12));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 12px rgba(0,0,0,.02);
+}
 [data-theme="dark"] .toll-dialog .quickbar{
   background:rgba(255,255,255,.018);
+}
+[data-theme="dark"] .toll-dialog .quickbar.quickbar-step{
+  background:transparent;
+}
+[data-theme="dark"] .toll-dialog .quickbar.quickbar-step .quick-line{
+  background:linear-gradient(145deg,rgba(44,44,44,.78),rgba(31,31,31,.62));
+  border-color:var(--toll-glass-edge-low);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 3px 12px rgba(0,0,0,.16);
+}
+.toll-dialog .step1-subject-preview-bar{
+  padding:10px 14px;
+  border-radius:14px;
+  border:1px dashed var(--toll-line);
+  background:rgba(255,255,255,.20);
+  font-size:11px;
+  line-height:1.45;
+  color:var(--toll-ink-2);
+}
+.toll-dialog .step1-subject-preview-bar strong{
+  color:var(--toll-ink);
+  font-weight:760;
+}
+[data-theme="dark"] .toll-dialog .step1-subject-preview-bar{
+  background:rgba(255,255,255,.03);
+}
+.toll-dialog .left-pane.step-single-pane,
+.toll-dialog .right-pane.step-single-pane{
+  padding:0;
+  border-right:0;
+  overflow:visible;
+}
+.toll-dialog .area-cards-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  align-items:start;
+}
+.toll-dialog .area-cards-grid .area-card{
+  margin-bottom:0;
 }
 .toll-dialog .quick-line{
   display:flex;
@@ -1886,6 +2055,16 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   border-color:rgba(255,255,255,.42);
   box-shadow:0 0 0 3px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.14);
 }
+.toll-dialog .footer-btn.step-next-btn{
+  color:var(--toll-ink);
+  border-color:rgba(45,45,48,.34);
+  background:linear-gradient(145deg,rgba(60,60,64,.16),rgba(255,255,255,.44));
+}
+[data-theme="dark"] .toll-dialog .footer-btn.step-next-btn{
+  color:#f6f6f6;
+  border-color:rgba(255,255,255,.34);
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));
+}
 .toll-dialog .footer-btn.primary{
   color:var(--toll-ink);
   border:1px solid rgba(255,255,255,.85);
@@ -1916,13 +2095,25 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
   .toll-dialog .interval-copy{width:100%}
   .toll-dialog .interval-actions{width:100%;justify-content:flex-end}
 }
+@media (max-width:760px){
+  .toll-dialog .area-cards-grid{grid-template-columns:1fr}
+}
 @media (max-width:680px){
   #builderModalBackdrop{padding:8px}
   .toll-dialog{width:100%;height:100%;border-radius:20px}
+  .toll-dialog .builder-stepper{padding:8px 10px;gap:5px}
+  .toll-dialog .builder-step-tab{flex-direction:column;align-items:flex-start;gap:4px;padding:6px 8px;font-size:9.5px;border-radius:12px}
+  .toll-dialog .builder-step-tab .step-badge{width:19px;height:19px;font-size:9px}
+  .toll-dialog .builder-step-body{padding:12px 12px 96px}
+  .toll-dialog .quickbar.quickbar-step{padding:0 0 20px;gap:8px}
+  .toll-dialog .quickbar.quickbar-step .quick-line{padding:10px 11px;border-radius:15px}
   .toll-dialog .workspace{display:flex;flex-direction:column}
   .toll-dialog .left-pane{flex:0 0 38%;border-right:0;border-bottom:1px solid var(--toll-line);padding:11px 12px 10px}
   .toll-dialog .right-pane{flex:1 1 auto;padding:11px 12px 86px}
+  .toll-dialog .left-pane.step-single-pane,.toll-dialog .right-pane.step-single-pane{flex:none;border-bottom:0;padding:0}
   .toll-dialog .dialog-footer{padding:8px 12px;flex-wrap:wrap}
+  .toll-dialog .footer-actions{flex-wrap:wrap;justify-content:flex-end;gap:6px}
+  .toll-dialog .footer-btn{height:34px;padding:0 13px;font-size:10px}
 }
 
 /* ---------- 자주 쓰는 타종 구성 (Bookmarks) ---------- */
@@ -2635,67 +2826,89 @@ html:not(.app-ready) #rightTimetablePanel{
       </div>
     </header>
 
-    <section class="quickbar" aria-label="빠른 구성 도구">
-      <div class="quick-line">
-        <span class="quick-label">빠른 선택</span>
-        <button type="button" class="chip" data-tpl="all_39">전체 타종 선택 (기본)</button>
-        <button type="button" class="chip" data-tpl="kor_math_inq1_core">국·수·탐1 핵심 (준비·본령·종료전·종료)</button>
-        <button type="button" class="chip" data-tpl="kor_core">1교시 국어 4단계</button>
-        <button type="button" class="chip" data-tpl="eng_listening_core">3교시 영어 (13:07 듣기평가 안내방송 및 본령)</button>
-        <button type="button" class="chip" data-tpl="all_core">전 영역 핵심 단계</button>
-        <button type="button" class="chip" data-tpl="reset_intervals">기본 간격 초기화</button>
-      </div>
-      <div class="quick-line">
-        <span class="quick-label">응시 조합</span>
-        <div class="subj-auto-box">
-          <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="kor" checked> 국어</label>
-          <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="math" checked> 수학</label>
-          <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="eng" checked> 영어</label>
-          <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="hist" checked> 한국사</label>
-          <label class="subj-check-label">
-            <input id="subjInqChk" type="checkbox" checked>
-            <span>탐구</span>
-            <select id="subjInqCountSel" class="builder-select-sm" aria-label="탐구 선택 과목 수">
-              <option value="2">2과목</option>
-              <option value="1">1과목</option>
-            </select>
-          </label>
-          <label class="subj-check-label"><input id="subjLang2Chk" type="checkbox"> 제2외국어/한문</label>
-          <label class="subj-check-label">
-            <span>밀도</span>
-            <select id="subjDensitySel" class="builder-select-sm" aria-label="타종 단계 밀도">
-              <option value="all">전체 타종</option>
-              <option value="core">핵심 단계 (예비·입실 제외)</option>
-              <option value="real">실전 최소 (본령·듣기·종료전·종료)</option>
-            </select>
-          </label>
-          <button id="subjAutoApplyBtn" type="button" class="chip">조합 자동 구성</button>
-        </div>
-      </div>
-      <div class="quick-line">
-        <span class="quick-label">자주 쓰는 구성</span>
-        <div id="modalBookmarkList" style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap"></div>
-        <div class="bookmark-modal-save-group">
-          <input id="modalBookmarkInput" type="text" class="bookmark-modal-input" maxlength="28" placeholder="현재 구성을 저장할 이름">
-          <button id="modalBookmarkSaveBtn" type="button" class="chip">현재 구성 저장</button>
-        </div>
-      </div>
-      <div class="quick-line">
-        <span class="quick-label">시계 바늘 연동</span>
-        <button type="button" class="chip sync-mode-btn active" data-sync-mode="original_csat_time">원래 수능 시각 맞춤 + 대기만 설정 간격 적용 (기본)</button>
-        <button type="button" class="chip sync-mode-btn" data-sync-mode="custom_cascaded_time">간격 연쇄 계산 시각으로 바늘 연동</button>
-      </div>
-    </section>
+    <nav id="builderStepper" class="builder-stepper" aria-label="타종 구성 단계">
+      <button type="button" class="builder-step-tab is-active" data-step-tab="1" aria-current="step">
+        <span class="step-badge">1</span>
+        <span class="step-title">응시 조합 · 빠른 설정</span>
+      </button>
+      <button type="button" class="builder-step-tab" data-step-tab="2">
+        <span class="step-badge">2</span>
+        <span class="step-title">1. 진행할 영역 및 타종 단계 선택</span>
+      </button>
+      <button type="button" class="builder-step-tab" data-step-tab="3">
+        <span class="step-badge">3</span>
+        <span class="step-title">2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+      </button>
+    </nav>
 
-    <section class="workspace" aria-label="타종 선택 및 간격 편집">
-      <aside id="builderLeftPane" class="left-pane"></aside>
-      <section id="builderRightPane" class="right-pane"></section>
-    </section>
+    <div id="builderStepBody" class="builder-step-body">
+      <section id="builderQuickbar" class="quickbar quickbar-step" aria-label="1단계: 응시 조합 및 빠른 설정">
+        <div class="pane-title">
+          <span>응시 조합 및 빠른 설정</span>
+          <span class="pane-note">여기서 체크한 과목만 다음(2단계) 목록에 표시됩니다</span>
+        </div>
+        <div class="quick-line">
+          <span class="quick-label">빠른 선택</span>
+          <button type="button" class="chip" data-tpl="all_39">전체 타종 선택 (기본)</button>
+          <button type="button" class="chip" data-tpl="kor_math_inq1_core">국·수·탐1 핵심 (준비·본령·종료전·종료)</button>
+          <button type="button" class="chip" data-tpl="kor_core">1교시 국어 4단계</button>
+          <button type="button" class="chip" data-tpl="eng_listening_core">3교시 영어 (13:07 듣기평가 안내방송 및 본령)</button>
+          <button type="button" class="chip" data-tpl="all_core">전 영역 핵심 단계</button>
+          <button type="button" class="chip" data-tpl="reset_intervals">기본 간격 초기화</button>
+        </div>
+        <div class="quick-line">
+          <span class="quick-label">응시 조합</span>
+          <div class="subj-auto-box">
+            <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="kor" checked> 국어</label>
+            <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="math" checked> 수학</label>
+            <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="eng" checked> 영어</label>
+            <label class="subj-check-label"><input type="checkbox" class="subj-chk" value="hist" checked> 한국사</label>
+            <label class="subj-check-label">
+              <input id="subjInqChk" type="checkbox" checked>
+              <span>탐구</span>
+              <select id="subjInqCountSel" class="builder-select-sm" aria-label="탐구 선택 과목 수">
+                <option value="2">2과목</option>
+                <option value="1">1과목</option>
+              </select>
+            </label>
+            <label class="subj-check-label"><input id="subjLang2Chk" type="checkbox"> 제2외국어/한문</label>
+            <label class="subj-check-label">
+              <span>밀도</span>
+              <select id="subjDensitySel" class="builder-select-sm" aria-label="타종 단계 밀도">
+                <option value="all">전체 타종</option>
+                <option value="core">핵심 단계 (예비·입실 제외)</option>
+                <option value="real">실전 최소 (본령·듣기·종료전·종료)</option>
+              </select>
+            </label>
+            <button id="subjAutoApplyBtn" type="button" class="chip">조합 간격 초기화</button>
+          </div>
+        </div>
+        <div class="quick-line">
+          <span class="quick-label">자주 쓰는 구성</span>
+          <div id="modalBookmarkList" style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap"></div>
+          <div class="bookmark-modal-save-group">
+            <input id="modalBookmarkInput" type="text" class="bookmark-modal-input" maxlength="28" placeholder="현재 구성을 저장할 이름">
+            <button id="modalBookmarkSaveBtn" type="button" class="chip">현재 구성 저장</button>
+          </div>
+        </div>
+        <div class="quick-line">
+          <span class="quick-label">시계 바늘 연동</span>
+          <button type="button" class="chip sync-mode-btn active" data-sync-mode="original_csat_time">원래 수능 시각 맞춤 + 대기만 설정 간격 적용 (기본)</button>
+          <button type="button" class="chip sync-mode-btn" data-sync-mode="custom_cascaded_time">간격 연쇄 계산 시각으로 바늘 연동</button>
+        </div>
+        <div id="step1SubjectPreviewBar" class="step1-subject-preview-bar"></div>
+      </section>
+
+      <aside id="builderLeftPane" class="left-pane step-single-pane is-step-hidden"></aside>
+      <section id="builderRightPane" class="right-pane step-single-pane is-step-hidden"></section>
+    </div>
 
     <footer class="dialog-footer">
       <div id="builderSummaryText" class="summary"></div>
       <div class="footer-actions">
         <button id="builderCancelBtn" type="button" class="footer-btn">취소</button>
+        <button id="builderPrevBtn" type="button" class="footer-btn" style="display:none">이전</button>
+        <button id="builderNextBtn" type="button" class="footer-btn step-next-btn">다음</button>
         <button id="builderApplyBtn" type="button" class="footer-btn primary">선택 구성 저장</button>
       </div>
     </footer>
@@ -2890,7 +3103,13 @@ html:not(.app-ready) #rightTimetablePanel{
         builderModalBackdrop=document.getElementById('builderModalBackdrop'),
         builderCloseBtn=document.getElementById('builderCloseBtn'),
         builderCancelBtn=document.getElementById('builderCancelBtn'),
+        builderPrevBtn=document.getElementById('builderPrevBtn'),
+        builderNextBtn=document.getElementById('builderNextBtn'),
         builderApplyBtn=document.getElementById('builderApplyBtn'),
+        builderStepper=document.getElementById('builderStepper'),
+        builderStepBody=document.getElementById('builderStepBody'),
+        builderQuickbar=document.getElementById('builderQuickbar'),
+        step1SubjectPreviewBar=document.getElementById('step1SubjectPreviewBar'),
         builderLeftPane=document.getElementById('builderLeftPane'),
         builderRightPane=document.getElementById('builderRightPane'),
         builderSummaryText=document.getElementById('builderSummaryText'),
@@ -2925,7 +3144,8 @@ html:not(.app-ready) #rightTimetablePanel{
     return snapshot;
   })();
 
-  const gl=cv.getContext('webgl',{antialias:false,alpha:false});
+  const glOpts={antialias:false,alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true,powerPreference:'high-performance'};
+  const gl=cv.getContext('webgl',glOpts)||cv.getContext('webgl',{antialias:false,alpha:true,preserveDrawingBuffer:true});
 
   const VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
   const FS=\`precision highp float;
@@ -3007,7 +3227,8 @@ void main(){
   let U={},W=innerWidth,Hh=innerHeight,R=250,cx=innerWidth/2,cy=innerHeight*.5,dpr=Math.min(devicePixelRatio||1,2);
   let dockY=0,targetR=250,targetCx=innerWidth/2,targetCy=innerHeight*.5,targetDockY=0;
   let fromR=250,fromCx=innerWidth/2,fromCy=innerHeight*.5,fromDockY=0,layoutAnimStart=0,layoutAnimating=false,layoutRafId=0;
-  if(gl){
+  function initGlProgram(){
+    if(!gl)return;
     const mk=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o};
     const pr=gl.createProgram();
     gl.attachShader(pr,mk(gl.VERTEX_SHADER,VS));gl.attachShader(pr,mk(gl.FRAGMENT_SHADER,FS));
@@ -3017,6 +3238,7 @@ void main(){
     const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
     ['uRes','uC','uR','uH','uB','uS'].forEach(k=>U[k]=gl.getUniformLocation(pr,k));
   }
+  initGlProgram();
 
   let H=0,kT=0,kH=0,kX=0,dH=1,dT=1,dHnd=1,dX=1,phase='idle',t0=0,isPaused=false;
   let themePref='auto';
@@ -3083,6 +3305,9 @@ void main(){
   let rowAlertMap = {};
   let batchFromMin = 80;
   let batchToMin = 60;
+  let builderStep = 1;
+  let step1SubjectFilter = {kor:true,math:true,eng:true,hist:true,inq1:true,inq2:true,lang2:false};
+  let step1InqCount = 2;
   let keepScreenAwake = true;
   let mainBellGlowAnim = true;
   let prelimBellGlowAnim = true;
@@ -3297,6 +3522,7 @@ void main(){
   if(fullscreenBtn){
     fullscreenBtn.addEventListener('click', async ()=>{
       const rootEl = document.documentElement;
+      try{ if(typeof draw==='function') draw(); }catch(_){}
       try{
         if(!isDocFullscreen()){
           if(rootEl.requestFullscreen){
@@ -3324,6 +3550,7 @@ void main(){
   function enterFullscreenSilently(){
     if(isDocFullscreen()) return;
     const rootEl = document.documentElement;
+    try{ if(typeof draw==='function') draw(); }catch(_){}
     try{
       if(rootEl.requestFullscreen){
         const p = rootEl.requestFullscreen();
@@ -3337,6 +3564,7 @@ void main(){
 
   function exitFullscreenSilently(){
     if(!isDocFullscreen()) return;
+    try{ if(typeof draw==='function') draw(); }catch(_){}
     try{
       if(document.exitFullscreen){
         const p = document.exitFullscreen();
@@ -5007,15 +5235,75 @@ void main(){
     renderBuilderModal();
   }
 
+  function syncStep1SubjectsFromNodeIds(nodeIds){
+    const idSet = new Set(nodeIds || []);
+    const activeGroups = new Set();
+    EMBEDDED.selectableCueNodes.forEach(n=>{
+      if(idSet.has(n.nodeId)) activeGroups.add(n.subjectGroupId);
+    });
+    const hasInq1 = activeGroups.has('inq1');
+    const hasInq2 = activeGroups.has('inq2');
+    if(hasInq2) step1InqCount = 2;
+    else if(hasInq1) step1InqCount = 1;
+    step1SubjectFilter = {
+      kor: activeGroups.has('kor'),
+      math: activeGroups.has('math'),
+      eng: activeGroups.has('eng'),
+      hist: activeGroups.has('hist'),
+      inq1: hasInq1 || hasInq2,
+      inq2: (hasInq1 || hasInq2) && step1InqCount >= 2,
+      lang2: activeGroups.has('lang2')
+    };
+    syncStep1DomFromState();
+  }
+
+  function syncStep1DomFromState(){
+    document.querySelectorAll('.subj-chk').forEach(el=>{
+      el.checked = Boolean(step1SubjectFilter[el.value]);
+    });
+    const inqChk = document.getElementById('subjInqChk');
+    if(inqChk) inqChk.checked = Boolean(step1SubjectFilter.inq1 || step1SubjectFilter.inq2);
+    const inqSel = document.getElementById('subjInqCountSel');
+    if(inqSel) inqSel.value = String(step1InqCount);
+    const lang2Chk = document.getElementById('subjLang2Chk');
+    if(lang2Chk) lang2Chk.checked = Boolean(step1SubjectFilter.lang2);
+    updateStep1SubjectPreviewBar();
+  }
+
+  function isGroupEnabledInStep2(gid){
+    if(gid==='inq1') return Boolean(step1SubjectFilter.inq1 || step1SubjectFilter.inq2);
+    if(gid==='inq2') return Boolean((step1SubjectFilter.inq1 || step1SubjectFilter.inq2) && step1InqCount >= 2);
+    return Boolean(step1SubjectFilter[gid]);
+  }
+
+  function updateStep1SubjectPreviewBar(){
+    document.querySelectorAll('#builderQuickbar .subj-check-label').forEach(lbl=>{
+      const chk = lbl.querySelector('input[type="checkbox"]');
+      if(chk) lbl.classList.toggle('is-checked', Boolean(chk.checked));
+    });
+    if(!step1SubjectPreviewBar) return;
+    const names = EMBEDDED.subjectGroups.filter(g=>isGroupEnabledInStep2(g.id)).map(g=>g.title);
+    step1SubjectPreviewBar.innerHTML = '<span>다음(2단계) 표시 과목: <strong>' + (names.length ? escapeHtml(names.join(' · ')) : '선택된 과목 없음') + '</strong></span>';
+  }
+
+  function goToBuilderStep(nextStep){
+    builderStep = clamp(Number(nextStep) || 1, 1, 3);
+    renderBuilderModal();
+    if(builderStepBody) builderStepBody.scrollTop = 0;
+  }
+
   function openBuilderModalWithDraft(){
     stopPreviewBell();
     draftSequenceConfig = cloneCfg(customSequenceConfig);
+    syncStep1SubjectsFromNodeIds(draftSequenceConfig.selectedNodeIds);
     undoStack = [];
     redoStack = [];
     rowAlertMap = {};
+    builderStep = 1;
     updateUndoRedoBtns();
     renderBuilderModal();
     builderModalBackdrop.classList.add('open');
+    if(builderStepBody) builderStepBody.scrollTop = 0;
   }
 
   function closeBuilderModalDiscardDraft(){
@@ -5028,6 +5316,7 @@ void main(){
       if(!undoStack.length)return;
       redoStack.push(cloneCfg(draftSequenceConfig));
       draftSequenceConfig = undoStack.pop();
+      syncStep1SubjectsFromNodeIds(draftSequenceConfig.selectedNodeIds);
       updateUndoRedoBtns();
       renderBuilderModal();
     });
@@ -5037,12 +5326,13 @@ void main(){
       if(!redoStack.length)return;
       undoStack.push(cloneCfg(draftSequenceConfig));
       draftSequenceConfig = redoStack.pop();
+      syncStep1SubjectsFromNodeIds(draftSequenceConfig.selectedNodeIds);
       updateUndoRedoBtns();
       renderBuilderModal();
     });
   }
 
-  /* ---------- Custom Checkbox Builder Modal Rendering & Events ---------- */
+  /* ---------- Custom Checkbox Builder Modal Rendering & Events (3-Step Wizard) ---------- */
   function renderBuilderModal(){
     const cfg = draftSequenceConfig;
     const selectedIds = cfg.selectedNodeIds || [];
@@ -5050,100 +5340,153 @@ void main(){
     const analysis = analyzeSequenceConfig(cfg);
     const rows = analysis.rows;
 
-    const stageTypes = [
-      ['entry', '입실·예비'],
-      ['prep', '준비령'],
-      ['main', '본령'],
-      ['listening', '듣기'],
-      ['warn10', '종료전'],
-      ['end', '종료령'],
-      ['change', '교체']
-    ];
-
-    builderLeftPane.innerHTML = \`
-      <div class="pane-title">
-        <span>1. 진행할 영역 및 타종 단계 체크박스 선택</span>
-        <span class="pane-note">영역별 필요한 타종만 선택</span>
-      </div>
-      <div class="left-tools-panel">
-        <div class="search-wrap">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input id="leftSearchInput" type="search" class="builder-search-input" placeholder="과목명, 단계명, 타종 번호, 시각 검색" value="\${escapeHtml(leftSearchQuery)}" aria-label="타종 항목 검색">
-        </div>
-        <div class="stage-type-bar" role="group" aria-label="유형별 일괄 선택">
-          \${stageTypes.map(([k, lbl])=>\`<button type="button" class="stage-type-chip" data-stage-type="\${k}">\${lbl}</button>\`).join('')}
-        </div>
-      </div>
-    \`;
-
-    const searchInp = builderLeftPane.querySelector('#leftSearchInput');
-    if(searchInp){
-      searchInp.addEventListener('input', ()=>{
-        leftSearchQuery = searchInp.value || '';
-        renderBuilderModal();
-        const nextInp = builderLeftPane.querySelector('#leftSearchInput');
-        if(nextInp){
-          nextInp.focus();
-          nextInp.setSelectionRange(leftSearchQuery.length, leftSearchQuery.length);
-        }
+    if(builderStepper){
+      builderStepper.querySelectorAll('.builder-step-tab[data-step-tab]').forEach(tab=>{
+        const st = Number(tab.getAttribute('data-step-tab'));
+        tab.classList.toggle('is-active', st === builderStep);
+        tab.classList.toggle('is-done', st < builderStep);
+        if(st === builderStep) tab.setAttribute('aria-current', 'step');
+        else tab.removeAttribute('aria-current');
       });
     }
+    if(builderQuickbar) builderQuickbar.classList.toggle('is-step-hidden', builderStep !== 1);
+    if(builderLeftPane) builderLeftPane.classList.toggle('is-step-hidden', builderStep !== 2);
+    if(builderRightPane) builderRightPane.classList.toggle('is-step-hidden', builderStep !== 3);
+    if(builderPrevBtn) builderPrevBtn.style.display = builderStep > 1 ? '' : 'none';
+    if(builderNextBtn) builderNextBtn.style.display = builderStep < 3 ? '' : 'none';
 
-    const qLower = leftSearchQuery.trim().toLowerCase();
+    updateStep1SubjectPreviewBar();
 
-    EMBEDDED.subjectGroups.forEach(group=>{
-      const allGroupNodes = EMBEDDED.selectableCueNodes.filter(n=>n.subjectGroupId===group.id);
-      const filteredNodes = qLower
-        ? allGroupNodes.filter(n=>{
-            const hay = (n.fullTitle+' '+n.stageShortLabel+' '+(n.bellCode||'')+' '+n.originalTimeText).toLowerCase();
-            return hay.includes(qLower);
-          })
-        : allGroupNodes;
-      if(qLower && !filteredNodes.length) return;
+    const enabledGroups = EMBEDDED.subjectGroups.filter(g=>isGroupEnabledInStep2(g.id));
+    const stageMetaList = (EMBEDDED.stageTypeMeta && EMBEDDED.stageTypeMeta.length)
+      ? EMBEDDED.stageTypeMeta
+      : [
+          {type:'entry', label:'입실'},
+          {type:'preliminary', label:'예비령'},
+          {type:'prepare', label:'준비령'},
+          {type:'main', label:'본령'},
+          {type:'warn', label:'종료 전 안내'},
+          {type:'end', label:'종료령'},
+          {type:'listening', label:'영어 듣기 시작'}
+        ];
 
-      const checkedCount = allGroupNodes.filter(n=>selectedIds.includes(n.nodeId)).length;
-      const allChecked = allGroupNodes.length>0 && checkedCount===allGroupNodes.length;
-      const isCollapsed = Boolean(collapsedGroups[group.id]) && !qLower;
-
-      const card = document.createElement('section');
-      card.className = 'area-card' + (isCollapsed ? ' collapsed' : '');
-
-      const head = document.createElement('div');
-      head.className = 'area-head';
-      head.innerHTML = \`
-        <label class="area-check">
-          <input type="checkbox" data-grp-all="\${group.id}" \${allChecked?'checked':''}>
-          <span>\${escapeHtml(group.title)} (\${checkedCount}/\${allGroupNodes.length})</span>
-        </label>
-        <div class="area-head-actions">
-          <button type="button" class="area-tag" data-grp-core="\${group.id}">핵심 단계</button>
-          <button type="button" class="collapse-btn" data-grp-collapse="\${group.id}">\${isCollapsed?'펼치기':'접기'}</button>
+    if(!enabledGroups.length){
+      builderLeftPane.innerHTML = \`
+        <div class="pane-title">
+          <span>1. 진행할 영역 및 타종 단계 선택</span>
+          <span class="pane-note">응시 조합에서 체크한 과목만 표시됩니다 · 영역별 필요한 단계만 선택</span>
+        </div>
+        <div class="empty-state">
+          <p style="margin:0 0 12px">1단계(응시 조합)에서 체크된 과목이 없습니다. 이전 단계에서 진행할 과목을 먼저 체크해 주세요.</p>
+          <button type="button" class="chip" data-jump-step="1">1단계(응시 조합)로 이동</button>
         </div>
       \`;
-      const allInput = head.querySelector('input[data-grp-all]');
-      if(allInput){
-        allInput.indeterminate = checkedCount > 0 && !allChecked;
-      }
-      card.appendChild(head);
+    }else{
+      const stageChipHtml = stageMetaList.map(meta=>{
+        const matchNodes = EMBEDDED.selectableCueNodes.filter(n=>isGroupEnabledInStep2(n.subjectGroupId) && n.stageType===meta.type);
+        if(!matchNodes.length) return '';
+        const allAct = matchNodes.every(n=>selectedIds.includes(n.nodeId));
+        return \`<button type="button" class="stage-type-chip \${allAct?'active':''}" data-stage-type="\${escapeHtml(meta.type)}">\${escapeHtml(meta.label)}</button>\`;
+      }).join('');
 
-      if(!isCollapsed){
-        filteredNodes.forEach(node=>{
-          const isChecked = selectedIds.includes(node.nodeId);
-          const lbl = document.createElement('label');
-          lbl.className = 'stage-row' + (isChecked ? ' selected' : '');
-          lbl.innerHTML = \`
-            <input type="checkbox" data-node-id="\${node.nodeId}" \${isChecked?'checked':''}>
-            <span class="stage-name">\${escapeHtml(node.stageShortLabel)}</span>
-            <span class="stage-meta">\${node.bellCode?'['+escapeHtml(node.bellCode)+'] ':'[듣기] '}\${escapeHtml(node.originalTimeText)}</span>
-          \`;
-          card.appendChild(lbl);
+      builderLeftPane.innerHTML = \`
+        <div class="pane-title">
+          <span>1. 진행할 영역 및 타종 단계 선택</span>
+          <span class="pane-note">응시 조합에서 체크한 과목만 표시됩니다 · 영역별 필요한 단계만 선택</span>
+        </div>
+        <div class="left-tools-panel">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input id="leftSearchInput" type="search" class="builder-search-input" placeholder="과목명, 단계명, 타종 번호, 시각 검색" value="\${escapeHtml(leftSearchQuery)}" aria-label="타종 항목 검색">
+          </div>
+          <div class="stage-type-bar" role="group" aria-label="유형별 일괄 선택">
+            \${stageChipHtml}
+          </div>
+        </div>
+      \`;
+
+      const searchInp = builderLeftPane.querySelector('#leftSearchInput');
+      if(searchInp){
+        searchInp.addEventListener('input', ()=>{
+          leftSearchQuery = searchInp.value || '';
+          renderBuilderModal();
+          const nextInp = builderLeftPane.querySelector('#leftSearchInput');
+          if(nextInp){
+            nextInp.focus();
+            nextInp.setSelectionRange(leftSearchQuery.length, leftSearchQuery.length);
+          }
         });
       }
-      builderLeftPane.appendChild(card);
-    });
+
+      const qLower = leftSearchQuery.trim().toLowerCase();
+      const cardsGrid = document.createElement('div');
+      cardsGrid.className = 'area-cards-grid';
+      let cardsAdded = 0;
+
+      enabledGroups.forEach(group=>{
+        const allGroupNodes = EMBEDDED.selectableCueNodes.filter(n=>n.subjectGroupId===group.id);
+        const filteredNodes = qLower
+          ? allGroupNodes.filter(n=>{
+              const hay = (n.periodLabel+' '+n.subjectTitle+' '+n.fullTitle+' '+n.stageShortLabel+' '+(n.bellCode||'영어 듣기')+' '+n.originalTimeText).toLowerCase();
+              return hay.includes(qLower);
+            })
+          : allGroupNodes;
+        if(qLower && !filteredNodes.length) return;
+
+        const checkedCount = allGroupNodes.filter(n=>selectedIds.includes(n.nodeId)).length;
+        const allChecked = allGroupNodes.length>0 && checkedCount===allGroupNodes.length;
+        const isCollapsed = Boolean(collapsedGroups[group.id]) && !qLower;
+
+        const card = document.createElement('section');
+        card.className = 'area-card' + (isCollapsed ? ' collapsed' : '');
+
+        const head = document.createElement('div');
+        head.className = 'area-head';
+        head.innerHTML = \`
+          <label class="area-check">
+            <input type="checkbox" data-grp-all="\${group.id}" \${allChecked?'checked':''}>
+            <span>\${escapeHtml(group.title)} (\${checkedCount}/\${allGroupNodes.length})</span>
+          </label>
+          <div class="area-head-actions">
+            <button type="button" class="area-tag" data-grp-core="\${group.id}">핵심 단계</button>
+            <button type="button" class="collapse-btn" data-grp-collapse="\${group.id}">\${isCollapsed?'펼치기':'접기'}</button>
+          </div>
+        \`;
+        const allInput = head.querySelector('input[data-grp-all]');
+        if(allInput){
+          allInput.indeterminate = checkedCount > 0 && !allChecked;
+        }
+        card.appendChild(head);
+
+        if(!isCollapsed){
+          filteredNodes.forEach(node=>{
+            const isChecked = selectedIds.includes(node.nodeId);
+            const lbl = document.createElement('label');
+            lbl.className = 'stage-row' + (isChecked ? ' selected' : '');
+            lbl.innerHTML = \`
+              <input type="checkbox" data-node-id="\${node.nodeId}" \${isChecked?'checked':''}>
+              <span class="stage-name">\${escapeHtml(node.stageShortLabel)}</span>
+              <span class="stage-meta">\${node.bellCode?'['+escapeHtml(node.bellCode)+'] ':'[영어 듣기] '}\${escapeHtml(node.originalTimeText)}</span>
+            \`;
+            card.appendChild(lbl);
+          });
+        }
+        cardsGrid.appendChild(card);
+        cardsAdded++;
+      });
+
+      if(!cardsAdded){
+        const noMatch = document.createElement('div');
+        noMatch.className = 'empty-state';
+        noMatch.textContent = '검색 조건에 일치하는 타종 단계가 없습니다.';
+        builderLeftPane.appendChild(noMatch);
+      }else{
+        builderLeftPane.appendChild(cardsGrid);
+      }
+    }
 
     let diagHtml = '';
     if(analysis.diagnostics && analysis.diagnostics.length){
@@ -5157,8 +5500,8 @@ void main(){
 
     builderRightPane.innerHTML = \`
       <div class="pane-title">
-        <span>2. 선택된 타종 진행 순서 및 시간 간격(분) · 시각(HH:MM) 설정</span>
-        <span class="pane-note">간격 수정 시 이후 시각 자동 연쇄 계산 / 시각 직접 수정 시 직전 간격 자동 반영</span>
+        <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+        <span class="pane-note">간격 변경 시 이후 시각 자동 계산 · 시각 변경 시 직전 간격 반영</span>
       </div>
       <div class="batch-interval-bar">
         <div class="batch-group">
@@ -5182,7 +5525,7 @@ void main(){
     if(!rows.length){
       const empty = document.createElement('div');
       empty.className = 'empty-state';
-      empty.textContent = '좌측에서 진행할 영역과 타종 단계를 하나 이상 선택해 주세요.';
+      empty.innerHTML = '<p style="margin:0 0 12px">2단계에서 진행할 영역과 타종 단계를 하나 이상 선택해 주세요.</p><button type="button" class="chip" data-jump-step="2">2단계(영역·단계 선택)로 이동</button>';
       builderRightPane.appendChild(empty);
     }else{
       if(analysis.omittedBeforeFirst && analysis.omittedBeforeFirst.length){
@@ -5333,6 +5676,11 @@ void main(){
   });
 
   builderLeftPane.addEventListener('click', e=>{
+    const jumpBtn = e.target.closest('button[data-jump-step]');
+    if(jumpBtn){
+      goToBuilderStep(Number(jumpBtn.getAttribute('data-jump-step')) || 1);
+      return;
+    }
     const collapseBtn = e.target.closest('button[data-grp-collapse]');
     if(collapseBtn){
       const gid = collapseBtn.getAttribute('data-grp-collapse');
@@ -5343,7 +5691,10 @@ void main(){
     const stBtn = e.target.closest('button[data-stage-type]');
     if(stBtn){
       const st = stBtn.getAttribute('data-stage-type');
-      const targetIds = EMBEDDED.selectableCueNodes.filter(n=>n.stageType===st).map(n=>n.nodeId);
+      const targetIds = EMBEDDED.selectableCueNodes
+        .filter(n=>isGroupEnabledInStep2(n.subjectGroupId) && n.stageType===st)
+        .map(n=>n.nodeId);
+      if(!targetIds.length) return;
       mutateDraftConfig(cfg=>{
         const set = new Set(cfg.selectedNodeIds || []);
         const allChecked = targetIds.every(id=>set.has(id));
@@ -5368,6 +5719,11 @@ void main(){
   });
 
   builderRightPane.addEventListener('click', e=>{
+    const jumpBtn = e.target.closest('button[data-jump-step]');
+    if(jumpBtn){
+      goToBuilderStep(Number(jumpBtn.getAttribute('data-jump-step')) || 2);
+      return;
+    }
     const prevBtn = e.target.closest('button[data-preview-bell]');
     if(prevBtn){
       togglePreviewBell(prevBtn.getAttribute('data-preview-bell'));
@@ -5388,6 +5744,15 @@ void main(){
     if(addNodeBtn){
       const nid = addNodeBtn.getAttribute('data-add-node') || addNodeBtn.getAttribute('data-diag-fix');
       if(nid){
+        const nodeMeta = EMBEDDED.selectableCueNodes.find(n=>n.nodeId===nid);
+        if(nodeMeta){
+          step1SubjectFilter[nodeMeta.subjectGroupId] = true;
+          if(nodeMeta.subjectGroupId==='inq2'){
+            step1SubjectFilter.inq1 = true;
+            step1InqCount = 2;
+          }
+          syncStep1DomFromState();
+        }
         mutateDraftConfig(cfg=>{
           if(!cfg.selectedNodeIds.includes(nid)) cfg.selectedNodeIds.push(nid);
         });
@@ -5410,7 +5775,7 @@ void main(){
         if(!cfg.intervalSecondsMap) cfg.intervalSecondsMap = {};
         if(preset==='prep_1'){
           rows.forEach(r=>{
-            if(r.node.stageType==='prep' && r.nextNode && (r.nextNode.stageType==='main'||r.nextNode.stageType==='listening')){
+            if((r.node.stageType==='prepare'||r.node.stageType==='prep') && r.nextNode && (r.nextNode.stageType==='main'||r.nextNode.stageType==='listening')){
               cfg.intervalMap[r.pairKey] = 1;
               delete cfg.intervalSecondsMap[r.pairKey];
             }
@@ -5545,26 +5910,53 @@ void main(){
     }
   });
 
-  function applyLiveSubjectCombinationToDraft(){
+  function applyLiveSubjectCombinationToDraft(resetIntervals){
     const checkedSubjs = Array.from(document.querySelectorAll('.subj-chk:checked')).map(el=>el.value);
     const inqChecked = Boolean((document.getElementById('subjInqChk')||{}).checked);
     const inqCountRaw = Number((document.getElementById('subjInqCountSel')||{}).value ?? 2);
-    const inqCount = inqChecked ? (inqCountRaw >= 2 ? 2 : 1) : 0;
+    const inqCount = inqCountRaw >= 2 ? 2 : 1;
     const lang2 = Boolean((document.getElementById('subjLang2Chk')||{}).checked);
     const density = (document.getElementById('subjDensitySel')||{}).value || 'core';
+
+    step1InqCount = inqCount;
+    step1SubjectFilter = {
+      kor: checkedSubjs.includes('kor'),
+      math: checkedSubjs.includes('math'),
+      eng: checkedSubjs.includes('eng'),
+      hist: checkedSubjs.includes('hist'),
+      inq1: inqChecked,
+      inq2: inqChecked && inqCount >= 2,
+      lang2
+    };
+
     const activeGroups = new Set(checkedSubjs);
-    if(inqCount >= 1) activeGroups.add('inq1');
-    if(inqCount >= 2) activeGroups.add('inq2');
+    if(inqChecked && inqCount >= 1) activeGroups.add('inq1');
+    if(inqChecked && inqCount >= 2) activeGroups.add('inq2');
     if(lang2) activeGroups.add('lang2');
+
+    if(resetIntervals && !activeGroups.size){
+      showToast('자동 구성할 영역을 최소 1개 이상 선택해 주세요.', 2600);
+      return;
+    }
+
     const ids = EMBEDDED.selectableCueNodes.filter(n=>{
       if(!activeGroups.has(n.subjectGroupId)) return false;
       if(density==='all') return true;
       if(density==='core') return Boolean(n.isCoreExamStage);
-      return n.stageType==='main' || n.stageType==='listening' || n.stageType==='warn10' || n.stageType==='end';
+      return n.stageType==='main' || n.stageType==='listening' || n.stageType==='warn' || n.stageType==='end';
     }).map(n=>n.nodeId);
+
     mutateDraftConfig(cfg=>{
       cfg.selectedNodeIds = ids;
+      if(resetIntervals){
+        cfg.intervalMap = {};
+        cfg.intervalSecondsMap = {};
+        cfg.firstNodeCustomMinutes = null;
+      }
     });
+    if(resetIntervals){
+      showToast('선택한 ' + activeGroups.size + '개 영역(' + ids.length + '개 타종)으로 구성을 채웠습니다.', 2800);
+    }
   }
   document.querySelectorAll('.subj-chk, #subjInqChk, #subjLang2Chk, #subjInqCountSel, #subjDensitySel').forEach(el=>{
     el.addEventListener('change', ()=>{
@@ -5572,14 +5964,32 @@ void main(){
         const inqChk = document.getElementById('subjInqChk');
         if(inqChk && !inqChk.checked) inqChk.checked = true;
       }
-      applyLiveSubjectCombinationToDraft();
+      applyLiveSubjectCombinationToDraft(false);
     });
   });
   const subjAutoApplyBtn = document.getElementById('subjAutoApplyBtn');
   if(subjAutoApplyBtn){
     subjAutoApplyBtn.addEventListener('click', ()=>{
-      applyLiveSubjectCombinationToDraft();
-      showToast('응시 과목 조합이 동기화되었습니다.', 2200);
+      applyLiveSubjectCombinationToDraft(true);
+    });
+  }
+
+  if(builderStepper){
+    builderStepper.addEventListener('click', e=>{
+      const tab = e.target.closest('button[data-step-tab]');
+      if(tab){
+        goToBuilderStep(Number(tab.getAttribute('data-step-tab')) || 1);
+      }
+    });
+  }
+  if(builderPrevBtn){
+    builderPrevBtn.addEventListener('click', ()=>{
+      goToBuilderStep(Math.max(1, builderStep - 1));
+    });
+  }
+  if(builderNextBtn){
+    builderNextBtn.addEventListener('click', ()=>{
+      goToBuilderStep(Math.min(3, builderStep + 1));
     });
   }
 
@@ -5595,21 +6005,24 @@ void main(){
         showToast('선택된 타종 항목들의 간격과 시각을 공식 시간표 기준으로 초기화했습니다.', 2400);
         return;
       }
+      let nextIds = [];
+      if(tpl==='all_39'){
+        nextIds = EMBEDDED.defaultCustomSeqConfig.selectedNodeIds.slice();
+      }else if(tpl==='kor_math_inq1_core'){
+        nextIds = ['004','005','006','007','010','011','012','013','025','026','027','028'];
+      }else if(tpl==='kor_core'){
+        nextIds = ['004','005','006','007'];
+      }else if(tpl==='eng_listening_core'){
+        nextIds = ['016','ENG_1307','017','018'];
+      }else if(tpl==='all_core'){
+        nextIds = EMBEDDED.selectableCueNodes.filter(n=>n.isCoreExamStage).map(n=>n.nodeId);
+      }
+      syncStep1SubjectsFromNodeIds(nextIds);
       mutateDraftConfig(cfg=>{
         cfg.intervalMap = {};
         cfg.intervalSecondsMap = {};
         cfg.firstNodeCustomMinutes = null;
-        if(tpl==='all_39'){
-          cfg.selectedNodeIds = EMBEDDED.defaultCustomSeqConfig.selectedNodeIds.slice();
-        }else if(tpl==='kor_math_inq1_core'){
-          cfg.selectedNodeIds = ['004','005','006','007','010','011','012','013','025','026','027','028'];
-        }else if(tpl==='kor_core'){
-          cfg.selectedNodeIds = ['004','005','006','007'];
-        }else if(tpl==='eng_listening_core'){
-          cfg.selectedNodeIds = ['016','ENG_1307','017','018'];
-        }else if(tpl==='all_core'){
-          cfg.selectedNodeIds = EMBEDDED.selectableCueNodes.filter(n=>n.isCoreExamStage).map(n=>n.nodeId);
-        }
+        cfg.selectedNodeIds = nextIds;
       });
     });
   });
@@ -5753,8 +6166,9 @@ void main(){
         showToast("'" + bm.name + "' 구성이 타이머에 즉시 적용되었습니다.");
       }
     }else{
+      const cloned = cloneCfg(bm.config);
+      syncStep1SubjectsFromNodeIds(cloned.selectedNodeIds);
       mutateDraftConfig(cfg=>{
-        const cloned = cloneCfg(bm.config);
         cfg.selectedNodeIds = cloned.selectedNodeIds;
         cfg.intervalMap = cloned.intervalMap;
         cfg.intervalSecondsMap = cloned.intervalSecondsMap;
@@ -6145,6 +6559,7 @@ void main(){
           customSequenceConfig = v.config;
           draftSequenceConfig = cloneCfg(v.config);
           if(v.warnings.length) warnings.push(...v.warnings);
+          syncStep1SubjectsFromNodeIds(draftSequenceConfig.selectedNodeIds);
           renderBuilderModal();
         }
         if(Array.isArray(data.bookmarks)){
@@ -6755,7 +7170,11 @@ void main(){
 
   function layout(){
     W=innerWidth;Hh=innerHeight;dpr=Math.min(devicePixelRatio||1,2);
-    cv.width=Math.round(W*dpr);cv.height=Math.round(Hh*dpr);
+    const nextW=Math.max(1,Math.round(W*dpr));
+    const nextH=Math.max(1,Math.round(Hh*dpr));
+    if(cv.width!==nextW||cv.height!==nextH){
+      cv.width=nextW;cv.height=nextH;
+    }
     if(gl)gl.viewport(0,0,cv.width,cv.height);
     if(layoutRafId){cancelAnimationFrame(layoutRafId);layoutRafId=0;}
     layoutAnimating=false;
@@ -6765,6 +7184,19 @@ void main(){
     applyGeometryToDom();
     draw();
   }
+
+  let fsSettleRaf=0, fsSettleT1=null, fsSettleT2=null;
+  function handleFullscreenSettle(){
+    layout();
+    if(fsSettleRaf) cancelAnimationFrame(fsSettleRaf);
+    fsSettleRaf=requestAnimationFrame(()=>{fsSettleRaf=0;layout();});
+    if(fsSettleT1!==null) clearTimeout(fsSettleT1);
+    if(fsSettleT2!==null) clearTimeout(fsSettleT2);
+    fsSettleT1=setTimeout(()=>{fsSettleT1=null;layout();},90);
+    fsSettleT2=setTimeout(()=>{fsSettleT2=null;layout();},240);
+  }
+  cv.addEventListener('webglcontextlost', e=>{e.preventDefault();});
+  cv.addEventListener('webglcontextrestored', ()=>{initGlProgram();layout();});
 
   function roundedRectDistance(x, y, width, height, radius){
     const qx = Math.abs(x) - (width / 2 - radius);
@@ -6846,6 +7278,9 @@ void main(){
     updateVersionDisplay();
     syncUiToPresetIdle();
     addEventListener('resize',layout);
+    if(window.visualViewport) window.visualViewport.addEventListener('resize',layout);
+    document.addEventListener('fullscreenchange',handleFullscreenSettle);
+    document.addEventListener('webkitfullscreenchange',handleFullscreenSettle);
     layout();
   }catch(initErr){
     console.error(initErr);

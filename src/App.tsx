@@ -373,6 +373,7 @@ export default function App() {
   const topLeftMenuRef = useRef<HTMLDivElement | null>(null);
   const rtScrollListRef = useRef<HTMLDivElement | null>(null);
   const builderRightPaneRef = useRef<HTMLElement | null>(null);
+  const builderStepBodyRef = useRef<HTMLDivElement | null>(null);
 
   const initialLoadRef = useRef(readStoredCustomSettings());
   const initialStored = initialLoadRef.current?.settings ?? null;
@@ -414,6 +415,7 @@ export default function App() {
   );
   const [draftUndoStack, setDraftUndoStack] = useState<CustomSequenceConfig[]>([]);
   const [draftRedoStack, setDraftRedoStack] = useState<CustomSequenceConfig[]>([]);
+  const [builderStep, setBuilderStep] = useState<1 | 2 | 3>(1);
   const [builderSearchQuery, setBuilderSearchQuery] = useState<string>('');
   const [builderFilterMode, setBuilderFilterMode] = useState<'all' | 'selected'>('all');
   const [stageSelectMode] = useState<'add' | 'replace'>('add');
@@ -884,6 +886,26 @@ export default function App() {
     };
   }, []);
 
+  const drawScene = useCallback(() => {
+    const st = engineRef.current;
+    if (tkRef.current) tkRef.current.style.opacity = String(st.kT);
+    if (hdRef.current) hdRef.current.style.opacity = String(st.kH);
+    if (titleRef.current) titleRef.current.style.opacity = String(st.kX);
+    if (labRef.current) labRef.current.style.opacity = String(st.kX);
+
+    const gl = st.gl;
+    const cv = canvasRef.current;
+    if (!gl || !cv) return;
+    const U = st.uniforms;
+    gl.uniform2f(U.uRes, cv.width, cv.height);
+    gl.uniform2f(U.uC, st.cx * st.dpr, (st.Hh - st.cy) * st.dpr);
+    gl.uniform1f(U.uR, st.R * st.dpr);
+    gl.uniform1f(U.uH, st.H);
+    gl.uniform1f(U.uB, st.themeUB);
+    gl.uniform1f(U.uS, st.themeUS);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }, []);
+
   const handleToggleFullscreen = useCallback(async () => {
     const doc = document as Document & {
       webkitFullscreenElement?: Element | null;
@@ -893,6 +915,7 @@ export default function App() {
       webkitRequestFullscreen?: () => Promise<void> | void;
     };
     const currentlyFullscreen = Boolean(doc.fullscreenElement || doc.webkitFullscreenElement);
+    drawScene();
     try {
       if (currentlyFullscreen) {
         if (typeof doc.exitFullscreen === 'function') {
@@ -912,7 +935,7 @@ export default function App() {
     } catch {
       showToast('현재 환경에서는 전체 화면 전환이 제한되어 있습니다.', 2600);
     }
-  }, [showToast]);
+  }, [drawScene, showToast]);
 
   const enterFullscreenSilently = useCallback(() => {
     const doc = document as Document & { webkitFullscreenElement?: Element | null };
@@ -920,6 +943,7 @@ export default function App() {
       webkitRequestFullscreen?: () => Promise<void> | void;
     };
     if (doc.fullscreenElement || doc.webkitFullscreenElement) return;
+    drawScene();
     try {
       if (typeof rootEl.requestFullscreen === 'function') {
         const res = rootEl.requestFullscreen();
@@ -931,7 +955,7 @@ export default function App() {
     } catch {
       // Ignore fullscreen restriction errors (e.g., scheduled start without gesture)
     }
-  }, []);
+  }, [drawScene]);
 
   const exitFullscreenSilently = useCallback(() => {
     const doc = document as Document & {
@@ -939,6 +963,7 @@ export default function App() {
       webkitExitFullscreen?: () => Promise<void> | void;
     };
     if (!doc.fullscreenElement && !doc.webkitFullscreenElement) return;
+    drawScene();
     try {
       if (typeof doc.exitFullscreen === 'function') {
         const res = doc.exitFullscreen();
@@ -950,7 +975,7 @@ export default function App() {
     } catch {
       // Ignore fullscreen exit errors
     }
-  }, []);
+  }, [drawScene]);
 
   // B6: Reset 3s auto-hide timer on running controls touch layer
   const revealRunAuxControls = useCallback(() => {
@@ -961,26 +986,6 @@ export default function App() {
     runAuxHideTimerRef.current = window.setTimeout(() => {
       setIsRunAuxRevealed(false);
     }, 3000);
-  }, []);
-
-  const drawScene = useCallback(() => {
-    const st = engineRef.current;
-    if (tkRef.current) tkRef.current.style.opacity = String(st.kT);
-    if (hdRef.current) hdRef.current.style.opacity = String(st.kH);
-    if (titleRef.current) titleRef.current.style.opacity = String(st.kX);
-    if (labRef.current) labRef.current.style.opacity = String(st.kX);
-
-    const gl = st.gl;
-    const cv = canvasRef.current;
-    if (!gl || !cv) return;
-    const U = st.uniforms;
-    gl.uniform2f(U.uRes, cv.width, cv.height);
-    gl.uniform2f(U.uC, st.cx * st.dpr, (st.Hh - st.cy) * st.dpr);
-    gl.uniform1f(U.uR, st.R * st.dpr);
-    gl.uniform1f(U.uH, st.H);
-    gl.uniform1f(U.uB, st.themeUB);
-    gl.uniform1f(U.uS, st.themeUS);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
   }, []);
 
   const resolveAndApplyTheme = useCallback(
@@ -2651,10 +2656,20 @@ export default function App() {
   useEffect(() => {
     const cv = canvasRef.current;
     if (!cv) return;
-    const gl = cv.getContext('webgl', { antialias: false, alpha: false });
+    const glOpts: WebGLContextAttributes = {
+      antialias: false,
+      alpha: true,
+      premultipliedAlpha: false,
+      preserveDrawingBuffer: true,
+      powerPreference: 'high-performance',
+    };
+    const gl =
+      cv.getContext('webgl', glOpts) ||
+      cv.getContext('webgl', { antialias: false, alpha: true, preserveDrawingBuffer: true });
     engineRef.current.gl = gl;
 
-    if (gl) {
+    const initGlProgram = () => {
+      if (!gl) return;
       const mk = (type: number, src: string) => {
         const shader = gl.createShader(type)!;
         gl.shaderSource(shader, src);
@@ -2674,15 +2689,20 @@ export default function App() {
       ['uRes', 'uC', 'uR', 'uH', 'uB', 'uS'].forEach((k) => {
         engineRef.current.uniforms[k] = gl.getUniformLocation(pr, k);
       });
-    }
+    };
+    initGlProgram();
 
     const handleLayout = () => {
       const st = engineRef.current;
       st.W = window.innerWidth;
       st.Hh = window.innerHeight;
       st.dpr = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = Math.round(st.W * st.dpr);
-      cv.height = Math.round(st.Hh * st.dpr);
+      const nextW = Math.max(1, Math.round(st.W * st.dpr));
+      const nextH = Math.max(1, Math.round(st.Hh * st.dpr));
+      if (cv.width !== nextW || cv.height !== nextH) {
+        cv.width = nextW;
+        cv.height = nextH;
+      }
       if (st.gl) {
         st.gl.viewport(0, 0, cv.width, cv.height);
       }
@@ -2702,6 +2722,36 @@ export default function App() {
       st.targetDockY = target.dockY;
       applyGeometryToDom();
       drawScene();
+    };
+
+    let fsRaf = 0;
+    let fsTimer1: number | null = null;
+    let fsTimer2: number | null = null;
+    const handleFullscreenSettle = () => {
+      handleLayout();
+      if (fsRaf) cancelAnimationFrame(fsRaf);
+      fsRaf = requestAnimationFrame(() => {
+        fsRaf = 0;
+        handleLayout();
+      });
+      if (fsTimer1 !== null) window.clearTimeout(fsTimer1);
+      if (fsTimer2 !== null) window.clearTimeout(fsTimer2);
+      fsTimer1 = window.setTimeout(() => {
+        fsTimer1 = null;
+        handleLayout();
+      }, 90);
+      fsTimer2 = window.setTimeout(() => {
+        fsTimer2 = null;
+        handleLayout();
+      }, 240);
+    };
+
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+    };
+    const handleContextRestored = () => {
+      initGlProgram();
+      handleLayout();
     };
 
     const mapUrl = buildLensMap(154, 46, 23);
@@ -2764,13 +2814,26 @@ export default function App() {
     });
 
     window.addEventListener('resize', handleLayout);
+    window.visualViewport?.addEventListener('resize', handleLayout);
+    document.addEventListener('fullscreenchange', handleFullscreenSettle);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenSettle);
+    cv.addEventListener('webglcontextlost', handleContextLost);
+    cv.addEventListener('webglcontextrestored', handleContextRestored);
     document.addEventListener('pointermove', handlePointerMove, { passive: true });
     document.addEventListener('pointerout', handlePointerOut, { passive: true });
     return () => {
       unmounted = true;
       window.removeEventListener('resize', handleLayout);
+      window.visualViewport?.removeEventListener('resize', handleLayout);
+      document.removeEventListener('fullscreenchange', handleFullscreenSettle);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenSettle);
+      cv.removeEventListener('webglcontextlost', handleContextLost);
+      cv.removeEventListener('webglcontextrestored', handleContextRestored);
       document.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('pointerout', handlePointerOut);
+      if (fsRaf) cancelAnimationFrame(fsRaf);
+      if (fsTimer1 !== null) window.clearTimeout(fsTimer1);
+      if (fsTimer2 !== null) window.clearTimeout(fsTimer2);
       if (engineRef.current.rafId) {
         cancelAnimationFrame(engineRef.current.rafId);
       }
@@ -3144,18 +3207,71 @@ export default function App() {
   );
   const draftRows = draftAnalysis.rows;
 
+  // Sync Step 1 응시 조합 checkboxes & 탐구 과목 수 from a nodeId array
+  const syncSubjectComboFromNodeIds = useCallback((nodeIds: string[]) => {
+    const sel = new Set(nodeIds);
+    const hasGroup = (gid: CsatSubjectGroupId) =>
+      CSAT_SELECTABLE_CUE_NODES.some((n) => n.subjectGroupId === gid && sel.has(n.nodeId));
+    const hasInq1 = hasGroup('inq1');
+    const hasInq2 = hasGroup('inq2');
+    setSubjAutoChecked({
+      kor: hasGroup('kor'),
+      math: hasGroup('math'),
+      eng: hasGroup('eng'),
+      hist: hasGroup('hist'),
+      inq1: hasInq1,
+      inq2: hasInq2,
+      lang2: hasGroup('lang2'),
+    });
+    if (hasInq2) {
+      setSubjInqCount(2);
+    } else if (hasInq1) {
+      setSubjInqCount(1);
+    }
+  }, []);
+
+  const enabledSubjectGroups = useMemo(() => {
+    const set = new Set<CsatSubjectGroupId>();
+    if (subjAutoChecked.kor) set.add('kor');
+    if (subjAutoChecked.math) set.add('math');
+    if (subjAutoChecked.eng) set.add('eng');
+    if (subjAutoChecked.hist) set.add('hist');
+    const isInqActive = subjAutoChecked.inq1 || subjAutoChecked.inq2;
+    if (isInqActive) {
+      set.add('inq1');
+      if (subjInqCount >= 2) set.add('inq2');
+    }
+    if (subjAutoChecked.lang2) set.add('lang2');
+    return set;
+  }, [subjAutoChecked, subjInqCount]);
+
+  const goToBuilderStep = useCallback((nextStep: 1 | 2 | 3) => {
+    setOpenCustomPopup(null);
+    setBuilderStep(nextStep);
+    requestAnimationFrame(() => {
+      if (builderStepBodyRef.current) {
+        builderStepBodyRef.current.scrollTop = 0;
+      }
+    });
+  }, []);
+
   // C1 & C8: Open/Close Builder Modal & Draft Mutation with Undo/Redo
   const openBuilderModal = useCallback(
     (scrollToNodeId?: string) => {
-      setDraftSequenceConfig(cloneSequenceConfig(customSequenceConfigRef.current));
+      const cloned = cloneSequenceConfig(customSequenceConfigRef.current);
+      setDraftSequenceConfig(cloned);
+      syncSubjectComboFromNodeIds(cloned.selectedNodeIds);
       setDraftClockSyncMode(clockSyncModeRef.current);
       setDraftUndoStack([]);
       setDraftRedoStack([]);
       setIntervalInputTexts({});
       setRowInputErrors({});
+      setOpenCustomPopup(null);
+      const jumpToStep3 = Boolean(scrollToNodeId && cloned.selectedNodeIds.includes(scrollToNodeId));
+      setBuilderStep(jumpToStep3 ? 3 : 1);
       setIsBuilderModalOpen(true);
 
-      if (scrollToNodeId) {
+      if (jumpToStep3 && scrollToNodeId) {
         window.setTimeout(() => {
           const el = builderRightPaneRef.current?.querySelector(
             `[data-node-id="${scrollToNodeId}"]`
@@ -3164,13 +3280,18 @@ export default function App() {
             (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         }, 120);
+      } else {
+        window.setTimeout(() => {
+          if (builderStepBodyRef.current) builderStepBodyRef.current.scrollTop = 0;
+        }, 30);
       }
     },
-    []
+    [syncSubjectComboFromNodeIds]
   );
 
   const closeBuilderModalWithoutSaving = useCallback(() => {
     stopPreviewBell();
+    setOpenCustomPopup(null);
     setIsBuilderModalOpen(false);
     setDuplicateNamePrompt(null);
   }, [stopPreviewBell]);
@@ -3194,7 +3315,9 @@ export default function App() {
     const prevCfg = draftUndoStack[draftUndoStack.length - 1];
     setDraftUndoStack((u) => u.slice(0, -1));
     setDraftRedoStack((r) => [...r.slice(-19), cloneSequenceConfig(draftSequenceConfig)]);
-    setDraftSequenceConfig(cloneSequenceConfig(prevCfg));
+    const cloned = cloneSequenceConfig(prevCfg);
+    setDraftSequenceConfig(cloned);
+    syncSubjectComboFromNodeIds(cloned.selectedNodeIds);
     setIntervalInputTexts({});
     setRowInputErrors({});
   };
@@ -3204,7 +3327,9 @@ export default function App() {
     const nextCfg = draftRedoStack[draftRedoStack.length - 1];
     setDraftRedoStack((r) => r.slice(0, -1));
     setDraftUndoStack((u) => [...u.slice(-19), cloneSequenceConfig(draftSequenceConfig)]);
-    setDraftSequenceConfig(cloneSequenceConfig(nextCfg));
+    const cloned = cloneSequenceConfig(nextCfg);
+    setDraftSequenceConfig(cloned);
+    syncSubjectComboFromNodeIds(cloned.selectedNodeIds);
     setIntervalInputTexts({});
     setRowInputErrors({});
   };
@@ -3258,6 +3383,17 @@ export default function App() {
 
   // Builder Modal node/group selection handlers (operating on draftSequenceConfig)
   const handleToggleCueNode = (nodeId: string) => {
+    const nodeMeta = CSAT_SELECTABLE_CUE_NODES.find((n) => n.nodeId === nodeId);
+    const wasSelected = draftSequenceConfig.selectedNodeIds.includes(nodeId);
+    if (!wasSelected && nodeMeta) {
+      setSubjAutoChecked((prev) => ({
+        ...prev,
+        [nodeMeta.subjectGroupId]: true,
+      }));
+      if (nodeMeta.subjectGroupId === 'inq2') {
+        setSubjInqCount(2);
+      }
+    }
     updateDraftConfig((prev) => {
       const exists = prev.selectedNodeIds.includes(nodeId);
       const nextIds = exists
@@ -3331,9 +3467,10 @@ export default function App() {
   };
 
   const handleSelectByStageType = (stageType: CsatStageType) => {
-    const matchingIds = CSAT_SELECTABLE_CUE_NODES.filter((n) => n.stageType === stageType).map(
-      (n) => n.nodeId
-    );
+    const matchingIds = CSAT_SELECTABLE_CUE_NODES.filter(
+      (n) => enabledSubjectGroups.has(n.subjectGroupId) && n.stageType === stageType
+    ).map((n) => n.nodeId);
+    if (matchingIds.length === 0) return;
     updateDraftConfig((prev) => {
       if (stageSelectMode === 'replace') {
         return { ...prev, selectedNodeIds: matchingIds };
@@ -3350,29 +3487,6 @@ export default function App() {
       return { ...prev, selectedNodeIds: Array.from(set) };
     });
   };
-
-  // B3: Keep 응시 조합 checkboxes & 탐구 과목 수 (1과목 / 2과목) synchronized with draftSequenceConfig.selectedNodeIds
-  useEffect(() => {
-    const sel = new Set(draftSequenceConfig.selectedNodeIds);
-    const hasGroup = (gid: CsatSubjectGroupId) =>
-      CSAT_SELECTABLE_CUE_NODES.some((n) => n.subjectGroupId === gid && sel.has(n.nodeId));
-    const hasInq1 = hasGroup('inq1');
-    const hasInq2 = hasGroup('inq2');
-    setSubjAutoChecked({
-      kor: hasGroup('kor'),
-      math: hasGroup('math'),
-      eng: hasGroup('eng'),
-      hist: hasGroup('hist'),
-      inq1: hasInq1,
-      inq2: hasInq2,
-      lang2: hasGroup('lang2'),
-    });
-    if (hasInq2) {
-      setSubjInqCount(2);
-    } else if (hasInq1) {
-      setSubjInqCount(1);
-    }
-  }, [draftSequenceConfig.selectedNodeIds]);
 
   const filterGroupNodeIdsByScope = useCallback(
     (groupId: CsatSubjectGroupId, scope: 'all' | 'core' | 'real') =>
@@ -3419,6 +3533,11 @@ export default function App() {
     const currentlyChecked = subjAutoChecked.inq1 || subjAutoChecked.inq2;
     const nextChecked = !currentlyChecked;
     const targetCount = subjInqCount === 1 ? 1 : 2;
+    setSubjAutoChecked((prev) => ({
+      ...prev,
+      inq1: nextChecked,
+      inq2: nextChecked && targetCount >= 2,
+    }));
 
     const allInqIds = CSAT_SELECTABLE_CUE_NODES.filter(
       (n) => n.subjectGroupId === 'inq1' || n.subjectGroupId === 'inq2'
@@ -3449,6 +3568,11 @@ export default function App() {
   const handleSubjInqCountSelect = useCallback(
     (nextCount: 1 | 2) => {
       setSubjInqCount(nextCount);
+      setSubjAutoChecked((prev) => ({
+        ...prev,
+        inq1: true,
+        inq2: nextCount >= 2,
+      }));
       setOpenCustomPopup(null);
 
       const allInqIds = CSAT_SELECTABLE_CUE_NODES.filter(
@@ -3653,53 +3777,61 @@ export default function App() {
     }
 
     if (templateType === 'all_39') {
+      const nextIds = CSAT_SELECTABLE_CUE_NODES.map((n) => n.nodeId);
       updateDraftConfig((prev) => ({
         ...prev,
-        selectedNodeIds: CSAT_SELECTABLE_CUE_NODES.map((n) => n.nodeId),
+        selectedNodeIds: nextIds,
         intervalMap: {},
         intervalSecondsMap: {},
         firstNodeCustomMinutes: null,
       }));
+      syncSubjectComboFromNodeIds(nextIds);
       showToast('전체 타종 시간표(38개 항목)가 기본 상태로 설정되었습니다.', 2600);
       return;
     }
 
     if (templateType === 'kor_math_inq1_core') {
+      const nextIds = [
+        '004', '005', '006', '007',
+        '010', '011', '012', '013',
+        '025', '026', '027', '028',
+      ];
       updateDraftConfig((prev) => ({
         ...prev,
-        selectedNodeIds: [
-          '004', '005', '006', '007',
-          '010', '011', '012', '013',
-          '025', '026', '027', '028',
-        ],
+        selectedNodeIds: nextIds,
         intervalMap: {},
         intervalSecondsMap: {},
         firstNodeCustomMinutes: null,
       }));
-      showToast('국어 · 수학 · 탐구1 핵심 단계(준비·본령·종료전·종료령)가 선택되었습니다.', 2600);
+      syncSubjectComboFromNodeIds(nextIds);
+      showToast('국어 · 수학 · 탐구1 핵심 단계(준비·본령·종료전·종료)가 선택되었습니다.', 2600);
       return;
     }
 
     if (templateType === 'kor_core') {
+      const nextIds = ['004', '005', '006', '007'];
       updateDraftConfig((prev) => ({
         ...prev,
-        selectedNodeIds: ['004', '005', '006', '007'],
+        selectedNodeIds: nextIds,
         intervalMap: {},
         intervalSecondsMap: {},
         firstNodeCustomMinutes: null,
       }));
+      syncSubjectComboFromNodeIds(nextIds);
       showToast('1교시 국어 준비령 · 본령 · 종료10분전 · 종료령이 선택되었습니다.', 2600);
       return;
     }
 
     if (templateType === 'eng_listening_core') {
+      const nextIds = ['016', 'ENG_1307', '017', '018'];
       updateDraftConfig((prev) => ({
         ...prev,
-        selectedNodeIds: ['016', 'ENG_1307', '017', '018'],
+        selectedNodeIds: nextIds,
         intervalMap: {},
         intervalSecondsMap: {},
         firstNodeCustomMinutes: null,
       }));
+      syncSubjectComboFromNodeIds(nextIds);
       showToast(
         '3교시 영어 준비령 · 13:07 듣기평가 안내방송 및 본령 · 종료10분전 · 종료령이 선택되었습니다.',
         2600
@@ -3718,6 +3850,7 @@ export default function App() {
         intervalSecondsMap: {},
         firstNodeCustomMinutes: null,
       }));
+      syncSubjectComboFromNodeIds(coreIds);
       showToast('전 영역 핵심 타종 단계가 선택되었습니다.', 2600);
     }
   };
@@ -3813,8 +3946,9 @@ export default function App() {
       ? bm.clockSyncMode
       : draftClockSyncMode;
     updateDraftConfig(() => sanitizedCfg);
+    syncSubjectComboFromNodeIds(sanitizedCfg.selectedNodeIds);
     setDraftClockSyncMode(nextSync);
-    showToast(`'${bm.name}' 구성을 편집 화면(임시 상태)으로 불러왔습니다. [적용]을 눌러야 반영됩니다.`, 3000);
+    showToast(`'${bm.name}' 구성을 편집 화면(임시 상태)으로 불러왔습니다. [선택 구성 저장]을 눌러야 반영됩니다.`, 3000);
   };
 
   const handleApplyBookmarkDirectly = (bm: SavedSequenceBookmark) => {
@@ -3825,6 +3959,7 @@ export default function App() {
 
     if (isBuilderModalOpen) {
       updateDraftConfig(() => sanitizedCfg);
+      syncSubjectComboFromNodeIds(sanitizedCfg.selectedNodeIds);
       setDraftClockSyncMode(nextSync);
     }
 
@@ -4150,6 +4285,7 @@ export default function App() {
           customSequenceConfigRef.current = nextSeqConfig;
           if (isBuilderModalOpen) {
             setDraftSequenceConfig(cloneSequenceConfig(nextSeqConfig));
+            syncSubjectComboFromNodeIds(nextSeqConfig.selectedNodeIds);
           }
         }
         if (Array.isArray(data.bookmarks)) {
@@ -6106,366 +6242,441 @@ export default function App() {
             </div>
           </header>
 
-          {/* 상단 빠른 구성 템플릿, B3 응시 조합 자동 구성, 자주 쓰는 구성(북마크), 시계 바늘 연동 옵션 바 */}
-          <section className="quickbar">
-            <div className="quick-line">
-              <span className="quick-label">빠른 선택</span>
-              <button
-                type="button"
-                className="chip"
-                onClick={() => handleApplyQuickSequenceTemplate('all_39')}
-              >
-                전체 타종 선택 (기본)
-              </button>
-              <button
-                type="button"
-                className="chip"
-                onClick={() => handleApplyQuickSequenceTemplate('kor_math_inq1_core')}
-              >
-                국·수·탐1 핵심
-              </button>
-              <button
-                type="button"
-                className="chip"
-                onClick={() => handleApplyQuickSequenceTemplate('kor_core')}
-              >
-                1교시 국어 4단계
-              </button>
-              <button
-                type="button"
-                className="chip"
-                onClick={() => handleApplyQuickSequenceTemplate('eng_listening_core')}
-              >
-                3교시 영어 듣기 포함
-              </button>
-              <button
-                type="button"
-                className="chip"
-                onClick={() => handleApplyQuickSequenceTemplate('all_core')}
-              >
-                전 영역 핵심 단계
-              </button>
-              <button
-                type="button"
-                className="chip"
-                onClick={() => handleApplyQuickSequenceTemplate('reset_intervals')}
-              >
-                기본 간격 초기화
-              </button>
-            </div>
+          {/* 3단계 진행 표시기 (1단계: 응시 조합·빠른 설정 / 2단계: 1. 진행할 영역·단계 / 3단계: 2. 순서·간격·시각) */}
+          <nav className="builder-stepper" aria-label="타종 구성 단계">
+            <button
+              type="button"
+              className={`builder-step-tab ${builderStep === 1 ? 'is-active' : builderStep > 1 ? 'is-done' : ''}`}
+              aria-current={builderStep === 1 ? 'step' : undefined}
+              onClick={() => goToBuilderStep(1)}
+            >
+              <span className="step-badge">1</span>
+              <span className="step-title">응시 조합 · 빠른 설정</span>
+            </button>
+            <button
+              type="button"
+              className={`builder-step-tab ${builderStep === 2 ? 'is-active' : builderStep > 2 ? 'is-done' : ''}`}
+              aria-current={builderStep === 2 ? 'step' : undefined}
+              onClick={() => goToBuilderStep(2)}
+            >
+              <span className="step-badge">2</span>
+              <span className="step-title">1. 진행할 영역 및 타종 단계 선택</span>
+            </button>
+            <button
+              type="button"
+              className={`builder-step-tab ${builderStep === 3 ? 'is-active' : ''}`}
+              aria-current={builderStep === 3 ? 'step' : undefined}
+              onClick={() => goToBuilderStep(3)}
+            >
+              <span className="step-badge">3</span>
+              <span className="step-title">2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+            </button>
+          </nav>
 
-            {/* B3: 응시 조합 실시간 동기화 및 커스텀 선택 팝업 */}
-            <div className="quick-line">
-              <span className="quick-label">응시 조합</span>
-              <div className="subj-auto-box">
-                {(
-                  [
-                    { id: 'kor', label: '국어' },
-                    { id: 'math', label: '수학' },
-                    { id: 'eng', label: '영어' },
-                    { id: 'hist', label: '한국사' },
-                  ] as { id: CsatSubjectGroupId; label: string }[]
-                ).map((s) => (
-                  <label
-                    key={s.id}
-                    className={`subj-check-label ${subjAutoChecked[s.id] ? 'is-checked' : ''}`}
+          <div className="builder-step-body" ref={builderStepBodyRef}>
+            {builderStep === 1 && (
+              /* 1단계: 상단 빠른 구성 템플릿, B3 응시 조합 자동 구성, 자주 쓰는 구성(북마크), 시계 바늘 연동 옵션 */
+              <section className="quickbar quickbar-step" aria-label="1단계: 응시 조합 및 빠른 설정">
+                <div className="pane-title">
+                  <span>응시 조합 및 빠른 설정</span>
+                  <span className="pane-note">여기서 체크한 과목만 다음(2단계) 목록에 표시됩니다</span>
+                </div>
+
+                <div className="quick-line">
+                  <span className="quick-label">빠른 선택</span>
+                  <button
+                    type="button"
+                    className="chip"
+                    onClick={() => handleApplyQuickSequenceTemplate('all_39')}
                   >
-                    <input
-                      type="checkbox"
-                      checked={subjAutoChecked[s.id]}
-                      onChange={() => handleSubjComboCheckboxToggle(s.id)}
-                    />
-                    <span>{s.label}</span>
-                  </label>
-                ))}
+                    전체 타종 선택 (기본)
+                  </button>
+                  <button
+                    type="button"
+                    className="chip"
+                    onClick={() => handleApplyQuickSequenceTemplate('kor_math_inq1_core')}
+                  >
+                    국·수·탐1 핵심
+                  </button>
+                  <button
+                    type="button"
+                    className="chip"
+                    onClick={() => handleApplyQuickSequenceTemplate('kor_core')}
+                  >
+                    1교시 국어 4단계
+                  </button>
+                  <button
+                    type="button"
+                    className="chip"
+                    onClick={() => handleApplyQuickSequenceTemplate('eng_listening_core')}
+                  >
+                    3교시 영어 듣기 포함
+                  </button>
+                  <button
+                    type="button"
+                    className="chip"
+                    onClick={() => handleApplyQuickSequenceTemplate('all_core')}
+                  >
+                    전 영역 핵심 단계
+                  </button>
+                  <button
+                    type="button"
+                    className="chip"
+                    onClick={() => handleApplyQuickSequenceTemplate('reset_intervals')}
+                  >
+                    기본 간격 초기화
+                  </button>
+                </div>
 
+                {/* B3: 응시 조합 실시간 동기화 및 커스텀 선택 팝업 */}
                 <div
-                  className={`subj-check-label ${
-                    subjAutoChecked.inq1 || subjAutoChecked.inq2 ? 'is-checked' : ''
+                  className={`quick-line ${
+                    openCustomPopup === 'subj_inq' || openCustomPopup === 'subj_scope'
+                      ? 'has-popover-open'
+                      : ''
                   }`}
                 >
-                  <label
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 5,
-                      cursor: 'pointer',
-                    }}
-                  >
+                  <span className="quick-label">응시 조합</span>
+                  <div className="subj-auto-box">
+                    {(
+                      [
+                        { id: 'kor', label: '국어' },
+                        { id: 'math', label: '수학' },
+                        { id: 'eng', label: '영어' },
+                        { id: 'hist', label: '한국사' },
+                      ] as { id: CsatSubjectGroupId; label: string }[]
+                    ).map((s) => (
+                      <label
+                        key={s.id}
+                        className={`subj-check-label ${subjAutoChecked[s.id] ? 'is-checked' : ''}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={subjAutoChecked[s.id]}
+                          onChange={() => handleSubjComboCheckboxToggle(s.id)}
+                        />
+                        <span>{s.label}</span>
+                      </label>
+                    ))}
+
+                    <div
+                      className={`subj-check-label ${
+                        subjAutoChecked.inq1 || subjAutoChecked.inq2 ? 'is-checked' : ''
+                      }`}
+                    >
+                      <label
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 5,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={subjAutoChecked.inq1 || subjAutoChecked.inq2}
+                          onChange={handleSubjInqCheckboxToggle}
+                        />
+                        <span>탐구</span>
+                      </label>
+                      <div className="custom-select-wrap">
+                        <button
+                          type="button"
+                          className={`custom-select-trigger ${
+                            openCustomPopup === 'subj_inq' ? 'is-open' : ''
+                          }`}
+                          onClick={() =>
+                            setOpenCustomPopup((prev) => (prev === 'subj_inq' ? null : 'subj_inq'))
+                          }
+                          aria-haspopup="listbox"
+                          aria-expanded={openCustomPopup === 'subj_inq'}
+                          aria-label="탐구 응시 과목 수 선택 (1과목 또는 2과목)"
+                        >
+                          <span>{subjInqCount === 1 ? '1과목' : '2과목'}</span>
+                          <svg
+                            className="chevron-icon"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+
+                        {openCustomPopup === 'subj_inq' && (
+                          <div className="custom-select-popover" role="listbox" aria-label="탐구 과목 수">
+                            {(
+                              [
+                                { value: 2 as const, label: '2과목', badge: '탐구 1·2' },
+                                { value: 1 as const, label: '1과목', badge: '탐구 1' },
+                              ]
+                            ).map((opt) => (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                role="option"
+                                aria-selected={subjInqCount === opt.value}
+                                className={`custom-select-option ${
+                                  subjInqCount === opt.value ? 'is-selected' : ''
+                                }`}
+                                onClick={() => handleSubjInqCountSelect(opt.value)}
+                              >
+                                <span>{opt.label}</span>
+                                <span className="opt-sub-badge">{opt.badge}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <label
+                      className={`subj-check-label ${subjAutoChecked.lang2 ? 'is-checked' : ''}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={subjAutoChecked.lang2}
+                        onChange={() => handleSubjComboCheckboxToggle('lang2')}
+                      />
+                      <span>제2외국어/한문</span>
+                    </label>
+
+                    <div className="subj-check-label">
+                      <span>밀도</span>
+                      <div className="custom-select-wrap">
+                        <button
+                          type="button"
+                          className={`custom-select-trigger ${
+                            openCustomPopup === 'subj_scope' ? 'is-open' : ''
+                          }`}
+                          onClick={() =>
+                            setOpenCustomPopup((prev) => (prev === 'subj_scope' ? null : 'subj_scope'))
+                          }
+                          aria-haspopup="listbox"
+                          aria-expanded={openCustomPopup === 'subj_scope'}
+                          aria-label="포함할 타종 단계 밀도 선택"
+                        >
+                          <span>
+                            {subjAutoScope === 'all'
+                              ? '전체 타종'
+                              : subjAutoScope === 'core'
+                                ? '핵심 단계'
+                                : '실전 최소'}
+                          </span>
+                          <svg
+                            className="chevron-icon"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+
+                        {openCustomPopup === 'subj_scope' && (
+                          <div className="custom-select-popover" role="listbox" aria-label="타종 밀도">
+                            {(
+                              [
+                                { value: 'all', label: '전체 타종', badge: '전 단계' },
+                                { value: 'core', label: '핵심 단계', badge: '준비·본령·종료' },
+                                { value: 'real', label: '실전 최소', badge: '본령·종료' },
+                              ] as const
+                            ).map((opt) => (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                role="option"
+                                aria-selected={subjAutoScope === opt.value}
+                                className={`custom-select-option ${
+                                  subjAutoScope === opt.value ? 'is-selected' : ''
+                                }`}
+                                onClick={() => handleSubjScopeSelect(opt.value)}
+                              >
+                                <span>{opt.label}</span>
+                                <span className="opt-sub-badge">{opt.badge}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="chip"
+                      onClick={handleApplySubjectAutoBuild}
+                      title="현재 체크된 응시 조합으로 간격을 공식 시간표 기준으로 초기화하고 재정렬합니다."
+                    >
+                      조합 간격 초기화
+                    </button>
+                  </div>
+                </div>
+
+                {/* C4: 자주 쓰는 구성 */}
+                <div className="quick-line">
+                  <span className="quick-label">자주 쓰는 구성</span>
+                  {bookmarks.map((bm) => (
+                    <span key={bm.id} className="bookmark-modal-chip">
+                      <button
+                        type="button"
+                        className="bookmark-modal-apply"
+                        onClick={() => handleLoadBookmarkToEditor(bm)}
+                        title={`'${bm.name}' 구성 불러오기`}
+                      >
+                        {bm.name} ({bm.config.selectedNodeIds.length})
+                      </button>
+                      <button
+                        type="button"
+                        className="bookmark-modal-del"
+                        onClick={(e) => handleDeleteBookmark(bm.id, e)}
+                        aria-label={`${bm.name} 삭제`}
+                        title="북마크 삭제"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                  <div className="bookmark-modal-save-group">
                     <input
-                      type="checkbox"
-                      checked={subjAutoChecked.inq1 || subjAutoChecked.inq2}
-                      onChange={handleSubjInqCheckboxToggle}
+                      type="text"
+                      className="bookmark-modal-input"
+                      value={bookmarkNameInput}
+                      maxLength={28}
+                      aria-label="자주 쓰는 구성 이름"
+                      onChange={(e) => setBookmarkNameInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleSaveCurrentAsBookmark(true);
+                        }
+                      }}
                     />
-                    <span>탐구</span>
-                  </label>
-                  <div className="custom-select-wrap">
                     <button
                       type="button"
-                      className={`custom-select-trigger ${
-                        openCustomPopup === 'subj_inq' ? 'is-open' : ''
-                      }`}
-                      onClick={() =>
-                        setOpenCustomPopup((prev) => (prev === 'subj_inq' ? null : 'subj_inq'))
-                      }
-                      aria-haspopup="listbox"
-                      aria-expanded={openCustomPopup === 'subj_inq'}
-                      aria-label="탐구 응시 과목 수 선택 (1과목 또는 2과목)"
+                      className="chip"
+                      onClick={() => handleSaveCurrentAsBookmark(true)}
                     >
-                      <span>{subjInqCount === 1 ? '1과목' : '2과목'}</span>
-                      <svg
-                        className="chevron-icon"
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
+                      현재 구성 저장
                     </button>
-
-                    {openCustomPopup === 'subj_inq' && (
-                      <div className="custom-select-popover" role="listbox" aria-label="탐구 과목 수">
-                        {(
-                          [
-                            { value: 2 as const, label: '2과목', badge: '탐구 1·2' },
-                            { value: 1 as const, label: '1과목', badge: '탐구 1' },
-                          ]
-                        ).map((opt) => (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            role="option"
-                            aria-selected={subjInqCount === opt.value}
-                            className={`custom-select-option ${
-                              subjInqCount === opt.value ? 'is-selected' : ''
-                            }`}
-                            onClick={() => handleSubjInqCountSelect(opt.value)}
-                          >
-                            <span>{opt.label}</span>
-                            <span className="opt-sub-badge">{opt.badge}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
 
-                <label
-                  className={`subj-check-label ${subjAutoChecked.lang2 ? 'is-checked' : ''}`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={subjAutoChecked.lang2}
-                    onChange={() => handleSubjComboCheckboxToggle('lang2')}
-                  />
-                  <span>제2외국어/한문</span>
-                </label>
-
-                <div className="subj-check-label">
-                  <span>밀도</span>
-                  <div className="custom-select-wrap">
-                    <button
-                      type="button"
-                      className={`custom-select-trigger ${
-                        openCustomPopup === 'subj_scope' ? 'is-open' : ''
-                      }`}
-                      onClick={() =>
-                        setOpenCustomPopup((prev) => (prev === 'subj_scope' ? null : 'subj_scope'))
-                      }
-                      aria-haspopup="listbox"
-                      aria-expanded={openCustomPopup === 'subj_scope'}
-                      aria-label="포함할 타종 단계 밀도 선택"
-                    >
-                      <span>
-                        {subjAutoScope === 'all'
-                          ? '전체 타종'
-                          : subjAutoScope === 'core'
-                            ? '핵심 단계'
-                            : '실전 최소'}
-                      </span>
-                      <svg
-                        className="chevron-icon"
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                {duplicateNamePrompt && (
+                  <div className="bm-undo-bar">
+                    <span>
+                      같은 이름('{duplicateNamePrompt.name}')의 북마크가 있습니다. 어떻게 저장할까요?
+                    </span>
+                    <div style={{ display: 'flex', gap: 5 }}>
+                      <button
+                        type="button"
+                        className="bm-mini-act"
+                        onClick={() =>
+                          executeSaveNewBookmark(
+                            duplicateNamePrompt.name,
+                            duplicateNamePrompt.sourceConfig,
+                            duplicateNamePrompt.sourceSync,
+                            duplicateNamePrompt.existingId
+                          )
+                        }
                       >
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
-                    </button>
-
-                    {openCustomPopup === 'subj_scope' && (
-                      <div className="custom-select-popover" role="listbox" aria-label="타종 밀도">
-                        {(
-                          [
-                            { value: 'all', label: '전체 타종', badge: '전 단계' },
-                            { value: 'core', label: '핵심 단계', badge: '준비·본령·종료' },
-                            { value: 'real', label: '실전 최소', badge: '본령·종료' },
-                          ] as const
-                        ).map((opt) => (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            role="option"
-                            aria-selected={subjAutoScope === opt.value}
-                            className={`custom-select-option ${
-                              subjAutoScope === opt.value ? 'is-selected' : ''
-                            }`}
-                            onClick={() => handleSubjScopeSelect(opt.value)}
-                          >
-                            <span>{opt.label}</span>
-                            <span className="opt-sub-badge">{opt.badge}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                        기존 북마크 덮어쓰기
+                      </button>
+                      <button
+                        type="button"
+                        className="bm-mini-act"
+                        onClick={() =>
+                          executeSaveNewBookmark(
+                            `${duplicateNamePrompt.name} (새 구성)`.slice(0, 60),
+                            duplicateNamePrompt.sourceConfig,
+                            duplicateNamePrompt.sourceSync
+                          )
+                        }
+                      >
+                        새 이름으로 저장
+                      </button>
+                      <button
+                        type="button"
+                        className="bm-mini-act"
+                        onClick={() => setDuplicateNamePrompt(null)}
+                      >
+                        취소
+                      </button>
+                    </div>
                   </div>
+                )}
+
+                <div className="quick-line">
+                  <span className="quick-label">시계 바늘 연동</span>
+                  <button
+                    type="button"
+                    className={`chip ${
+                      draftClockSyncMode === 'original_csat_time' ? 'active' : ''
+                    }`}
+                    onClick={() => handleClockSyncModeChange('original_csat_time', true)}
+                  >
+                    원래 수능 시각 맞춤 + 대기 간격 적용
+                  </button>
+                  <button
+                    type="button"
+                    className={`chip ${
+                      draftClockSyncMode === 'custom_cascaded_time' ? 'active' : ''
+                    }`}
+                    onClick={() => handleClockSyncModeChange('custom_cascaded_time', true)}
+                  >
+                    간격 연쇄 계산 시각 연동
+                  </button>
                 </div>
 
-                <button
-                  type="button"
-                  className="chip"
-                  onClick={handleApplySubjectAutoBuild}
-                  title="현재 체크된 응시 조합으로 간격을 공식 시간표 기준으로 초기화하고 재정렬합니다."
-                >
-                  조합 간격 초기화
-                </button>
-              </div>
-            </div>
-
-            {/* C4: 자주 쓰는 구성 */}
-            <div className="quick-line">
-              <span className="quick-label">자주 쓰는 구성</span>
-              {bookmarks.map((bm) => (
-                <span key={bm.id} className="bookmark-modal-chip">
-                  <button
-                    type="button"
-                    className="bookmark-modal-apply"
-                    onClick={() => handleLoadBookmarkToEditor(bm)}
-                    title={`'${bm.name}' 구성 불러오기`}
-                  >
-                    {bm.name} ({bm.config.selectedNodeIds.length})
-                  </button>
-                  <button
-                    type="button"
-                    className="bookmark-modal-del"
-                    onClick={(e) => handleDeleteBookmark(bm.id, e)}
-                    aria-label={`${bm.name} 삭제`}
-                    title="북마크 삭제"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-              <div className="bookmark-modal-save-group">
-                <input
-                  type="text"
-                  className="bookmark-modal-input"
-                  value={bookmarkNameInput}
-                  maxLength={28}
-                  aria-label="자주 쓰는 구성 이름"
-                  onChange={(e) => setBookmarkNameInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleSaveCurrentAsBookmark(true);
-                    }
-                  }}
-                />
-                <button
-                  type="button"
-                  className="chip"
-                  onClick={() => handleSaveCurrentAsBookmark(true)}
-                >
-                  현재 구성 저장
-                </button>
-              </div>
-            </div>
-
-            {duplicateNamePrompt && (
-              <div className="bm-undo-bar">
-                <span>
-                  같은 이름('{duplicateNamePrompt.name}')의 북마크가 있습니다. 어떻게 저장할까요?
-                </span>
-                <div style={{ display: 'flex', gap: 5 }}>
-                  <button
-                    type="button"
-                    className="bm-mini-act"
-                    onClick={() =>
-                      executeSaveNewBookmark(
-                        duplicateNamePrompt.name,
-                        duplicateNamePrompt.sourceConfig,
-                        duplicateNamePrompt.sourceSync,
-                        duplicateNamePrompt.existingId
-                      )
-                    }
-                  >
-                    기존 북마크 덮어쓰기
-                  </button>
-                  <button
-                    type="button"
-                    className="bm-mini-act"
-                    onClick={() =>
-                      executeSaveNewBookmark(
-                        `${duplicateNamePrompt.name} (새 구성)`.slice(0, 60),
-                        duplicateNamePrompt.sourceConfig,
-                        duplicateNamePrompt.sourceSync
-                      )
-                    }
-                  >
-                    새 이름으로 저장
-                  </button>
-                  <button
-                    type="button"
-                    className="bm-mini-act"
-                    onClick={() => setDuplicateNamePrompt(null)}
-                  >
-                    취소
-                  </button>
+                <div className="step1-subject-preview-bar">
+                  <span>
+                    다음(2단계) 표시 과목:{' '}
+                    <strong>
+                      {enabledSubjectGroups.size > 0
+                        ? CSAT_SUBJECT_GROUPS.filter((g) => enabledSubjectGroups.has(g.id))
+                            .map((g) => g.title)
+                            .join(' · ')
+                        : '선택된 과목 없음'}
+                    </strong>
+                  </span>
                 </div>
-              </div>
+              </section>
             )}
 
-            <div className="quick-line">
-              <span className="quick-label">시계 바늘 연동</span>
-              <button
-                type="button"
-                className={`chip ${
-                  draftClockSyncMode === 'original_csat_time' ? 'active' : ''
-                }`}
-                onClick={() => handleClockSyncModeChange('original_csat_time', true)}
-              >
-                원래 수능 시각 맞춤 + 대기 간격 적용
-              </button>
-              <button
-                type="button"
-                className={`chip ${
-                  draftClockSyncMode === 'custom_cascaded_time' ? 'active' : ''
-                }`}
-                onClick={() => handleClockSyncModeChange('custom_cascaded_time', true)}
-              >
-                간격 연쇄 계산 시각 연동
-              </button>
-            </div>
-          </section>
+            {builderStep === 2 && (
+              /* 2단계: 1. 진행할 영역 및 타종 단계 선택 (1단계에서 체크한 과목만 표시) */
+              <section className="left-pane step-single-pane">
+                <div className="pane-title">
+                  <span>1. 진행할 영역 및 타종 단계 선택</span>
+                  <span className="pane-note">
+                    응시 조합에서 체크한 과목만 표시됩니다 · 영역별 필요한 단계만 선택
+                  </span>
+                </div>
 
-          {/* 2-Column List-Detail 본문 */}
-          <section className="workspace">
-            {/* 좌측 목록: 과목/영역별 타종 체크박스 트리 + C6/C8 도구 */}
-            <aside className="left-pane">
-              <div className="pane-title">
-                <span>1. 진행할 영역 및 타종 단계 선택</span>
-                <span className="pane-note">영역별 필요한 단계만 선택</span>
-              </div>
+                {enabledSubjectGroups.size === 0 ? (
+                  <div className="empty-state">
+                    <p style={{ margin: '0 0 12px' }}>
+                      1단계(응시 조합)에서 체크된 과목이 없습니다. 이전 단계에서 진행할 과목을 먼저 체크해 주세요.
+                    </p>
+                    <button
+                      type="button"
+                      className="chip"
+                      onClick={() => goToBuilderStep(1)}
+                    >
+                      1단계(응시 조합)로 이동
+                    </button>
+                  </div>
+                ) : (
+                  <>
 
               <div className="left-tools-panel">
                 <div className="search-wrap">
@@ -6493,13 +6704,12 @@ export default function App() {
                 <div className="stage-type-bar">
                   {CSAT_STAGE_TYPE_META.map((meta) => {
                     const matchingNodes = CSAT_SELECTABLE_CUE_NODES.filter(
-                      (n) => n.stageType === meta.type
+                      (n) => enabledSubjectGroups.has(n.subjectGroupId) && n.stageType === meta.type
                     );
-                    const isAllTypeSelected =
-                      matchingNodes.length > 0 &&
-                      matchingNodes.every((n) =>
-                        draftSequenceConfig.selectedNodeIds.includes(n.nodeId)
-                      );
+                    if (matchingNodes.length === 0) return null;
+                    const isAllTypeSelected = matchingNodes.every((n) =>
+                      draftSequenceConfig.selectedNodeIds.includes(n.nodeId)
+                    );
                     return (
                       <button
                         key={meta.type}
@@ -6514,110 +6724,126 @@ export default function App() {
                 </div>
               </div>
 
-              {CSAT_SUBJECT_GROUPS.map((group) => {
+              {(() => {
                 const q = builderSearchQuery.trim().toLowerCase();
-                const groupNodes = CSAT_SELECTABLE_CUE_NODES.filter((n) => {
-                  if (n.subjectGroupId !== group.id) return false;
-                  if (
-                    builderFilterMode === 'selected' &&
-                    !draftSequenceConfig.selectedNodeIds.includes(n.nodeId)
-                  ) {
-                    return false;
-                  }
-                  if (!q) return true;
-                  const hay =
-                    `${n.periodLabel} ${n.subjectTitle} ${n.stageShortLabel} ${n.fullTitle} ${n.bellCode || '영어 듣기'} ${n.originalTimeText}`.toLowerCase();
-                  return hay.includes(q);
-                });
-
-                if (groupNodes.length === 0) return null;
-
-                const stats = draftAnalysis.groupStats[group.id];
-                const isCollapsed = Boolean(collapsedGroups[group.id]) && !q;
-
-                return (
-                  <section
-                    key={group.id}
-                    className={`area-card ${isCollapsed ? 'collapsed' : ''}`}
-                  >
-                    <div className="area-head">
-                      <label className="area-check">
-                        <input
-                          type="checkbox"
-                          checked={stats.state === 'all'}
-                          ref={(el) => {
-                            if (el) {
-                              el.indeterminate = stats.state === 'partial';
-                            }
-                          }}
-                          onChange={() => handleToggleSubjectGroup(group.id, false)}
-                        />
-                        <span>
-                          {group.title} ({stats.selectedCount}/{stats.totalCount})
-                        </span>
-                      </label>
-                      <div className="area-head-actions">
-                        <button
-                          type="button"
-                          className={`area-tag ${stats.isCoreAllSelected ? 'is-core-all' : ''}`}
-                          onClick={() => handleToggleSubjectGroup(group.id, true)}
-                          title="핵심 단계 선택/해제"
-                        >
-                          핵심 단계
-                        </button>
-                        <button
-                          type="button"
-                          className="collapse-btn"
-                          onClick={() =>
-                            setCollapsedGroups((prev) => ({
-                              ...prev,
-                              [group.id]: !prev[group.id],
-                            }))
-                          }
-                        >
-                          {isCollapsed ? '펼치기' : '접기'}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="area-stages">
-                      {groupNodes.map((node) => {
-                        const isChecked = draftSequenceConfig.selectedNodeIds.includes(
-                          node.nodeId
-                        );
-                        return (
-                          <label
-                            key={node.nodeId}
-                            className={`stage-row ${isChecked ? 'selected' : ''}`}
-                          >
+                const visibleCards = CSAT_SUBJECT_GROUPS.filter((group) =>
+                  enabledSubjectGroups.has(group.id)
+                )
+                  .map((group) => {
+                    const groupNodes = CSAT_SELECTABLE_CUE_NODES.filter((n) => {
+                      if (n.subjectGroupId !== group.id) return false;
+                      if (
+                        builderFilterMode === 'selected' &&
+                        !draftSequenceConfig.selectedNodeIds.includes(n.nodeId)
+                      ) {
+                        return false;
+                      }
+                      if (!q) return true;
+                      const hay =
+                        `${n.periodLabel} ${n.subjectTitle} ${n.stageShortLabel} ${n.fullTitle} ${n.bellCode || '영어 듣기'} ${n.originalTimeText}`.toLowerCase();
+                      return hay.includes(q);
+                    });
+                    if (groupNodes.length === 0) return null;
+                    const stats = draftAnalysis.groupStats[group.id];
+                    const isCollapsed = Boolean(collapsedGroups[group.id]) && !q;
+                    return (
+                      <section
+                        key={group.id}
+                        className={`area-card ${isCollapsed ? 'collapsed' : ''}`}
+                      >
+                        <div className="area-head">
+                          <label className="area-check">
                             <input
                               type="checkbox"
-                              checked={isChecked}
-                              onChange={() => handleToggleCueNode(node.nodeId)}
+                              checked={stats.state === 'all'}
+                              ref={(el) => {
+                                if (el) {
+                                  el.indeterminate = stats.state === 'partial';
+                                }
+                              }}
+                              onChange={() => handleToggleSubjectGroup(group.id, false)}
                             />
-                            <span className="stage-name">{node.stageShortLabel}</span>
-                            <span className="stage-meta">
-                              {node.bellCode
-                                ? `[${node.bellCode}] ${node.originalTimeText}`
-                                : `[영어 듣기] ${node.originalTimeText}`}
+                            <span>
+                              {group.title} ({stats.selectedCount}/{stats.totalCount})
                             </span>
                           </label>
-                        );
-                      })}
-                    </div>
-                  </section>
-                );
-              })}
-            </aside>
+                          <div className="area-head-actions">
+                            <button
+                              type="button"
+                              className={`area-tag ${stats.isCoreAllSelected ? 'is-core-all' : ''}`}
+                              onClick={() => handleToggleSubjectGroup(group.id, true)}
+                              title="핵심 단계 선택/해제"
+                            >
+                              핵심 단계
+                            </button>
+                            <button
+                              type="button"
+                              className="collapse-btn"
+                              onClick={() =>
+                                setCollapsedGroups((prev) => ({
+                                  ...prev,
+                                  [group.id]: !prev[group.id],
+                                }))
+                              }
+                            >
+                              {isCollapsed ? '펼치기' : '접기'}
+                            </button>
+                          </div>
+                        </div>
 
-            {/* 우측 세부 정보: 선택된 타종 순서, 시간 간격 및 연쇄 시각 설정 */}
-            <section className="right-pane" ref={builderRightPaneRef}>
-              <div className="pane-title">
-                <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
-                <span className="pane-note">
-                  간격 변경 시 이후 시각 자동 계산 · 시각 변경 시 직전 간격 반영
-                </span>
-              </div>
+                        <div className="area-stages">
+                          {groupNodes.map((node) => {
+                            const isChecked = draftSequenceConfig.selectedNodeIds.includes(
+                              node.nodeId
+                            );
+                            return (
+                              <label
+                                key={node.nodeId}
+                                className={`stage-row ${isChecked ? 'selected' : ''}`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => handleToggleCueNode(node.nodeId)}
+                                />
+                                <span className="stage-name">{node.stageShortLabel}</span>
+                                <span className="stage-meta">
+                                  {node.bellCode
+                                    ? `[${node.bellCode}] ${node.originalTimeText}`
+                                    : `[영어 듣기] ${node.originalTimeText}`}
+                                </span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    );
+                  })
+                  .filter(Boolean);
+
+                if (visibleCards.length === 0) {
+                  return (
+                    <div className="empty-state">
+                      검색 조건에 일치하는 타종 단계가 없습니다.
+                    </div>
+                  );
+                }
+                return <div className="area-cards-grid">{visibleCards}</div>;
+              })()}
+                  </>
+                )}
+              </section>
+            )}
+
+            {builderStep === 3 && (
+              /* 3단계: 2. 선택된 타종 진행 순서, 시간 간격 및 연쇄 시각 설정 */
+              <section className="right-pane step-single-pane" ref={builderRightPaneRef}>
+                <div className="pane-title">
+                  <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+                  <span className="pane-note">
+                    간격 변경 시 이후 시각 자동 계산 · 시각 변경 시 직전 간격 반영
+                  </span>
+                </div>
 
               {/* B4: 일괄 간격 도구 바 */}
               <div className="batch-interval-bar">
@@ -6689,9 +6915,18 @@ export default function App() {
                           type="button"
                           className="fix-btn"
                           onClick={() => {
+                            const fixedIds = d.fixNodeIds || [];
+                            setSubjAutoChecked((prev) => {
+                              const next = { ...prev };
+                              fixedIds.forEach((fid) => {
+                                const nodeMeta = CSAT_SELECTABLE_CUE_NODES.find((n) => n.nodeId === fid);
+                                if (nodeMeta) next[nodeMeta.subjectGroupId] = true;
+                              });
+                              return next;
+                            });
                             updateDraftConfig((prev) => {
                               const s = new Set(prev.selectedNodeIds);
-                              d.fixNodeIds?.forEach((id) => s.add(id));
+                              fixedIds.forEach((id) => s.add(id));
                               return { ...prev, selectedNodeIds: Array.from(s) };
                             });
                           }}
@@ -6743,7 +6978,16 @@ export default function App() {
 
               {draftRows.length === 0 ? (
                 <div className="empty-state">
-                  선택된 타종 단계가 없습니다. 왼쪽에서 진행할 영역과 단계를 선택하세요.
+                  <p style={{ margin: '0 0 12px' }}>
+                    선택된 타종 단계가 없습니다. 이전(2단계)에서 진행할 영역과 단계를 선택하세요.
+                  </p>
+                  <button
+                    type="button"
+                    className="chip"
+                    onClick={() => goToBuilderStep(2)}
+                  >
+                    2단계로 이동
+                  </button>
                 </div>
               ) : (
                 draftRows.map((row, idx) => {
@@ -7250,10 +7494,11 @@ export default function App() {
                   )}
                 </div>
               )}
-            </section>
-          </section>
+              </section>
+            )}
+          </div>
 
-          {/* 하단 요약 및 적용 버튼 */}
+          {/* 하단 요약 및 단계 이동 · 적용 버튼 */}
           <footer className="dialog-footer">
             <div className="summary">
               선택된 타종 <strong>{draftRows.length}개</strong> · 총 진행 대기 시간{' '}
@@ -7278,6 +7523,24 @@ export default function App() {
               >
                 취소
               </button>
+              {builderStep > 1 && (
+                <button
+                  type="button"
+                  className="footer-btn"
+                  onClick={() => goToBuilderStep((builderStep - 1) as 1 | 2 | 3)}
+                >
+                  이전
+                </button>
+              )}
+              {builderStep < 3 && (
+                <button
+                  type="button"
+                  className="footer-btn step-next-btn"
+                  onClick={() => goToBuilderStep((builderStep + 1) as 1 | 2 | 3)}
+                >
+                  다음
+                </button>
+              )}
               <button
                 type="button"
                 className="footer-btn primary"
