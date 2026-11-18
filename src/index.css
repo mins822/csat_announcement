@@ -994,6 +994,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog {
+  position: relative;
   width: min(1180px, 100%);
   height: min(900px, 96dvh);
   max-height: 96dvh;
@@ -6147,5 +6148,148 @@ html:not(.app-ready) #rightTimetablePanel {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.18));
 }
 
+/* ---------- Running Timer Save Confirmation Glass Dialog ---------- */
+.toll-dialog .running-save-confirm-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 120;
+  border-radius: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(18, 20, 24, 0.22);
+  -webkit-backdrop-filter: blur(12px) saturate(0.96);
+  backdrop-filter: blur(12px) saturate(0.96);
+  animation: runningConfirmFadeIn 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
+[data-theme="dark"] .toll-dialog .running-save-confirm-scrim {
+  background: rgba(6, 7, 9, 0.44);
+}
 
+@keyframes runningConfirmFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes runningConfirmPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.toll-dialog .running-save-confirm-card {
+  width: min(400px, 100%);
+  padding: 20px 22px 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background-color: rgba(244, 245, 247, 0.84);
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.24) 0%,
+    rgba(236, 238, 241, 0.06) 56%,
+    rgba(216, 218, 224, 0.12) 100%
+  );
+  -webkit-backdrop-filter: blur(26px) saturate(0.95);
+  backdrop-filter: blur(26px) saturate(0.95);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.72),
+    inset 0 0 14px 2px rgba(255, 255, 255, 0.16),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    0 18px 42px -10px rgba(0, 0, 0, 0.22);
+  color: var(--toll-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  animation: runningConfirmPopIn 0.22s cubic-bezier(0.34, 1.42, 0.64, 1);
+}
+
+[data-theme="sepia"] .toll-dialog .running-save-confirm-card {
+  border-color: rgba(255, 252, 246, 0.76);
+  background-color: rgba(242, 239, 233, 0.86);
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(236, 233, 226, 0.06) 56%,
+    rgba(218, 214, 206, 0.12) 100%
+  );
+}
+
+[data-theme="dark"] .toll-dialog .running-save-confirm-card {
+  border-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(36, 38, 42, 0.84);
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(36, 38, 42, 0.04) 56%,
+    rgba(16, 17, 20, 0.20) 100%
+  );
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.24),
+    inset 0 0 12px 2px rgba(255, 255, 255, 0.05),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.28),
+    0 20px 46px -10px rgba(0, 0, 0, 0.56);
+}
+
+.toll-dialog .running-save-confirm-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.toll-dialog .running-save-confirm-badge {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 840;
+  color: rgba(32, 33, 36, 0.94);
+  background: rgba(60, 62, 68, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54);
+}
+
+[data-theme="dark"] .toll-dialog .running-save-confirm-badge {
+  color: #f3f4f6;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.toll-dialog .running-save-confirm-head h2 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 780;
+  letter-spacing: -0.03em;
+  line-height: 1.35;
+  color: var(--toll-ink);
+}
+
+.toll-dialog .running-save-confirm-desc {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 560;
+  line-height: 1.56;
+  letter-spacing: -0.02em;
+  color: var(--toll-ink-2);
+  word-break: keep-all;
+}
+
+.toll-dialog .running-save-confirm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}

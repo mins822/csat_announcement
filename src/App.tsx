@@ -579,6 +579,7 @@ export default function App() {
   const [activeRowId, setActiveRowId] = useState<string>(CSAT_SESSION_PRESETS[0].steps[0].id);
 
   const [isBuilderModalOpen, setIsBuilderModalOpen] = useState<boolean>(false);
+  const [isRunningSaveConfirmOpen, setIsRunningSaveConfirmOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const [devMode, setDevMode] = useState<boolean>(() =>
@@ -3322,6 +3323,7 @@ export default function App() {
       setIntervalInputTexts({});
       setRowInputErrors({});
       setOpenCustomPopup(null);
+      setIsRunningSaveConfirmOpen(false);
       const jumpToStep3 = Boolean(scrollToNodeId && cloned.selectedNodeIds.includes(scrollToNodeId));
       setBuilderStep(jumpToStep3 ? 3 : 1);
       setIsBuilderModalOpen(true);
@@ -3347,6 +3349,7 @@ export default function App() {
   const closeBuilderModalWithoutSaving = useCallback(() => {
     stopPreviewBell();
     setOpenCustomPopup(null);
+    setIsRunningSaveConfirmOpen(false);
     setIsBuilderModalOpen(false);
     setDuplicateNamePrompt(null);
   }, [stopPreviewBell]);
@@ -4427,20 +4430,45 @@ export default function App() {
   };
 
   // C1: Apply draft to customSequenceConfig and currentPreset
-  const handleApplyCustomSequenceToTimer = () => {
-    if (Object.keys(rowInputErrors).length > 0) {
-      showToast('입력 오류가 있는 항목을 먼저 수정해 주세요.', 3000);
-      return;
-    }
-    if (engineRef.current.phase !== 'idle') {
-      showToast('타이머 실행 중에는 적용할 수 없습니다. CANCEL 후 적용해 주세요.', 3200);
-      return;
-    }
+  const commitCustomSequenceToTimer = () => {
     const built = buildCustomSequencePreset(draftSequenceConfig);
     if (!built) {
       showToast('최소 1개 이상의 타종 항목을 체크박스로 선택해 주세요.', 3000);
       return;
     }
+
+    const st = engineRef.current;
+    if (st.phase === 'rise' || st.phase === 'hold') {
+      if (st.rafId) cancelAnimationFrame(st.rafId);
+      if (runAuxHideTimerRef.current) {
+        window.clearTimeout(runAuxHideTimerRef.current);
+        runAuxHideTimerRef.current = null;
+      }
+      stopBell();
+      stopEnglishAudio();
+      exitFullscreenSilently();
+      if (!keepScreenAwakeRef.current) {
+        releaseWakeLock();
+      }
+      st.isPaused = false;
+      st.dH = st.H;
+      st.dT = st.kT;
+      st.dHnd = st.kH;
+      st.dX = st.kX;
+      st.phase = 'drop';
+      st.t0 = performance.now();
+
+      canJumpPrevBellRef.current = false;
+      canJumpNextBellRef.current = false;
+      setCanJumpPrevBell(false);
+      setCanJumpNextBell(false);
+      setIsRunningUi(false);
+      setIsRunAuxRevealed(false);
+      setPauseLabel('PAUSE');
+
+      st.rafId = requestAnimationFrame(stepAnimationFrame);
+    }
+
     const committedCfg = cloneSequenceConfig(draftSequenceConfig);
     setCustomSequenceConfig(committedCfg);
     customSequenceConfigRef.current = committedCfg;
@@ -4450,20 +4478,36 @@ export default function App() {
 
     setCustomPreset(built);
     setSelectedPresetId(built.id);
-    engineRef.current.preset = built;
-    engineRef.current.clockSyncMode = draftClockSyncMode;
+    st.preset = built;
+    st.clockSyncMode = draftClockSyncMode;
     syncUiToPresetIdle(built, draftClockSyncMode);
     saveCustomSettingsToStorage(
       themePref,
       built.id,
       devMode,
       draftClockSyncMode,
-      committedCfg,
-      bookmarksRef.current
+      committedCfg
     );
     stopPreviewBell();
+    setIsRunningSaveConfirmOpen(false);
     setIsBuilderModalOpen(false);
-    showToast(`${built.label} 구성이 타이머에 적용되었습니다.`, 3200);
+  };
+
+  const handleApplyCustomSequenceToTimer = () => {
+    if (Object.keys(rowInputErrors).length > 0) {
+      showToast('입력 오류가 있는 항목을 먼저 수정해 주세요.', 3000);
+      return;
+    }
+    const built = buildCustomSequencePreset(draftSequenceConfig);
+    if (!built) {
+      showToast('최소 1개 이상의 타종 항목을 체크박스로 선택해 주세요.', 3000);
+      return;
+    }
+    if (engineRef.current.phase !== 'idle') {
+      setIsRunningSaveConfirmOpen(true);
+      return;
+    }
+    commitCustomSequenceToTimer();
   };
 
   const handleEnglishFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -4699,6 +4743,10 @@ export default function App() {
     if (!isBuilderModalOpen && !isModalOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (isRunningSaveConfirmOpen) {
+          setIsRunningSaveConfirmOpen(false);
+          return;
+        }
         if (isBuilderModalOpen) closeBuilderModalWithoutSaving();
         if (isModalOpen) {
           stopPreviewBell();
@@ -4708,7 +4756,7 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [closeBuilderModalWithoutSaving, isBuilderModalOpen, isModalOpen, stopPreviewBell]);
+  }, [closeBuilderModalWithoutSaving, isBuilderModalOpen, isModalOpen, isRunningSaveConfirmOpen, stopPreviewBell]);
 
   const totalDraftSeconds = draftAnalysis.totalWaitSeconds;
   const totalDraftMinutes = Math.round(totalDraftSeconds / 60);
@@ -8467,6 +8515,53 @@ export default function App() {
               </div>
             </div>
           </footer>
+
+          {isRunningSaveConfirmOpen && (
+            <div
+              className="running-save-confirm-scrim"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setIsRunningSaveConfirmOpen(false);
+                }
+              }}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="runningSaveConfirmTitle"
+              aria-describedby="runningSaveConfirmDesc"
+            >
+              <div className="running-save-confirm-card">
+                <div className="running-save-confirm-head">
+                  <span className="running-save-confirm-badge" aria-hidden="true">
+                    !
+                  </span>
+                  <h2 id="runningSaveConfirmTitle">타이머가 실행 중입니다</h2>
+                </div>
+                <p id="runningSaveConfirmDesc" className="running-save-confirm-desc">
+                  선택 구성을 저장하면 현재 실행 중인 타이머가 자동 종료되고 편집한 구성으로 변경됩니다.
+                  계속하시겠습니까?
+                </p>
+                <div className="running-save-confirm-actions">
+                  <button
+                    type="button"
+                    className="footer-btn"
+                    onClick={() => setIsRunningSaveConfirmOpen(false)}
+                  >
+                    취소
+                  </button>
+                  <div className="lg-pill-cta-wrap is-save">
+                    <div className="lg-pill-cta-shadow" aria-hidden="true" />
+                    <button
+                      type="button"
+                      className="lg-pill-cta-btn"
+                      onClick={commitCustomSequenceToTimer}
+                    >
+                      <span className="lg-pill-cta-label">수락</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
 

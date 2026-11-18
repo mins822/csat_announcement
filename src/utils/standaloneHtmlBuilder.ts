@@ -856,6 +856,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   color:var(--toll-ink);
   text-shadow:none;
   box-shadow:var(--btn-shadow);
+  position:relative;
 }
 #builderModalBackdrop.open .toll-dialog{
   transform:translateZ(0);
@@ -2883,6 +2884,18 @@ html:not(.app-ready) #rightTimetablePanel{
 [data-theme="light"] .rt-options-bar{background:rgba(255,255,255,.04)}
 [data-theme="light"] .rt-item-btn{background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.09))}
 [data-theme="light"] .rt-item-btn:hover{background:linear-gradient(135deg,rgba(255,255,255,.47),rgba(255,255,255,.17))}
+.toll-dialog .running-save-confirm-scrim{position:absolute;inset:0;z-index:160;border-radius:inherit;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(18,19,22,.28);backdrop-filter:blur(14px) saturate(145%);-webkit-backdrop-filter:blur(14px) saturate(145%);animation:runningConfirmScrimIn .18s cubic-bezier(.22,1,.36,1)}
+[data-theme="dark"] .toll-dialog .running-save-confirm-scrim{background:rgba(6,7,9,.46)}
+@keyframes runningConfirmScrimIn{from{opacity:0}to{opacity:1}}
+@keyframes runningConfirmCardIn{from{opacity:0;transform:scale(.95) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.toll-dialog .running-save-confirm-card{width:min(390px,100%);padding:20px 22px 18px;border-radius:24px;border:1px solid var(--toll-glass-edge);background-color:rgba(246,247,249,.82);background-image:linear-gradient(180deg,rgba(255,255,255,.28) 0%,rgba(238,240,244,.08) 56%,rgba(220,223,229,.14) 100%);backdrop-filter:blur(28px) saturate(165%);-webkit-backdrop-filter:blur(28px) saturate(165%);box-shadow:0 24px 56px rgba(0,0,0,.20),0 6px 18px rgba(0,0,0,.08),inset 0 1px 0 var(--toll-highlight);color:var(--toll-ink);display:flex;flex-direction:column;gap:11px;animation:runningConfirmCardIn .22s cubic-bezier(.22,1,.36,1)}
+[data-theme="sepia"] .toll-dialog .running-save-confirm-card{background-color:rgba(244,235,220,.84);background-image:linear-gradient(180deg,rgba(255,250,240,.26) 0%,rgba(232,220,202,.08) 56%,rgba(214,200,180,.14) 100%)}
+[data-theme="dark"] .toll-dialog .running-save-confirm-card{background-color:rgba(32,33,37,.82);background-image:linear-gradient(180deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.03) 56%,rgba(0,0,0,.22) 100%);box-shadow:0 26px 62px rgba(0,0,0,.62),0 8px 22px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.14)}
+.toll-dialog .running-save-confirm-head{display:flex;align-items:center;gap:10px}
+.toll-dialog .running-save-confirm-badge{width:30px;height:30px;border-radius:999px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:var(--toll-ink);background:var(--toll-pill);box-shadow:0 2px 8px rgba(0,0,0,.08),inset 0 1px 0 var(--toll-highlight)}
+.toll-dialog .running-save-confirm-head h2{margin:0;font-size:14.5px;font-weight:780;letter-spacing:-.02em;color:var(--toll-ink)}
+.toll-dialog .running-save-confirm-desc{margin:0;font-size:12.5px;line-height:1.58;color:var(--toll-ink-2);word-break:keep-all}
+.toll-dialog .running-save-confirm-actions{margin-top:4px;display:flex;align-items:center;justify-content:flex-end;gap:8px}
 .custom-select-wrap{position:relative;display:inline-flex;align-items:center}
 .custom-time-trigger{height:32px;border-radius:999px;border:1px solid var(--toll-glass-edge);background:var(--toll-pill);color:var(--toll-ink);padding:0 11px;font-size:11.5px;font-weight:720;font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.06),inset 0 1px 0 var(--toll-highlight);transition:background .16s ease,border-color .16s ease,transform .14s ease}
 .custom-time-trigger:hover,.custom-time-trigger.is-open{background:var(--toll-pill-hover);border-color:var(--focus-ring)}
@@ -3345,6 +3358,27 @@ html:not(.app-ready) #rightTimetablePanel{
         </div>
       </div>
     </footer>
+
+    <div id="runningSaveConfirmScrim" class="running-save-confirm-scrim" role="alertdialog" aria-modal="true" aria-labelledby="runningSaveConfirmTitle" aria-describedby="runningSaveConfirmDesc" style="display:none">
+      <div class="running-save-confirm-card">
+        <div class="running-save-confirm-head">
+          <span class="running-save-confirm-badge" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12.5"/><circle cx="12" cy="16" r="0.8" fill="currentColor"/></svg>
+          </span>
+          <h2 id="runningSaveConfirmTitle">실행 중인 타이머 종료 및 구성 변경</h2>
+        </div>
+        <p id="runningSaveConfirmDesc" class="running-save-confirm-desc">현재 타이머가 실행 중입니다. 수락하면 실행 중인 타이머를 자동으로 종료하고 편집한 타종 구성을 즉시 적용합니다.</p>
+        <div class="running-save-confirm-actions">
+          <button id="runningSaveConfirmCancelBtn" type="button" class="footer-btn">취소</button>
+          <div class="lg-pill-cta-wrap is-save">
+            <div class="lg-pill-cta-shadow" aria-hidden="true"></div>
+            <button id="runningSaveConfirmAcceptBtn" type="button" class="lg-pill-cta-btn">
+              <span class="lg-pill-cta-label">수락</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -5737,8 +5771,17 @@ void main(){
     if(builderStepBody) builderStepBody.scrollTop = 0;
   }
 
+  const runningSaveConfirmScrim = document.getElementById('runningSaveConfirmScrim');
+  const runningSaveConfirmCancelBtn = document.getElementById('runningSaveConfirmCancelBtn');
+  const runningSaveConfirmAcceptBtn = document.getElementById('runningSaveConfirmAcceptBtn');
+
+  function closeRunningSaveConfirm(){
+    if(runningSaveConfirmScrim) runningSaveConfirmScrim.style.display = 'none';
+  }
+
   function openBuilderModalWithDraft(){
     stopPreviewBell();
+    closeRunningSaveConfirm();
     draftSequenceConfig = cloneCfg(customSequenceConfig);
     syncStep1SubjectsFromNodeIds(draftSequenceConfig.selectedNodeIds);
     undoStack = [];
@@ -5755,6 +5798,7 @@ void main(){
 
   function closeBuilderModalDiscardDraft(){
     stopPreviewBell();
+    closeRunningSaveConfirm();
     openTimePopupNodeId = null;
     popupTimeError = '';
     builderModalBackdrop.classList.remove('open');
@@ -7488,6 +7532,10 @@ void main(){
   });
   addEventListener('keydown',e=>{
     if(e.key==='Escape'){
+      if(runningSaveConfirmScrim && runningSaveConfirmScrim.style.display !== 'none'){
+        closeRunningSaveConfirm();
+        return;
+      }
       closeBuilderModalDiscardDraft();
       stopPreviewBell();
       modalBackdrop.classList.remove('open');
@@ -7503,15 +7551,14 @@ void main(){
     }
   });
 
-  builderApplyBtn.addEventListener('click',()=>{
-    if(phase!=='idle'){
-      showToast('타이머 실행 중에는 적용할 수 없습니다. CANCEL 후 적용해 주세요.', 3200);
-      return;
-    }
+  function commitDraftSequenceToTimer(){
     const built = buildCustomSequencePreset(draftSequenceConfig);
     if(!built){
       showToast('최소 1개 이상의 타종 항목을 체크박스로 선택해 주세요.', 3000);
       return;
+    }
+    if(phase==='rise'||phase==='hold'){
+      cancel();
     }
     stopPreviewBell();
     customSequenceConfig = cloneCfg(draftSequenceConfig);
@@ -7520,9 +7567,34 @@ void main(){
     isTemporaryStartPoint = false;
     syncUiToPresetIdle();
     saveCustomSettings();
+    closeRunningSaveConfirm();
     builderModalBackdrop.classList.remove('open');
-    showToast(built.label + ' 구성이 타이머에 적용되었습니다.', 3200);
+  }
+
+  builderApplyBtn.addEventListener('click',()=>{
+    const built = buildCustomSequencePreset(draftSequenceConfig);
+    if(!built){
+      showToast('최소 1개 이상의 타종 항목을 체크박스로 선택해 주세요.', 3000);
+      return;
+    }
+    if(phase!=='idle'){
+      if(runningSaveConfirmScrim) runningSaveConfirmScrim.style.display = 'flex';
+      return;
+    }
+    commitDraftSequenceToTimer();
   });
+
+  if(runningSaveConfirmCancelBtn){
+    runningSaveConfirmCancelBtn.addEventListener('click', closeRunningSaveConfirm);
+  }
+  if(runningSaveConfirmAcceptBtn){
+    runningSaveConfirmAcceptBtn.addEventListener('click', commitDraftSequenceToTimer);
+  }
+  if(runningSaveConfirmScrim){
+    runningSaveConfirmScrim.addEventListener('click', e=>{
+      if(e.target === runningSaveConfirmScrim) closeRunningSaveConfirm();
+    });
+  }
 
   /* ---------- Custom Settings Persistence (JSON & LocalStorage) (A3 Validation) ---------- */
   function saveCustomSettings(){
