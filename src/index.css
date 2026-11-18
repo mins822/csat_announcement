@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@property --angle-1 {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: -75deg;
+}
+
+@property --angle-2 {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: -45deg;
+}
+
 :root,
 [data-theme="light"] {
   --ease: cubic-bezier(0.2, 0.75, 0.25, 1);
@@ -11,7 +23,7 @@
   --tick-minor: #a9a9a9;
   --min-hand: #171717;
   --sec-hand: #4d4d4d; /* 검은색 70% + 흰색 30% 진한 회색 */
-  --glass-fill: rgba(255, 255, 255, 0.24);
+  --glass-fill: rgba(255, 255, 255, 0.16);
   --glass-rim: rgba(255, 255, 255, 0.68);
   --glint: rgba(255, 255, 255, 0.86);
   --btn-shadow:
@@ -25,15 +37,15 @@
   --btn-before:
     radial-gradient(
       ellipse 43% 72% at var(--px, 50%) var(--py, 12%),
-      rgba(255, 255, 255, 0.16),
+      rgba(255, 255, 255, 0.10),
       transparent 100%
     ),
     linear-gradient(
       150deg,
-      rgba(255, 255, 255, 0.11),
+      rgba(255, 255, 255, 0.06),
       transparent 43%,
-      rgba(255, 255, 255, 0.03) 76%,
-      rgba(255, 255, 255, 0.08)
+      rgba(255, 255, 255, 0.015) 76%,
+      rgba(255, 255, 255, 0.04)
     );
   --btn-after-opacity: 0.28;
   --btn-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.24);
@@ -51,9 +63,9 @@
   --toll-muted: #626266;
   --toll-line: rgba(24, 24, 25, 0.10);
   --toll-glass: var(--glass-fill);
-  --toll-glass-strong: rgba(255, 255, 255, 0.36);
-  --toll-glass-soft: rgba(255, 255, 255, 0.56);
-  --toll-glass-inner: rgba(255, 255, 255, 0.68);
+  --toll-glass-strong: rgba(255, 255, 255, 0.28);
+  --toll-glass-soft: rgba(255, 255, 255, 0.47);
+  --toll-glass-inner: rgba(255, 255, 255, 0.59);
   --toll-glass-edge: var(--glass-rim);
   --toll-glass-edge-low: rgba(24, 24, 25, 0.12);
   --toll-highlight: rgba(255, 255, 255, 0.90);
@@ -63,14 +75,14 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.90);
   --toll-selected: rgba(45, 45, 48, 0.12);
   --toll-selected-edge: rgba(35, 35, 36, 0.22);
-  --toll-pill: rgba(255, 255, 255, 0.64);
-  --toll-pill-hover: rgba(255, 255, 255, 0.86);
+  --toll-pill: rgba(255, 255, 255, 0.54);
+  --toll-pill-hover: rgba(255, 255, 255, 0.76);
   --toll-button: #242425;
   --toll-button-text: #ffffff;
   --toll-scroll: rgba(50, 50, 52, 0.32);
   --toll-warn: #926018;
   --toll-warn-bg: rgba(214, 158, 76, 0.16);
-  --tt-panel-bg: rgba(245, 245, 247, var(--tt-panel-alpha, 0.82));
+  --tt-panel-bg: rgba(245, 245, 247, var(--tt-panel-alpha, 0.74));
 
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
@@ -1570,7 +1582,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .schedule-item.is-popover-open {
-  z-index: 45;
+  z-index: 95;
 }
 
 .toll-dialog .alarm-card {
@@ -1811,8 +1823,9 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .footer-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: none;
+  perspective: 520px;
 }
 
 .toll-dialog .footer-btn {
@@ -1948,43 +1961,504 @@ html:-webkit-full-screen::backdrop {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.toll-dialog .footer-btn.step-next-btn {
-  color: var(--toll-ink);
-  border-color: rgba(45, 45, 48, 0.34);
-  background: linear-gradient(145deg, rgba(60, 60, 64, 0.16), rgba(255, 255, 255, 0.44));
+/* Redesigned Liquid Glass CTA Buttons ('다음' & '선택 구성 저장') */
+.toll-dialog .lg-pill-cta-wrap {
+  --cta-size: 12px;
+  --anim--hover-time: 400ms;
+  --anim--hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999vw;
+  background: transparent;
+  font-size: var(--cta-size);
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transition: all var(--anim--hover-time) var(--anim--hover-ease);
 }
 
-[data-theme="dark"] .toll-dialog .footer-btn.step-next-btn {
-  color: #f6f6f6;
-  border-color: rgba(255, 255, 255, 0.34);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.07));
+.toll-dialog .lg-pill-cta-shadow {
+  --shadow-cuttoff-fix: 1.5em;
+  position: absolute;
+  width: calc(100% + var(--shadow-cuttoff-fix));
+  height: calc(100% + var(--shadow-cuttoff-fix));
+  top: calc(0% - var(--shadow-cuttoff-fix) / 2);
+  left: calc(0% - var(--shadow-cuttoff-fix) / 2);
+  filter: blur(clamp(2px, 0.14em, 10px));
+  overflow: visible;
+  pointer-events: none;
 }
 
-.toll-dialog .footer-btn.primary {
-  color: #ffffff;
-  border: 1px solid rgba(36, 36, 38, 0.75);
-  background: linear-gradient(145deg, rgba(44, 44, 48, 0.96), rgba(28, 28, 30, 0.90));
+.toll-dialog .lg-pill-cta-shadow::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: 999vw;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.10));
+  width: calc(100% - var(--shadow-cuttoff-fix) - 0.14em);
+  height: calc(100% - var(--shadow-cuttoff-fix) - 0.14em);
+  top: calc(var(--shadow-cuttoff-fix) / 2 + 0.26em);
+  left: calc(var(--shadow-cuttoff-fix) / 2 + 0.06em);
+  padding: 0.125em;
+  box-sizing: border-box;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: all var(--anim--hover-time) var(--anim--hover-ease);
+  overflow: visible;
+  opacity: 0.92;
+}
+
+[data-theme="dark"] .toll-dialog .lg-pill-cta-shadow::after {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.28));
+}
+
+.toll-dialog .lg-pill-cta-btn {
+  --border-width: clamp(1px, 0.085em, 1.5px);
+  all: unset;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  pointer-events: auto;
+  z-index: 3;
+  border-radius: 999vw;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.56) 0%,
+      rgba(255, 255, 255, 0.18) 44%,
+      rgba(255, 255, 255, 0.02) 52%,
+      rgba(255, 255, 255, 0.24) 100%
+    ),
+    linear-gradient(
+      -75deg,
+      rgba(244, 245, 248, 0.34),
+      rgba(255, 255, 255, 0.62),
+      rgba(242, 244, 247, 0.36)
+    );
+  box-shadow:
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.54),
+    inset 0 0 12px 4px rgba(255, 255, 255, 0.26),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+    inset 0 -0.14em 0.14em rgba(255, 255, 255, 0.74),
+    0 0.25em 0.18em -0.125em rgba(0, 0, 0, 0.20),
+    0 0 0 0.08em inset rgba(255, 255, 255, 0.34);
+  -webkit-backdrop-filter: blur(12px) saturate(1.25);
+  backdrop-filter: blur(12px) saturate(1.25);
+  transition: all var(--anim--hover-time) var(--anim--hover-ease);
+}
+
+.toll-dialog .lg-pill-cta-btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.toll-dialog .lg-pill-cta-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  filter: grayscale(0.25);
+}
+
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover {
+  transform: scale(0.975);
+  -webkit-backdrop-filter: blur(5px) saturate(1.32);
+  backdrop-filter: blur(5px) saturate(1.32);
+  box-shadow:
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.68),
+    inset 0 0 12px 4px rgba(255, 255, 255, 0.34),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05),
+    inset 0 -0.14em 0.14em rgba(255, 255, 255, 0.80),
+    0 0.15em 0.08em -0.1em rgba(0, 0, 0, 0.24),
+    0 0 0 0.08em inset rgba(255, 255, 255, 0.62);
+}
+
+.toll-dialog .lg-pill-cta-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 38px;
+  padding-inline: 18px;
+  user-select: none;
+  letter-spacing: -0.025em;
+  font-weight: 780;
+  font-size: 11.5px;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(36, 36, 40, 0.94);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35);
+  transition: all var(--anim--hover-time) var(--anim--hover-ease);
+}
+
+.toll-dialog .lg-pill-cta-chevron {
+  flex: none;
+  transition: transform var(--anim--hover-time) var(--anim--hover-ease);
+}
+
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-chevron {
+  transform: translateX(2px);
+}
+
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-label {
+  text-shadow: 0.025em 0.04em 0.06em rgba(0, 0, 0, 0.12);
+}
+
+.toll-dialog .lg-pill-cta-label::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: calc(100% - var(--border-width));
+  height: calc(100% - var(--border-width));
+  top: calc(0% + var(--border-width) / 2);
+  left: calc(0% + var(--border-width) / 2);
+  box-sizing: border-box;
+  border-radius: 999vw;
+  overflow: clip;
+  background: linear-gradient(
+    var(--angle-2),
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.34) 33%,
+    rgba(255, 255, 255, 0.80) 43% 51%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  z-index: 3;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  background-repeat: no-repeat;
+  transition:
+    background-position calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease),
+    --angle-2 calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease);
+}
+
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-label::after {
+  background-position: 28% 50%;
+}
+
+.toll-dialog .lg-pill-cta-btn:not(:disabled):active .lg-pill-cta-label::after {
+  background-position: 54% 15%;
+  --angle-2: -15deg;
+}
+
+.toll-dialog .lg-pill-cta-btn::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: 999vw;
+  width: calc(100% + var(--border-width));
+  height: calc(100% + var(--border-width));
+  top: calc(0% - var(--border-width) / 2);
+  left: calc(0% - var(--border-width) / 2);
+  padding: var(--border-width);
+  box-sizing: border-box;
+  background:
+    conic-gradient(
+      from var(--angle-1) at 50% 50%,
+      rgba(0, 0, 0, 0.45),
+      rgba(0, 0, 0, 0) 5% 40%,
+      rgba(0, 0, 0, 0.45) 50%,
+      rgba(0, 0, 0, 0) 60% 95%,
+      rgba(0, 0, 0, 0.45)
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.56));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition:
+    all var(--anim--hover-time) var(--anim--hover-ease),
+    --angle-1 500ms ease;
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.76);
+  pointer-events: none;
+}
+
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover::after {
+  --angle-1: -125deg;
+}
+
+.toll-dialog .lg-pill-cta-btn:not(:disabled):active::after {
+  --angle-1: -75deg;
+}
+
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):hover) .lg-pill-cta-shadow {
+  filter: blur(clamp(1.5px, 0.06em, 5px));
+  transition: filter var(--anim--hover-time) var(--anim--hover-ease);
+}
+
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):hover) .lg-pill-cta-shadow::after {
+  top: calc(var(--shadow-cuttoff-fix) / 2 + 0.18em);
+  opacity: 1;
+}
+
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) {
+  transform: rotate3d(1, 0, 0, 22deg);
+}
+
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn {
+  box-shadow:
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.07),
+    inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.72),
+    0 0.125em 0.125em -0.125em rgba(0, 0, 0, 0.22),
+    0 0 0 0.1em inset rgba(255, 255, 255, 0.36),
+    0 0.2em 0.06em 0 rgba(0, 0, 0, 0.06),
+    0 0.22em 0 0 rgba(255, 255, 255, 0.82),
+    inset 0 0.2em 0.06em 0 rgba(0, 0, 0, 0.14);
+}
+
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow {
+  filter: blur(clamp(2px, 0.125em, 10px));
+}
+
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow::after {
+  top: calc(var(--shadow-cuttoff-fix) / 2 + 0.14em);
+  opacity: 0.72;
+}
+
+/* Primary Save CTA Variant ('선택 구성 저장' — Monochrome Gray-White Liquid Glass) */
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label {
   padding-inline: 22px;
+  font-weight: 820;
+  color: rgba(34, 35, 38, 0.95);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.55);
+}
+
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.14) 44%,
+      rgba(255, 255, 255, 0.02) 52%,
+      rgba(255, 255, 255, 0.18) 100%
+    ),
+    linear-gradient(
+      -75deg,
+      rgba(220, 222, 226, 0.76),
+      rgba(236, 238, 242, 0.86),
+      rgba(218, 220, 224, 0.76)
+    );
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 4px 13px rgba(0, 0, 0, 0.16);
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.78),
+    inset 0 0 12px 4px rgba(255, 255, 255, 0.36),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.06),
+    inset 0 -0.14em 0.14em rgba(255, 255, 255, 0.86),
+    0 0.26em 0.20em -0.12em rgba(0, 0, 0, 0.18),
+    0 0 0 0.08em inset rgba(255, 255, 255, 0.52);
 }
 
-.toll-dialog .footer-btn.primary:hover {
-  background: linear-gradient(145deg, rgba(58, 58, 62, 0.98), rgba(36, 36, 38, 0.94));
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after {
+  background:
+    conic-gradient(
+      from var(--angle-1) at 50% 50%,
+      rgba(0, 0, 0, 0.42),
+      rgba(0, 0, 0, 0) 5% 40%,
+      rgba(0, 0, 0, 0.42) 50%,
+      rgba(0, 0, 0, 0) 60% 95%,
+      rgba(0, 0, 0, 0.42)
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.90), rgba(235, 236, 240, 0.68));
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.86);
 }
 
-[data-theme="dark"] .toll-dialog .footer-btn.primary {
-  color: var(--toll-button-text);
-  border-color: rgba(255, 255, 255, 0.52);
-  background: linear-gradient(145deg, rgba(240, 240, 240, 0.96), rgba(205, 205, 205, 0.86));
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover {
+  -webkit-backdrop-filter: blur(7px) saturate(1.15);
+  backdrop-filter: blur(7px) saturate(1.15);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 4px 13px rgba(0, 0, 0, 0.28);
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.88),
+    inset 0 0 14px 5px rgba(255, 255, 255, 0.42),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.06),
+    inset 0 -0.14em 0.14em rgba(255, 255, 255, 0.90),
+    0 0.16em 0.10em -0.1em rgba(0, 0, 0, 0.22),
+    0 0 0 0.08em inset rgba(255, 255, 255, 0.68);
 }
 
-[data-theme="dark"] .toll-dialog .footer-btn.primary:hover {
-  background: linear-gradient(145deg, rgba(250, 250, 250, 0.98), rgba(218, 218, 218, 0.90));
+.toll-dialog .lg-pill-cta-wrap.is-save:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn {
+  box-shadow:
+    inset 0 0.14em 0.125em rgba(0, 0, 0, 0.10),
+    inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.82),
+    0 0.125em 0.125em -0.125em rgba(0, 0, 0, 0.20),
+    0 0 0 0.1em inset rgba(255, 255, 255, 0.46),
+    0 0.2em 0.06em 0 rgba(0, 0, 0, 0.06),
+    0 0.22em 0 0 rgba(255, 255, 255, 0.88),
+    inset 0 0.18em 0.06em 0 rgba(0, 0, 0, 0.14);
+}
+
+/* Sepia Theme Tuning */
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.56) 0%,
+      rgba(255, 255, 255, 0.18) 44%,
+      rgba(255, 255, 255, 0.02) 52%,
+      rgba(255, 255, 255, 0.24) 100%
+    ),
+    linear-gradient(
+      -75deg,
+      rgba(255, 248, 236, 0.40),
+      rgba(255, 251, 245, 0.68),
+      rgba(255, 248, 236, 0.42)
+    );
+}
+
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label {
+  color: #2c2117;
+}
+
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.14) 44%,
+      rgba(255, 255, 255, 0.02) 52%,
+      rgba(255, 255, 255, 0.18) 100%
+    ),
+    linear-gradient(
+      -75deg,
+      rgba(224, 223, 221, 0.78),
+      rgba(238, 237, 235, 0.88),
+      rgba(222, 221, 219, 0.78)
+    );
+}
+
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label {
+  color: rgba(36, 35, 34, 0.95);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.55);
+}
+
+/* Dark Theme Tuning */
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.30) 0%,
+      rgba(255, 255, 255, 0.08) 44%,
+      rgba(255, 255, 255, 0) 52%,
+      rgba(255, 255, 255, 0.14) 100%
+    ),
+    linear-gradient(
+      -75deg,
+      rgba(46, 48, 54, 0.46),
+      rgba(84, 88, 96, 0.42),
+      rgba(42, 44, 50, 0.46)
+    );
+  box-shadow:
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.32),
+    inset 0 0 12px 4px rgba(255, 255, 255, 0.14),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.34),
+    inset 0 -0.14em 0.14em rgba(255, 255, 255, 0.36),
+    0 0.28em 0.22em -0.12em rgba(0, 0, 0, 0.48),
+    0 0 0 0.08em inset rgba(255, 255, 255, 0.24);
+}
+
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn:not(:disabled):hover {
+  box-shadow:
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.42),
+    inset 0 0 12px 4px rgba(255, 255, 255, 0.18),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.34),
+    inset 0 -0.14em 0.14em rgba(255, 255, 255, 0.42),
+    0 0.16em 0.10em -0.1em rgba(0, 0, 0, 0.50),
+    0 0 0 0.08em inset rgba(255, 255, 255, 0.32);
+}
+
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label {
+  color: #f4f4f6;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.36);
+}
+
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn::after {
+  background:
+    conic-gradient(
+      from var(--angle-1) at 50% 50%,
+      rgba(255, 255, 255, 0.76),
+      rgba(255, 255, 255, 0.10) 8% 38%,
+      rgba(255, 255, 255, 0.76) 50%,
+      rgba(255, 255, 255, 0.10) 62% 94%,
+      rgba(255, 255, 255, 0.76)
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.14));
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.40);
+}
+
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.46) 0%,
+      rgba(255, 255, 255, 0.14) 44%,
+      rgba(255, 255, 255, 0.02) 52%,
+      rgba(255, 255, 255, 0.18) 100%
+    ),
+    linear-gradient(
+      -75deg,
+      rgba(206, 208, 212, 0.78),
+      rgba(228, 230, 234, 0.88),
+      rgba(202, 204, 208, 0.78)
+    );
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
+  box-shadow:
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.82),
+    inset 0 0 12px 4px rgba(255, 255, 255, 0.40),
+    inset 0 0.125em 0.125em rgba(0, 0, 0, 0.10),
+    inset 0 -0.14em 0.14em rgba(255, 255, 255, 0.88),
+    0 0.30em 0.26em -0.12em rgba(0, 0, 0, 0.52),
+    0 0 0 0.08em inset rgba(255, 255, 255, 0.52);
+}
+
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label {
+  color: #1a1a1d;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.42);
+}
+
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after {
+  background:
+    conic-gradient(
+      from var(--angle-1) at 50% 50%,
+      rgba(0, 0, 0, 0.36),
+      rgba(0, 0, 0, 0.04) 8% 38%,
+      rgba(0, 0, 0, 0.36) 50%,
+      rgba(0, 0, 0, 0.04) 62% 94%,
+      rgba(0, 0, 0, 0.36)
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(235, 236, 240, 0.66));
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.84);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .toll-dialog .lg-pill-cta-label::after,
+  .toll-dialog .lg-pill-cta-btn:active .lg-pill-cta-label::after {
+    --angle-2: -45deg;
+  }
+  .toll-dialog .lg-pill-cta-btn::after,
+  .toll-dialog .lg-pill-cta-btn:hover::after,
+  .toll-dialog .lg-pill-cta-btn:active::after {
+    --angle-1: -75deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toll-dialog .lg-pill-cta-wrap,
+  .toll-dialog .lg-pill-cta-shadow::after,
+  .toll-dialog .lg-pill-cta-btn,
+  .toll-dialog .lg-pill-cta-btn::after,
+  .toll-dialog .lg-pill-cta-label,
+  .toll-dialog .lg-pill-cta-label::after,
+  .toll-dialog .lg-pill-cta-chevron {
+    transition: none;
+  }
 }
 
 @media (max-width: 960px) {
@@ -2133,6 +2607,14 @@ html:-webkit-full-screen::backdrop {
     height: 34px;
     padding: 0 13px;
     font-size: 10px;
+  }
+  .toll-dialog .lg-pill-cta-label {
+    height: 34px;
+    padding-inline: 14px;
+    font-size: 10.5px;
+  }
+  .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label {
+    padding-inline: 16px;
   }
 }
 
@@ -4115,13 +4597,13 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 .custom-time-trigger {
-  height: 30px;
+  height: 32px;
   border-radius: 999px;
   border: 1px solid var(--toll-glass-edge);
   background: var(--toll-pill);
   color: var(--toll-ink);
   padding: 0 11px;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 720;
   font-variant-numeric: tabular-nums;
   display: inline-flex;
@@ -4132,6 +4614,7 @@ html:not(.app-ready) #rightTimetablePanel {
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 var(--toll-highlight);
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.14s ease;
 }
 
 .custom-time-trigger:hover,
@@ -4140,31 +4623,37 @@ html:not(.app-ready) #rightTimetablePanel {
   border-color: var(--focus-ring);
 }
 
-.toll-dialog .custom-select-popover,
-.toll-dialog .custom-time-popover {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+.custom-time-trigger.is-open .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.custom-time-trigger.input-invalid {
+  border-color: #d94848;
 }
 
 .custom-time-popover {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 8px);
   right: 0;
-  width: 248px;
-  z-index: 95;
-  padding: 10px 11px;
+  width: 282px;
+  max-width: calc(100vw - 44px);
+  z-index: 120;
+  padding: 12px;
   border-radius: 18px;
-  border: 1px solid var(--toll-glass-edge);
-  background: var(--modal-bg);
+  border: 1px solid rgba(28, 28, 30, 0.14);
+  background: #ffffff;
+  color: var(--toll-ink);
   box-shadow:
-    0 20px 48px rgba(0, 0, 0, 0.28),
-    0 5px 16px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 var(--toll-highlight);
-  -webkit-backdrop-filter: blur(40px) saturate(170%);
-  backdrop-filter: blur(40px) saturate(170%);
+    0 22px 48px rgba(0, 0, 0, 0.22),
+    0 6px 16px rgba(0, 0, 0, 0.09);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+}
+
+.custom-time-popover.open-up {
+  top: auto;
+  bottom: calc(100% + 8px);
 }
 
 .custom-time-popover.align-left {
@@ -4172,85 +4661,353 @@ html:not(.app-ready) #rightTimetablePanel {
   left: 0;
 }
 
-.ctp-head {
+[data-theme="dark"] .custom-time-popover {
+  background: #1f1f22;
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.68),
+    0 6px 18px rgba(0, 0, 0, 0.40);
+}
+
+[data-theme="sepia"] .custom-time-popover {
+  background: #f7efe0;
+  border-color: rgba(54, 41, 30, 0.22);
+  box-shadow:
+    0 22px 48px rgba(42, 31, 21, 0.26),
+    0 6px 16px rgba(42, 31, 21, 0.10);
+}
+
+.custom-time-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10.5px;
-  font-weight: 750;
+  gap: 8px;
+}
+
+.custom-time-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--toll-ink);
 }
 
-.ctp-ampm-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-}
-
-.ctp-chip {
-  height: 27px;
-  border-radius: 999px;
-  border: 1px solid var(--toll-line);
-  background: var(--toll-pill);
-  color: var(--toll-ink-2);
-  font-size: 10.5px;
-  font-weight: 700;
-  cursor: pointer;
+.custom-time-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--toll-selected);
+  color: var(--toll-ink);
+  font-size: 10.5px;
+  font-weight: 760;
   font-variant-numeric: tabular-nums;
 }
 
-.ctp-chip:hover {
-  background: var(--toll-pill-hover);
+.custom-time-close {
+  appearance: none;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--toll-line);
+  background: var(--toll-glass-inner);
+  color: var(--toll-ink-2);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.14s ease, color 0.14s ease;
 }
 
-.ctp-chip.active {
+.custom-time-close:hover {
+  background: var(--toll-selected);
+  color: var(--toll-ink);
+}
+
+.custom-time-ampm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 12px;
+  background: rgba(120, 120, 128, 0.10);
+  border: 1px solid var(--toll-line);
+}
+
+[data-theme="dark"] .custom-time-ampm-row {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.custom-time-ampm-btn {
+  appearance: none;
+  height: 29px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--toll-muted);
+  font-size: 11.5px;
+  font-weight: 720;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.custom-time-ampm-btn:hover {
+  color: var(--toll-ink);
+}
+
+.custom-time-ampm-btn.is-active {
   background: var(--toll-button);
   color: var(--toll-button-text);
-  border-color: transparent;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
 }
 
-.ctp-grid-label {
+.custom-time-digit-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 14px;
+  background: rgba(120, 120, 128, 0.075);
+  border: 1px solid var(--toll-line);
+}
+
+[data-theme="dark"] .custom-time-digit-grid {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-time-digit-box {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.custom-time-digit-label {
   font-size: 9.5px;
   font-weight: 700;
   color: var(--toll-muted);
+  letter-spacing: 0.02em;
 }
 
-.ctp-hour-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 4px;
-}
-
-.ctp-min-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 4px;
-}
-
-.ctp-fine-row {
+.custom-time-stepper {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  padding-top: 4px;
-  border-top: 1px dashed var(--toll-line);
+  gap: 3px;
 }
 
-.ctp-direct-input {
-  width: 68px;
-  height: 26px;
+.custom-time-step-btn {
+  appearance: none;
+  width: 26px;
+  height: 32px;
+  flex: none;
   border-radius: 8px;
   border: 1px solid var(--toll-line);
-  background: var(--toll-glass-inner);
+  background: var(--toll-pill);
+  color: var(--toll-ink);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.custom-time-step-btn:hover {
+  background: var(--toll-selected);
+}
+
+.custom-time-step-btn:active {
+  transform: scale(0.94);
+}
+
+.custom-time-digit-input {
+  width: 100%;
+  min-width: 36px;
+  height: 32px;
+  padding: 0 4px;
+  border-radius: 9px;
+  border: 1px solid var(--toll-line);
+  background: #ffffff;
+  color: var(--toll-ink);
+  font-size: 16px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.custom-time-digit-input:focus {
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 2px rgba(124, 156, 197, 0.24);
+}
+
+[data-theme="dark"] .custom-time-digit-input {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+[data-theme="sepia"] .custom-time-digit-input {
+  background: rgba(255, 250, 240, 0.92);
+}
+
+.custom-time-colon {
+  flex: none;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--toll-muted);
+  padding-top: 13px;
+  line-height: 1;
+}
+
+.custom-time-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.custom-time-nudge-btn {
+  appearance: none;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: 9px;
+  border: 1px solid var(--toll-line);
+  background: rgba(120, 120, 128, 0.08);
   color: var(--toll-ink);
   font-size: 11px;
-  font-weight: 750;
-  text-align: center;
+  font-weight: 720;
   font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.14s ease, border-color 0.14s ease, transform 0.12s ease;
+}
+
+[data-theme="dark"] .custom-time-nudge-btn {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-time-nudge-btn:hover {
+  background: var(--toll-selected);
+  border-color: var(--toll-selected-edge);
+}
+
+.custom-time-nudge-btn:active {
+  transform: scale(0.96);
+}
+
+.custom-time-direct-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.custom-time-direct-input {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--toll-line);
+  background: rgba(120, 120, 128, 0.075);
+  color: var(--toll-ink);
+  font-size: 13px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
   outline: none;
+}
+
+[data-theme="dark"] .custom-time-direct-input {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-time-direct-input:focus {
+  border-color: var(--focus-ring);
+}
+
+.custom-time-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.custom-time-reset-btn {
+  appearance: none;
+  flex: 1;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--toll-line);
+  background: transparent;
+  color: var(--toll-ink-2);
+  font-size: 11.5px;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.custom-time-reset-btn:hover {
+  background: var(--toll-selected);
+  border-color: var(--toll-selected-edge);
+}
+
+.custom-time-apply-btn {
+  appearance: none;
+  flex: 1;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--toll-button);
+  color: var(--toll-button-text);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  transition: opacity 0.14s ease, transform 0.12s ease;
+}
+
+.custom-time-apply-btn:hover {
+  opacity: 0.92;
+}
+
+.custom-time-apply-btn:active {
+  transform: scale(0.97);
+}
+
+.custom-time-direct-row .custom-time-apply-btn {
+  flex: none;
+  padding: 0 14px;
+}
+
+.custom-time-error {
+  font-size: 10.5px;
+  font-weight: 680;
+  line-height: 1.35;
+  color: #cf3434;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: rgba(217, 56, 56, 0.10);
+}
+
+[data-theme="dark"] .custom-time-error {
+  color: #ff8b8b;
+  background: rgba(255, 92, 92, 0.16);
 }
 
 /* ---------- SEO Semantic Crawler Region & Info Modal Intro Banner ---------- */
@@ -4292,5 +5049,181 @@ html:not(.app-ready) #rightTimetablePanel {
   color: var(--modal-muted);
   word-break: keep-all;
 }
+
+/* ---------- Light Mode Glass Translucency +5%~10% (Blur Unchanged) ---------- */
+[data-theme="light"] .theme-chip.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .bookmark-add-toggle {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .bookmark-add-toggle:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+[data-theme="light"] .bookmark-name-input,
+[data-theme="light"] .sched-time-input {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+[data-theme="light"] .bookmark-save-btn {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+[data-theme="light"] .bookmark-pill-item,
+[data-theme="light"] .bookmark-pill-item-col {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+[data-theme="light"] .bookmark-pill-item:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="light"] .bm-mini-act {
+  background: rgba(255, 255, 255, 0.19);
+}
+
+[data-theme="light"] .bm-mini-act:hover {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+[data-theme="light"] .toll-dialog .dialog-header {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme="light"] .toll-dialog .builder-stepper {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+[data-theme="light"] .toll-dialog .builder-step-tab {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.10));
+}
+
+[data-theme="light"] .toll-dialog .builder-step-tab:hover {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.50), rgba(255, 255, 255, 0.20));
+}
+
+[data-theme="light"] .toll-dialog .builder-step-tab.is-active {
+  background: linear-gradient(145deg, rgba(60, 60, 64, 0.15), rgba(255, 255, 255, 0.34));
+}
+
+[data-theme="light"] .toll-dialog .builder-step-body,
+[data-theme="light"] .toll-dialog .workspace {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .toll-dialog .quickbar {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .toll-dialog .quickbar.quickbar-step {
+  background: transparent;
+}
+
+[data-theme="light"] .toll-dialog .quickbar.quickbar-step .quick-line {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.09));
+}
+
+[data-theme="light"] .toll-dialog .step1-subject-preview-bar {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="light"] .toll-dialog .area-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.09));
+}
+
+[data-theme="light"] .toll-dialog .stage-row {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+[data-theme="light"] .toll-dialog .stage-row:hover {
+  background: rgba(255, 255, 255, 0.30);
+}
+
+[data-theme="light"] .toll-dialog .stage-row.selected {
+  background: linear-gradient(125deg, rgba(75, 75, 78, 0.11), rgba(255, 255, 255, 0.17));
+}
+
+[data-theme="light"] .toll-dialog .alarm-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.12));
+}
+
+[data-theme="light"] .toll-dialog .number {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.47), rgba(90, 90, 92, 0.08));
+}
+
+[data-theme="light"] .toll-dialog .interval-row {
+  background: linear-gradient(110deg, rgba(80, 80, 82, 0.055), rgba(255, 255, 255, 0.10));
+}
+
+[data-theme="light"] .toll-dialog .dialog-footer {
+  background: rgba(246, 246, 248, 0.80);
+}
+
+[data-theme="light"] .toll-dialog .chip,
+[data-theme="light"] .toll-dialog .area-tag,
+[data-theme="light"] .toll-dialog .collapse-btn,
+[data-theme="light"] .toll-dialog .preview-btn,
+[data-theme="light"] .toll-dialog .nudge,
+[data-theme="light"] .toll-dialog .footer-btn,
+[data-theme="light"] .toll-dialog .icon-button,
+[data-theme="light"] .toll-dialog .time-input,
+[data-theme="light"] .toll-dialog .interval-input,
+[data-theme="light"] .toll-dialog .builder-select-sm,
+[data-theme="light"] .toll-dialog .bookmark-modal-input,
+[data-theme="light"] .toll-dialog .builder-search-input,
+[data-theme="light"] .toll-dialog .stage-type-chip,
+[data-theme="light"] .toll-dialog .batch-num-input,
+[data-theme="light"] .toll-dialog .fix-btn,
+[data-theme="light"] .toll-dialog .mute-toggle-btn,
+[data-theme="light"] .toll-dialog .bookmark-modal-chip {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.16));
+}
+
+[data-theme="light"] .toll-dialog .chip:hover,
+[data-theme="light"] .toll-dialog .area-tag:hover,
+[data-theme="light"] .toll-dialog .collapse-btn:hover,
+[data-theme="light"] .toll-dialog .preview-btn:hover,
+[data-theme="light"] .toll-dialog .nudge:hover,
+[data-theme="light"] .toll-dialog .footer-btn:hover,
+[data-theme="light"] .toll-dialog .icon-button:hover:not(:disabled),
+[data-theme="light"] .toll-dialog .stage-type-chip:hover,
+[data-theme="light"] .toll-dialog .fix-btn:hover,
+[data-theme="light"] .toll-dialog .mute-toggle-btn:hover {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.28));
+}
+
+[data-theme="light"] .toll-dialog .chip.active,
+[data-theme="light"] .toll-dialog .stage-type-chip.active,
+[data-theme="light"] .toll-dialog .area-tag.is-core-all {
+  background: linear-gradient(145deg, rgba(60, 60, 64, 0.16), rgba(60, 60, 64, 0.06));
+}
+
+[data-theme="light"] .toll-dialog .omitted-steps-box {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="light"] .toll-dialog .omitted-pill {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+[data-theme="light"] .rt-head {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme="light"] .rt-options-bar {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="light"] .rt-item-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.19), rgba(255, 255, 255, 0.05));
+}
+
+[data-theme="light"] .rt-item-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.18));
+}
+
 
 

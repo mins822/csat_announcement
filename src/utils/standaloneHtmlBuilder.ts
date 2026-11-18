@@ -21,7 +21,7 @@ import { KEEP_AWAKE_MP4_DATA_URI } from './keepAwakeVideo';
 /**
  * 외부 리소스 의존성이 전혀 없는 단일 독립 실행형 HTML 파일 문자열을 생성합니다.
  * - HTML 내보내기 시 사용자가 선택한 영어 듣기평가 음원 파일 및 개인 커스텀 설정값은 포함되지 않으며,
- *   초기 기본 상태(기본 타이머: 1교시 국어 준비령 08:35~08:40, 시계 바늘 연동: 원래 수능 시각 기준)로 생성됩니다.
+ *   초기 기본 상태(기본 타이머: 1교시 국어 준비령 08:35~08:40)로 생성됩니다.
  * - /public/audio/bells/ 에 업로드된 37개 타종 MP3 파일이 Base64 Data URI로 단일 HTML 내부에 직접 내장됩니다.
  */
 export function buildStandaloneCsatHtml(
@@ -98,6 +98,8 @@ export function buildStandaloneCsatHtml(
 })();
 </script>
 <style>
+@property --angle-1{syntax:"<angle>";inherits:false;initial-value:-75deg}
+@property --angle-2{syntax:"<angle>";inherits:false;initial-value:-45deg}
 :root,[data-theme="light"]{
   --ease:cubic-bezier(.2,.75,.25,1);
   --spring:cubic-bezier(.2,1.1,.3,1);
@@ -108,12 +110,12 @@ export function buildStandaloneCsatHtml(
   --tick-minor:#a9a9a9;
   --min-hand:#171717;
   --sec-hand:#4d4d4d;
-  --glass-fill:rgba(246,246,248,.24);
+  --glass-fill:rgba(246,246,248,.16);
   --glass-rim:rgba(255,255,255,.66);
   --glint:rgba(255,255,255,.84);
   --btn-shadow:0 9px 24px rgba(35,43,58,.09),inset 0 1px 0 rgba(255,255,255,.68),inset 0 -1px 0 rgba(40,48,62,.08);
   --btn-shadow-hover:0 13px 30px rgba(31,39,54,.12),inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(40,48,62,.07);
-  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,255,255,.115),transparent 100%),linear-gradient(150deg,rgba(255,255,255,.075),transparent 43%,rgba(255,255,255,.018) 76%,rgba(255,255,255,.055));
+  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,255,255,.07),transparent 100%),linear-gradient(150deg,rgba(255,255,255,.045),transparent 43%,rgba(255,255,255,.01) 76%,rgba(255,255,255,.03));
   --btn-after-opacity:.28;
   --btn-text-shadow:0 1px 2px rgba(255,255,255,.24);
   --focus-ring:#7c9cc5;
@@ -129,17 +131,17 @@ export function buildStandaloneCsatHtml(
   --toll-line:rgba(24,24,25,.10);
   --toll-line-soft:rgba(24,24,25,.07);
   --toll-glass:var(--glass-fill);
-  --toll-glass-strong:rgba(255,255,255,.78);
-  --toll-glass-soft:rgba(255,255,255,.46);
-  --toll-glass-inner:rgba(255,255,255,.56);
+  --toll-glass-strong:rgba(255,255,255,.70);
+  --toll-glass-soft:rgba(255,255,255,.38);
+  --toll-glass-inner:rgba(255,255,255,.47);
   --toll-glass-edge:var(--glass-rim);
   --toll-glass-edge-low:rgba(255,255,255,.62);
   --toll-highlight:rgba(255,255,255,.90);
   --toll-glass-shadow:0 28px 80px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.86);
   --toll-selected:rgba(60,60,62,.105);
   --toll-selected-edge:rgba(35,35,36,.15);
-  --toll-pill:rgba(255,255,255,.42);
-  --toll-pill-hover:rgba(255,255,255,.68);
+  --toll-pill:rgba(255,255,255,.34);
+  --toll-pill-hover:rgba(255,255,255,.58);
   --toll-button:#242425;
   --toll-button-text:#1c1c1d;
   --toll-scroll:rgba(50,50,52,.28);
@@ -1638,7 +1640,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
 .toll-dialog .fix-btn:hover{
   background:rgba(255,255,255,.08);
 }
-.toll-dialog .schedule-item{margin:0 0 10px}
+.toll-dialog .schedule-item{position:relative;margin:0 0 10px}
+.toll-dialog .schedule-item.is-popover-open{z-index:95}
 .toll-dialog .alarm-card{
   min-height:64px;
   display:grid;
@@ -1651,7 +1654,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   background:linear-gradient(135deg,rgba(255,255,255,.42),rgba(255,255,255,.16));
   box-shadow:inset 0 1px 0 rgba(255,255,255,.86),inset 0 -1px 0 rgba(255,255,255,.12),0 5px 16px rgba(0,0,0,.035);
   position:relative;
-  overflow:hidden;
+  overflow:visible;
 }
 [data-theme="dark"] .toll-dialog .alarm-card{
   border-color:var(--toll-glass-edge-low);
@@ -1939,8 +1942,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
 .toll-dialog .footer-actions{
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:10px;
   flex:none;
+  perspective:520px;
 }
 .toll-dialog .footer-btn{
   height:38px;
@@ -2055,37 +2059,48 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   border-color:rgba(255,255,255,.42);
   box-shadow:0 0 0 3px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.14);
 }
-.toll-dialog .footer-btn.step-next-btn{
-  color:var(--toll-ink);
-  border-color:rgba(45,45,48,.34);
-  background:linear-gradient(145deg,rgba(60,60,64,.16),rgba(255,255,255,.44));
-}
-[data-theme="dark"] .toll-dialog .footer-btn.step-next-btn{
-  color:#f6f6f6;
-  border-color:rgba(255,255,255,.34);
-  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));
-}
-.toll-dialog .footer-btn.primary{
-  color:var(--toll-ink);
-  border:1px solid rgba(255,255,255,.85);
-  background:linear-gradient(145deg,rgba(255,255,255,.54),rgba(220,222,228,.24));
-  padding-inline:22px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.92),inset 0 -1px 0 rgba(255,255,255,.24),0 4px 14px rgba(0,0,0,.065);
-}
-.toll-dialog .footer-btn.primary:hover{
-  background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(230,232,238,.34));
-  border-color:rgba(255,255,255,.96);
-}
-[data-theme="dark"] .toll-dialog .footer-btn.primary{
-  color:var(--toll-button-text);
-  border-color:rgba(255,255,255,.62);
-  background:linear-gradient(145deg,rgba(240,240,240,.96),rgba(205,205,205,.86));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 6px 18px rgba(0,0,0,.35);
-}
-[data-theme="dark"] .toll-dialog .footer-btn.primary:hover{
-  background:linear-gradient(145deg,rgba(250,250,250,.98),rgba(218,218,218,.90));
-  border-color:rgba(255,255,255,.80);
-}
+.toll-dialog .lg-pill-cta-wrap{--cta-size:12px;--anim--hover-time:400ms;--anim--hover-ease:cubic-bezier(.25,1,.5,1);position:relative;z-index:2;display:inline-flex;align-items:center;border-radius:999vw;background:transparent;font-size:var(--cta-size);pointer-events:none;transform-style:preserve-3d;transition:all var(--anim--hover-time) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-shadow{--shadow-cuttoff-fix:1.5em;position:absolute;width:calc(100% + var(--shadow-cuttoff-fix));height:calc(100% + var(--shadow-cuttoff-fix));top:calc(0% - var(--shadow-cuttoff-fix) / 2);left:calc(0% - var(--shadow-cuttoff-fix) / 2);filter:blur(clamp(2px,.14em,10px));overflow:visible;pointer-events:none}
+.toll-dialog .lg-pill-cta-shadow::after{content:"";position:absolute;z-index:0;inset:0;border-radius:999vw;background:linear-gradient(180deg,rgba(0,0,0,.24),rgba(0,0,0,.10));width:calc(100% - var(--shadow-cuttoff-fix) - .14em);height:calc(100% - var(--shadow-cuttoff-fix) - .14em);top:calc(var(--shadow-cuttoff-fix) / 2 + .26em);left:calc(var(--shadow-cuttoff-fix) / 2 + .06em);padding:.125em;box-sizing:border-box;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;transition:all var(--anim--hover-time) var(--anim--hover-ease);overflow:visible;opacity:.92}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-shadow::after{background:linear-gradient(180deg,rgba(0,0,0,.52),rgba(0,0,0,.28))}
+.toll-dialog .lg-pill-cta-btn{--border-width:clamp(1px,.085em,1.5px);all:unset;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:rgba(0,0,0,0);pointer-events:auto;z-index:3;border-radius:999vw;background:linear-gradient(180deg,rgba(255,255,255,.56) 0%,rgba(255,255,255,.18) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.24) 100%),linear-gradient(-75deg,rgba(244,245,248,.34),rgba(255,255,255,.62),rgba(242,244,247,.36));box-shadow:inset 0 0 2px 1px rgba(255,255,255,.54),inset 0 0 12px 4px rgba(255,255,255,.26),inset 0 .125em .125em rgba(0,0,0,.05),inset 0 -.14em .14em rgba(255,255,255,.74),0 .25em .18em -.125em rgba(0,0,0,.20),0 0 0 .08em inset rgba(255,255,255,.34);-webkit-backdrop-filter:blur(12px) saturate(1.25);backdrop-filter:blur(12px) saturate(1.25);transition:all var(--anim--hover-time) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-btn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+.toll-dialog .lg-pill-cta-btn:disabled{opacity:.42;cursor:not-allowed;filter:grayscale(.25)}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover{transform:scale(.975);-webkit-backdrop-filter:blur(5px) saturate(1.32);backdrop-filter:blur(5px) saturate(1.32);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.68),inset 0 0 12px 4px rgba(255,255,255,.34),inset 0 .125em .125em rgba(0,0,0,.05),inset 0 -.14em .14em rgba(255,255,255,.80),0 .15em .08em -.1em rgba(0,0,0,.24),0 0 0 .08em inset rgba(255,255,255,.62)}
+.toll-dialog .lg-pill-cta-label{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:5px;height:38px;padding-inline:18px;user-select:none;letter-spacing:-.025em;font-weight:780;font-size:11.5px;line-height:1;white-space:nowrap;color:rgba(36,36,40,.94);text-shadow:0 1px 1px rgba(255,255,255,.35);transition:all var(--anim--hover-time) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-chevron{flex:none;transition:transform var(--anim--hover-time) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-chevron{transform:translateX(2px)}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-label{text-shadow:.025em .04em .06em rgba(0,0,0,.12)}
+.toll-dialog .lg-pill-cta-label::after{content:"";display:block;position:absolute;width:calc(100% - var(--border-width));height:calc(100% - var(--border-width));top:calc(0% + var(--border-width) / 2);left:calc(0% + var(--border-width) / 2);box-sizing:border-box;border-radius:999vw;overflow:clip;background:linear-gradient(var(--angle-2),rgba(255,255,255,0) 0%,rgba(255,255,255,.34) 33%,rgba(255,255,255,.80) 43% 51%,rgba(255,255,255,0) 60%);z-index:3;mix-blend-mode:screen;pointer-events:none;background-size:200% 200%;background-position:0% 50%;background-repeat:no-repeat;transition:background-position calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease),--angle-2 calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-label::after{background-position:28% 50%}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):active .lg-pill-cta-label::after{background-position:54% 15%;--angle-2:-15deg}
+.toll-dialog .lg-pill-cta-btn::after{content:"";position:absolute;z-index:1;inset:0;border-radius:999vw;width:calc(100% + var(--border-width));height:calc(100% + var(--border-width));top:calc(0% - var(--border-width) / 2);left:calc(0% - var(--border-width) / 2);padding:var(--border-width);box-sizing:border-box;background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.45),rgba(0,0,0,0) 5% 40%,rgba(0,0,0,.45) 50%,rgba(0,0,0,0) 60% 95%,rgba(0,0,0,.45)),linear-gradient(180deg,rgba(255,255,255,.84),rgba(255,255,255,.56));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;transition:all var(--anim--hover-time) var(--anim--hover-ease),--angle-1 500ms ease;box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.76);pointer-events:none}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover::after{--angle-1:-125deg}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):active::after{--angle-1:-75deg}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):hover) .lg-pill-cta-shadow{filter:blur(clamp(1.5px,.06em,5px));transition:filter var(--anim--hover-time) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):hover) .lg-pill-cta-shadow::after{top:calc(var(--shadow-cuttoff-fix) / 2 + .18em);opacity:1}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active){transform:rotate3d(1,0,0,22deg)}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn{box-shadow:inset 0 .125em .125em rgba(0,0,0,.07),inset 0 -.125em .125em rgba(255,255,255,.72),0 .125em .125em -.125em rgba(0,0,0,.22),0 0 0 .1em inset rgba(255,255,255,.36),0 .2em .06em 0 rgba(0,0,0,.06),0 .22em 0 0 rgba(255,255,255,.82),inset 0 .2em .06em 0 rgba(0,0,0,.14)}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow{filter:blur(clamp(2px,.125em,10px))}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow::after{top:calc(var(--shadow-cuttoff-fix) / 2 + .14em);opacity:.72}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{padding-inline:22px;font-weight:820;color:rgba(34,35,38,.95);text-shadow:0 1px 1px rgba(255,255,255,.55)}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.46) 0%,rgba(255,255,255,.14) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.18) 100%),linear-gradient(-75deg,rgba(220,222,226,.76),rgba(236,238,242,.86),rgba(218,220,224,.76));-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.78),inset 0 0 12px 4px rgba(255,255,255,.36),inset 0 .125em .125em rgba(0,0,0,.06),inset 0 -.14em .14em rgba(255,255,255,.86),0 .26em .20em -.12em rgba(0,0,0,.18),0 0 0 .08em inset rgba(255,255,255,.52)}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.42),rgba(0,0,0,0) 5% 40%,rgba(0,0,0,.42) 50%,rgba(0,0,0,0) 60% 95%,rgba(0,0,0,.42)),linear-gradient(180deg,rgba(255,255,255,.90),rgba(235,236,240,.68));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.86)}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover{-webkit-backdrop-filter:blur(7px) saturate(1.15);backdrop-filter:blur(7px) saturate(1.15);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.88),inset 0 0 14px 5px rgba(255,255,255,.42),inset 0 .125em .125em rgba(0,0,0,.06),inset 0 -.14em .14em rgba(255,255,255,.90),0 .16em .10em -.1em rgba(0,0,0,.22),0 0 0 .08em inset rgba(255,255,255,.68)}
+.toll-dialog .lg-pill-cta-wrap.is-save:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn{box-shadow:inset 0 .14em .125em rgba(0,0,0,.10),inset 0 -.125em .125em rgba(255,255,255,.82),0 .125em .125em -.125em rgba(0,0,0,.20),0 0 0 .1em inset rgba(255,255,255,.46),0 .2em .06em 0 rgba(0,0,0,.06),0 .22em 0 0 rgba(255,255,255,.88),inset 0 .18em .06em 0 rgba(0,0,0,.14)}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.56) 0%,rgba(255,255,255,.18) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.24) 100%),linear-gradient(-75deg,rgba(255,248,236,.40),rgba(255,251,245,.68),rgba(255,248,236,.42))}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label{color:#2c2117}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.46) 0%,rgba(255,255,255,.14) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.18) 100%),linear-gradient(-75deg,rgba(224,223,221,.78),rgba(238,237,235,.88),rgba(222,221,219,.78))}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{color:rgba(36,35,34,.95);text-shadow:0 1px 1px rgba(255,255,255,.55)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,.08) 44%,rgba(255,255,255,0) 52%,rgba(255,255,255,.14) 100%),linear-gradient(-75deg,rgba(46,48,54,.46),rgba(84,88,96,.42),rgba(42,44,50,.46));box-shadow:inset 0 0 2px 1px rgba(255,255,255,.32),inset 0 0 12px 4px rgba(255,255,255,.14),inset 0 .125em .125em rgba(0,0,0,.34),inset 0 -.14em .14em rgba(255,255,255,.36),0 .28em .22em -.12em rgba(0,0,0,.48),0 0 0 .08em inset rgba(255,255,255,.24)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn:not(:disabled):hover{box-shadow:inset 0 0 2px 1px rgba(255,255,255,.42),inset 0 0 12px 4px rgba(255,255,255,.18),inset 0 .125em .125em rgba(0,0,0,.34),inset 0 -.14em .14em rgba(255,255,255,.42),0 .16em .10em -.1em rgba(0,0,0,.50),0 0 0 .08em inset rgba(255,255,255,.32)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label{color:#f4f4f6;text-shadow:0 1px 2px rgba(0,0,0,.36)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(255,255,255,.76),rgba(255,255,255,.10) 8% 38%,rgba(255,255,255,.76) 50%,rgba(255,255,255,.10) 62% 94%,rgba(255,255,255,.76)),linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.14));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.40)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.46) 0%,rgba(255,255,255,.14) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.18) 100%),linear-gradient(-75deg,rgba(206,208,212,.78),rgba(228,230,234,.88),rgba(202,204,208,.78));-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.82),inset 0 0 12px 4px rgba(255,255,255,.40),inset 0 .125em .125em rgba(0,0,0,.10),inset 0 -.14em .14em rgba(255,255,255,.88),0 .30em .26em -.12em rgba(0,0,0,.52),0 0 0 .08em inset rgba(255,255,255,.52)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{color:#1a1a1d;text-shadow:0 1px 1px rgba(255,255,255,.42)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.36),rgba(0,0,0,.04) 8% 38%,rgba(0,0,0,.36) 50%,rgba(0,0,0,.04) 62% 94%,rgba(0,0,0,.36)),linear-gradient(180deg,rgba(255,255,255,.94),rgba(235,236,240,.66));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.84)}
+@media (hover:none) and (pointer:coarse){.toll-dialog .lg-pill-cta-label::after,.toll-dialog .lg-pill-cta-btn:active .lg-pill-cta-label::after{--angle-2:-45deg}.toll-dialog .lg-pill-cta-btn::after,.toll-dialog .lg-pill-cta-btn:hover::after,.toll-dialog .lg-pill-cta-btn:active::after{--angle-1:-75deg}}
+@media (prefers-reduced-motion:reduce){.toll-dialog .lg-pill-cta-wrap,.toll-dialog .lg-pill-cta-shadow::after,.toll-dialog .lg-pill-cta-btn,.toll-dialog .lg-pill-cta-btn::after,.toll-dialog .lg-pill-cta-label,.toll-dialog .lg-pill-cta-label::after,.toll-dialog .lg-pill-cta-chevron{transition:none}}
 @media (max-width:960px){
   .toll-dialog .workspace{grid-template-columns:minmax(250px,39%) minmax(0,1fr)}
   .toll-dialog .alarm-card{grid-template-columns:26px minmax(100px,1fr) auto;gap:8px}
@@ -2114,6 +2129,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   .toll-dialog .dialog-footer{padding:8px 12px;flex-wrap:wrap}
   .toll-dialog .footer-actions{flex-wrap:wrap;justify-content:flex-end;gap:6px}
   .toll-dialog .footer-btn{height:34px;padding:0 13px;font-size:10px}
+  .toll-dialog .lg-pill-cta-label{height:34px;padding-inline:14px;font-size:10.5px}
+  .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{padding-inline:16px}
 }
 
 /* ---------- 자주 쓰는 타종 구성 (Bookmarks) ---------- */
@@ -2518,6 +2535,86 @@ html:not(.app-ready) #rightTimetablePanel{
 .rt-info-label{font-weight:650;color:var(--toll-muted);flex-shrink:0}
 .rt-info-val{font-weight:700;color:var(--toll-ink);text-align:right;word-break:keep-all}
 .alarm-actions-col{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+[data-theme="light"] .theme-chip.active,[data-theme="light"] .sync-chip.active{background:rgba(255,255,255,.15)}
+[data-theme="light"] .bookmark-add-toggle{background:rgba(255,255,255,.15)}
+[data-theme="light"] .bookmark-name-input{background:rgba(255,255,255,.24)}
+[data-theme="light"] .bookmark-save-btn{background:rgba(255,255,255,.28)}
+[data-theme="light"] .bookmark-pill-item{background:rgba(255,255,255,.11)}
+[data-theme="light"] .toll-dialog .dialog-header{background:rgba(255,255,255,.07)}
+[data-theme="light"] .toll-dialog .builder-stepper{background:rgba(255,255,255,.09)}
+[data-theme="light"] .toll-dialog .builder-step-tab{background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
+[data-theme="light"] .toll-dialog .builder-step-tab:hover{background:linear-gradient(145deg,rgba(255,255,255,.50),rgba(255,255,255,.20))}
+[data-theme="light"] .toll-dialog .builder-step-tab.is-active{background:linear-gradient(145deg,rgba(60,60,64,.15),rgba(255,255,255,.34))}
+[data-theme="light"] .toll-dialog .builder-step-body,[data-theme="light"] .toll-dialog .workspace{background:rgba(255,255,255,.02)}
+[data-theme="light"] .toll-dialog .quickbar{background:rgba(255,255,255,.04)}
+[data-theme="light"] .toll-dialog .quickbar.quickbar-step{background:transparent}
+[data-theme="light"] .toll-dialog .quickbar.quickbar-step .quick-line{background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(255,255,255,.08))}
+[data-theme="light"] .toll-dialog .step1-subject-preview-bar{background:rgba(255,255,255,.13)}
+[data-theme="light"] .toll-dialog .subj-auto-box{background:rgba(255,255,255,.24)}
+[data-theme="light"] .toll-dialog .builder-select-sm{background:rgba(255,255,255,.39)}
+[data-theme="light"] .toll-dialog .bookmark-modal-chip{background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
+[data-theme="light"] .toll-dialog .bookmark-modal-input{background:rgba(255,255,255,.36)}
+[data-theme="light"] .toll-dialog .left-tools-panel{background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(255,255,255,.08))}
+[data-theme="light"] .toll-dialog .builder-search-input{background:rgba(255,255,255,.43)}
+[data-theme="light"] .toll-dialog .stage-type-chip{background:rgba(255,255,255,.34)}
+[data-theme="light"] .toll-dialog .stage-type-chip:hover{background:rgba(255,255,255,.58)}
+[data-theme="light"] .toll-dialog .area-card{background:linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.06))}
+[data-theme="light"] .toll-dialog .stage-row{background:rgba(255,255,255,.04)}
+[data-theme="light"] .toll-dialog .stage-row:hover{background:rgba(255,255,255,.18)}
+[data-theme="light"] .toll-dialog .stage-row.selected{background:linear-gradient(125deg,rgba(75,75,78,.09),rgba(255,255,255,.10))}
+[data-theme="light"] .toll-dialog .batch-interval-bar{background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(255,255,255,.08))}
+[data-theme="light"] .toll-dialog .batch-num-input{background:rgba(255,255,255,.36)}
+[data-theme="light"] .toll-dialog .alarm-card{background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
+[data-theme="light"] .toll-dialog .number{background:linear-gradient(145deg,rgba(255,255,255,.40),rgba(90,90,92,.07))}
+[data-theme="light"] .toll-dialog .interval-row{background:linear-gradient(110deg,rgba(80,80,82,.055),rgba(255,255,255,.09))}
+[data-theme="light"] .toll-dialog .chip,[data-theme="light"] .toll-dialog .area-tag,[data-theme="light"] .toll-dialog .preview-btn,[data-theme="light"] .toll-dialog .nudge,[data-theme="light"] .toll-dialog .footer-btn,[data-theme="light"] .toll-dialog .icon-button,[data-theme="light"] .toll-dialog .time-input,[data-theme="light"] .toll-dialog .interval-input{background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
+[data-theme="light"] .toll-dialog .chip:hover,[data-theme="light"] .toll-dialog .area-tag:hover,[data-theme="light"] .toll-dialog .preview-btn:hover,[data-theme="light"] .toll-dialog .nudge:hover,[data-theme="light"] .toll-dialog .footer-btn:hover,[data-theme="light"] .toll-dialog .icon-button:hover:not(:disabled){background:linear-gradient(145deg,rgba(255,255,255,.48),rgba(255,255,255,.16))}
+[data-theme="light"] .toll-dialog .chip.active{background:linear-gradient(145deg,rgba(70,70,73,.16),rgba(70,70,73,.06))}
+[data-theme="light"] .rt-head{background:rgba(255,255,255,.07)}
+[data-theme="light"] .rt-options-bar{background:rgba(255,255,255,.04)}
+[data-theme="light"] .rt-item-btn{background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.09))}
+[data-theme="light"] .rt-item-btn:hover{background:linear-gradient(135deg,rgba(255,255,255,.47),rgba(255,255,255,.17))}
+.custom-select-wrap{position:relative;display:inline-flex;align-items:center}
+.custom-time-trigger{height:32px;border-radius:999px;border:1px solid var(--toll-glass-edge);background:var(--toll-pill);color:var(--toll-ink);padding:0 11px;font-size:11.5px;font-weight:720;font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.06),inset 0 1px 0 var(--toll-highlight);transition:background .16s ease,border-color .16s ease,transform .14s ease}
+.custom-time-trigger:hover,.custom-time-trigger.is-open{background:var(--toll-pill-hover);border-color:var(--focus-ring)}
+.custom-time-trigger.is-open .chevron-icon{transform:rotate(180deg)}
+.custom-time-trigger.input-invalid{border-color:#d94848}
+.custom-time-popover{position:absolute;top:calc(100% + 8px);right:0;width:282px;max-width:calc(100vw - 44px);z-index:120;padding:12px;border-radius:18px;border:1px solid rgba(28,28,30,.14);background:#ffffff;color:var(--toll-ink);box-shadow:0 22px 48px rgba(0,0,0,.22),0 6px 16px rgba(0,0,0,.09);display:flex;flex-direction:column;gap:10px}
+.custom-time-popover.open-up{top:auto;bottom:calc(100% + 8px)}
+.custom-time-popover.align-left{right:auto;left:0}
+[data-theme="dark"] .custom-time-popover{background:#1f1f22;border-color:rgba(255,255,255,.18);box-shadow:0 24px 56px rgba(0,0,0,.68),0 6px 18px rgba(0,0,0,.40)}
+[data-theme="sepia"] .custom-time-popover{background:#f7efe0;border-color:rgba(54,41,30,.22);box-shadow:0 22px 48px rgba(42,31,21,.26),0 6px 16px rgba(42,31,21,.10)}
+.custom-time-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.custom-time-title{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:-.02em;color:var(--toll-ink)}
+.custom-time-badge{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:999px;background:var(--toll-selected);color:var(--toll-ink);font-size:10.5px;font-weight:760;font-variant-numeric:tabular-nums}
+.custom-time-close{appearance:none;height:26px;padding:0 10px;border-radius:999px;border:1px solid var(--toll-line);background:var(--toll-glass-inner);color:var(--toll-ink-2);font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0}
+.custom-time-close:hover{background:var(--toll-selected);color:var(--toll-ink)}
+.custom-time-ampm-row{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:3px;border-radius:12px;background:rgba(120,120,128,.10);border:1px solid var(--toll-line)}
+[data-theme="dark"] .custom-time-ampm-row{background:rgba(255,255,255,.06)}
+.custom-time-ampm-btn{appearance:none;height:29px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--toll-muted);font-size:11.5px;font-weight:720;cursor:pointer}
+.custom-time-ampm-btn.is-active{background:var(--toll-button);color:var(--toll-button-text);font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.custom-time-digit-grid{display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 8px;border-radius:14px;background:rgba(120,120,128,.075);border:1px solid var(--toll-line)}
+[data-theme="dark"] .custom-time-digit-grid{background:rgba(255,255,255,.05)}
+.custom-time-digit-box{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.custom-time-digit-label{font-size:9.5px;font-weight:700;color:var(--toll-muted);letter-spacing:.02em}
+.custom-time-stepper{width:100%;display:flex;align-items:center;gap:3px}
+.custom-time-step-btn{appearance:none;width:26px;height:32px;flex:none;border-radius:8px;border:1px solid var(--toll-line);background:var(--toll-pill);color:var(--toll-ink);font-size:14px;font-weight:700;line-height:1;cursor:pointer;display:grid;place-items:center}
+.custom-time-step-btn:hover{background:var(--toll-selected)}
+.custom-time-digit-input{width:100%;min-width:36px;height:32px;padding:0 4px;border-radius:9px;border:1px solid var(--toll-line);background:#ffffff;color:var(--toll-ink);font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;text-align:center;outline:none}
+.custom-time-digit-input:focus{border-color:var(--focus-ring);box-shadow:0 0 0 2px rgba(124,156,197,.24)}
+[data-theme="dark"] .custom-time-digit-input{background:rgba(255,255,255,.09)}
+[data-theme="sepia"] .custom-time-digit-input{background:rgba(255,250,240,.92)}
+.custom-time-colon{flex:none;font-size:18px;font-weight:800;color:var(--toll-muted);padding-top:13px;line-height:1}
+.custom-time-quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.custom-time-nudge-btn{appearance:none;height:30px;padding:0 6px;border-radius:9px;border:1px solid var(--toll-line);background:rgba(120,120,128,.08);color:var(--toll-ink);font-size:11px;font-weight:720;font-variant-numeric:tabular-nums;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+[data-theme="dark"] .custom-time-nudge-btn{background:rgba(255,255,255,.08)}
+.custom-time-nudge-btn:hover{background:var(--toll-selected);border-color:var(--toll-selected-edge)}
+.custom-time-footer-row{display:flex;align-items:center;gap:6px;padding-top:2px}
+.custom-time-reset-btn{appearance:none;flex:1;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--toll-line);background:transparent;color:var(--toll-ink-2);font-size:11.5px;font-weight:720;font-variant-numeric:tabular-nums;cursor:pointer;white-space:nowrap}
+.custom-time-reset-btn:hover{background:var(--toll-selected);border-color:var(--toll-selected-edge)}
+.custom-time-apply-btn{appearance:none;flex:1;height:34px;padding:0 14px;border-radius:10px;border:none;background:var(--toll-button);color:var(--toll-button-text);font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.14)}
+.custom-time-error{font-size:10.5px;font-weight:680;line-height:1.35;color:#cf3434;padding:5px 8px;border-radius:8px;background:rgba(217,56,56,.10)}
+[data-theme="dark"] .custom-time-error{color:#ff8b8b;background:rgba(255,92,92,.16)}
 </style>
 </head>
 <body>
@@ -2657,10 +2754,6 @@ html:not(.app-ready) #rightTimetablePanel{
           <button type="button" class="theme-chip" data-theme-pref="light">라이트</button>
           <button type="button" class="theme-chip" data-theme-pref="dark">다크</button>
           <button type="button" class="theme-chip" data-theme-pref="sepia">세피아</button>
-        </div>
-        <div class="pill-group-row" role="group" aria-label="시계 바늘 연동 방식">
-          <button type="button" class="sync-chip active" data-sync-mode="original_csat_time">원래 수능 시각 맞춤 (기본)</button>
-          <button type="button" class="sync-chip" data-sync-mode="custom_cascaded_time">구성 계산 시각 연동</button>
         </div>
         <div class="drawer-card-panel" aria-label="화면 및 시계 블러 애니메이션 설정">
           <div class="drawer-card-title">
@@ -2802,7 +2895,7 @@ html:not(.app-ready) #rightTimetablePanel{
     <header class="dialog-header">
       <div class="dialog-heading">
         <h1 id="builderModalTitle">영역별 타종 체크박스 선택 및 시간 간격 · 시각 설정</h1>
-        <p>원하는 영역과 타종(준비령·본령·종료령 전·종료령 등)을 체크박스로 선택하고, 각 타종 사이의 대기 간격(분)과 시각을 자유롭게 설정하세요.</p>
+        <p>원하는 영역과 타종 단계를 선택하고, 각 타종 사이의 간격과 타종 시각을 조정하세요.</p>
       </div>
       <div class="head-actions">
         <button id="builderUndoBtn" class="icon-button" type="button" disabled aria-label="실행 취소" title="실행 취소 (Ctrl+Z)">
@@ -2891,11 +2984,6 @@ html:not(.app-ready) #rightTimetablePanel{
             <button id="modalBookmarkSaveBtn" type="button" class="chip">현재 구성 저장</button>
           </div>
         </div>
-        <div class="quick-line">
-          <span class="quick-label">시계 바늘 연동</span>
-          <button type="button" class="chip sync-mode-btn active" data-sync-mode="original_csat_time">원래 수능 시각 맞춤 + 대기만 설정 간격 적용 (기본)</button>
-          <button type="button" class="chip sync-mode-btn" data-sync-mode="custom_cascaded_time">간격 연쇄 계산 시각으로 바늘 연동</button>
-        </div>
         <div id="step1SubjectPreviewBar" class="step1-subject-preview-bar"></div>
       </section>
 
@@ -2908,8 +2996,18 @@ html:not(.app-ready) #rightTimetablePanel{
       <div class="footer-actions">
         <button id="builderCancelBtn" type="button" class="footer-btn">취소</button>
         <button id="builderPrevBtn" type="button" class="footer-btn" style="display:none">이전</button>
-        <button id="builderNextBtn" type="button" class="footer-btn step-next-btn">다음</button>
-        <button id="builderApplyBtn" type="button" class="footer-btn primary">선택 구성 저장</button>
+        <div id="builderNextWrap" class="lg-pill-cta-wrap is-next">
+          <div class="lg-pill-cta-shadow" aria-hidden="true"></div>
+          <button id="builderNextBtn" type="button" class="lg-pill-cta-btn">
+            <span class="lg-pill-cta-label">다음<svg class="lg-pill-cta-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </button>
+        </div>
+        <div id="builderApplyWrap" class="lg-pill-cta-wrap is-save">
+          <div class="lg-pill-cta-shadow" aria-hidden="true"></div>
+          <button id="builderApplyBtn" type="button" class="lg-pill-cta-btn">
+            <span class="lg-pill-cta-label">선택 구성 저장</span>
+          </button>
+        </div>
       </div>
     </footer>
   </main>
@@ -3104,6 +3202,7 @@ html:not(.app-ready) #rightTimetablePanel{
         builderCloseBtn=document.getElementById('builderCloseBtn'),
         builderCancelBtn=document.getElementById('builderCancelBtn'),
         builderPrevBtn=document.getElementById('builderPrevBtn'),
+        builderNextWrap=document.getElementById('builderNextWrap'),
         builderNextBtn=document.getElementById('builderNextBtn'),
         builderApplyBtn=document.getElementById('builderApplyBtn'),
         builderStepper=document.getElementById('builderStepper'),
@@ -3244,7 +3343,11 @@ void main(){
   let themePref='auto';
   let resolvedTheme='light';
   let themeUB=1.0,themeUS=0.0,fromUB=1.0,fromUS=0.0,targetUB=1.0,targetUS=0.0,themeAnimStart=0,themeRafId=0;
-  let clockSyncMode='original_csat_time';
+  let clockSyncMode='custom_cascaded_time';
+  let openTimePopupNodeId = null;
+  let popupHourDraft = '10';
+  let popupMinDraft = '25';
+  let popupTimeError = '';
   let customSequenceConfig = JSON.parse(JSON.stringify(EMBEDDED.defaultCustomSeqConfig));
   let draftSequenceConfig = JSON.parse(JSON.stringify(EMBEDDED.defaultCustomSeqConfig));
   let undoStack = [];
@@ -3406,7 +3509,7 @@ void main(){
         id: typeof item.id==='string' && item.id ? item.id : ('bm_'+Date.now()+'_'+idx),
         name,
         config: v.config,
-        clockSyncMode: item.clockSyncMode==='custom_cascaded_time' ? 'custom_cascaded_time' : 'original_csat_time',
+        clockSyncMode: 'custom_cascaded_time',
         createdAt: typeof item.createdAt==='string' ? item.createdAt : new Date().toISOString()
       });
     });
@@ -3649,11 +3752,8 @@ void main(){
     if(!skipSave) saveCustomSettings();
   }
 
-  function applyClockSyncMode(mode, skipSave){
-    clockSyncMode = (mode==='custom_cascaded_time') ? 'custom_cascaded_time' : 'original_csat_time';
-    document.querySelectorAll('.sync-chip, .sync-mode-btn').forEach(el=>{
-      el.classList.toggle('active', el.getAttribute('data-sync-mode')===clockSyncMode);
-    });
+  function applyClockSyncMode(_mode, skipSave){
+    clockSyncMode = 'custom_cascaded_time';
     if(phase==='idle') syncUiToPresetIdle();
     renderBuilderModal();
     if(!skipSave) saveCustomSettings();
@@ -3670,18 +3770,6 @@ void main(){
   document.querySelectorAll('.theme-chip').forEach(chip=>{
     chip.addEventListener('click', ()=>{
       applyTheme(chip.getAttribute('data-theme-pref'), false);
-    });
-  });
-
-  document.querySelectorAll('.sync-chip, .sync-mode-btn').forEach(btnEl=>{
-    btnEl.addEventListener('click', ()=>{
-      applyClockSyncMode(btnEl.getAttribute('data-sync-mode'), false);
-      showToast(
-        clockSyncMode==='original_csat_time'
-          ? '시계 바늘 연동: 각 타종의 원래 수능 시각 기준 (대기 시간만 설정 간격 적용)'
-          : '시계 바늘 연동: 설정 간격으로 자동 연쇄 계산된 시각 기준',
-        2800
-      );
     });
   });
 
@@ -4012,7 +4100,7 @@ void main(){
         id: 'custom_seq_0_'+only.node.nodeId,
         periodLabel: only.node.periodLabel,
         displayTitle: only.node.subjectTitle,
-        timeRangeText: format24hTime(only.node.originalMinutes)+' ('+only.intervalAfterMinutes+'분)',
+        timeRangeText: format24hTime(only.customTimeMinutes)+' ('+only.intervalAfterMinutes+'분)',
         startMinutes: 0,
         endMinutes: dur,
         originalStartMinutes: only.node.originalMinutes,
@@ -4219,10 +4307,10 @@ void main(){
     const firstStep=currentPreset.steps[0];
     const isCustomSeq=Boolean(currentPreset.isCustomSequence);
     const dispStartMin = isCustomSeq
-      ? (clockSyncMode==='original_csat_time' ? firstStep.originalStartMinutes : firstStep.customStartMinutes)
+      ? firstStep.customStartMinutes
       : currentPreset.startMinutes;
     const dispEndMin = isCustomSeq
-      ? (clockSyncMode==='original_csat_time' ? firstStep.originalEndMinutes : firstStep.customEndMinutes)
+      ? firstStep.customEndMinutes
       : currentPreset.endMinutes;
     const idleRemainMs = isCustomSeq
       ? (firstStep.durationMinutes * 60 * 1000)
@@ -4555,15 +4643,9 @@ void main(){
       let dispStartMin=activeStep.startMinutes;
       let dispEndMin=activeStep.endMinutes;
       if(currentPreset.isCustomSequence){
-        if(clockSyncMode==='original_csat_time'){
-          dispStartMin=activeStep.originalStartMinutes;
-          dispEndMin=activeStep.originalEndMinutes;
-          clockHandMinutes=(clampedElapsedMs>=totalDurMs)?dispEndMin:(dispStartMin+stageElapsedMin);
-        }else{
-          dispStartMin=activeStep.customStartMinutes;
-          dispEndMin=activeStep.customEndMinutes;
-          clockHandMinutes=dispStartMin+stageElapsedMin;
-        }
+        dispStartMin=activeStep.customStartMinutes;
+        dispEndMin=activeStep.customEndMinutes;
+        clockHandMinutes=dispStartMin+stageElapsedMin;
       }
       startLab.innerHTML='START - TIME<br>'+formatAmPm(dispStartMin);
       startLab.style.opacity=startOpacity.toFixed(3);
@@ -5299,6 +5381,8 @@ void main(){
     undoStack = [];
     redoStack = [];
     rowAlertMap = {};
+    openTimePopupNodeId = null;
+    popupTimeError = '';
     builderStep = 1;
     updateUndoRedoBtns();
     renderBuilderModal();
@@ -5308,6 +5392,8 @@ void main(){
 
   function closeBuilderModalDiscardDraft(){
     stopPreviewBell();
+    openTimePopupNodeId = null;
+    popupTimeError = '';
     builderModalBackdrop.classList.remove('open');
   }
 
@@ -5353,7 +5439,8 @@ void main(){
     if(builderLeftPane) builderLeftPane.classList.toggle('is-step-hidden', builderStep !== 2);
     if(builderRightPane) builderRightPane.classList.toggle('is-step-hidden', builderStep !== 3);
     if(builderPrevBtn) builderPrevBtn.style.display = builderStep > 1 ? '' : 'none';
-    if(builderNextBtn) builderNextBtn.style.display = builderStep < 3 ? '' : 'none';
+    if(builderNextWrap) builderNextWrap.style.display = builderStep < 3 ? 'inline-flex' : 'none';
+    if(builderApplyBtn) builderApplyBtn.disabled = !rows.length;
 
     updateStep1SubjectPreviewBar();
 
@@ -5501,7 +5588,6 @@ void main(){
     builderRightPane.innerHTML = \`
       <div class="pane-title">
         <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
-        <span class="pane-note">간격 변경 시 이후 시각 자동 계산 · 시각 변경 시 직전 간격 반영</span>
       </div>
       <div class="batch-interval-bar">
         <div class="batch-group">
@@ -5556,11 +5642,65 @@ void main(){
         const rowAlert = rowAlertMap[pairKey] || rowAlertMap['row_'+idx] || '';
 
         const article = document.createElement('article');
-        article.className = 'schedule-item';
+        const rowHmStr = format24hTime(row.customTimeMinutes);
+        const [rowHh = 8, rowMm = 5] = rowHmStr.split(':').map(Number);
+        const rowAmPm = rowHh < 12 ? '오전' : '오후';
+        const rowH12 = rowHh % 12 === 0 ? 12 : rowHh % 12;
+        const isRowPopupOpen = openTimePopupNodeId === row.node.nodeId;
+        const isOpenUp = rows.length > 2 && idx >= rows.length - 1;
+        article.className = 'schedule-item' + (isRowPopupOpen ? ' is-popover-open' : '');
+
+        let popoverHtml = '';
+        if(isRowPopupOpen){
+          popoverHtml = \`
+            <div class="custom-time-popover \${isOpenUp?'open-up':''}" data-time-popover="\${idx}">
+              <div class="custom-time-head">
+                <span class="custom-time-title">#\${idx+1} 타종 시각 <span class="custom-time-badge">\${rowHmStr}</span></span>
+                <button type="button" class="custom-time-close" data-time-close="1">닫기</button>
+              </div>
+              <div class="custom-time-ampm-row">
+                <button type="button" class="custom-time-ampm-btn \${rowHh<12?'is-active':''}" data-time-ampm="AM" data-time-row-idx="\${idx}">오전</button>
+                <button type="button" class="custom-time-ampm-btn \${rowHh>=12?'is-active':''}" data-time-ampm="PM" data-time-row-idx="\${idx}">오후</button>
+              </div>
+              <div class="custom-time-digit-grid">
+                <div class="custom-time-digit-box">
+                  <span class="custom-time-digit-label">시</span>
+                  <div class="custom-time-stepper">
+                    <button type="button" class="custom-time-step-btn" data-time-delta="-60" data-time-row-idx="\${idx}" aria-label="1시간 감소">−</button>
+                    <input type="text" inputmode="numeric" maxlength="2" class="custom-time-digit-input" data-time-digit="hour" value="\${escapeHtml(popupHourDraft)}" aria-label="시 입력">
+                    <button type="button" class="custom-time-step-btn" data-time-delta="60" data-time-row-idx="\${idx}" aria-label="1시간 증가">+</button>
+                  </div>
+                </div>
+                <span class="custom-time-colon">:</span>
+                <div class="custom-time-digit-box">
+                  <span class="custom-time-digit-label">분</span>
+                  <div class="custom-time-stepper">
+                    <button type="button" class="custom-time-step-btn" data-time-delta="-1" data-time-row-idx="\${idx}" aria-label="1분 감소">−</button>
+                    <input type="text" inputmode="numeric" maxlength="2" class="custom-time-digit-input" data-time-digit="min" value="\${escapeHtml(popupMinDraft)}" aria-label="분 입력">
+                    <button type="button" class="custom-time-step-btn" data-time-delta="1" data-time-row-idx="\${idx}" aria-label="1분 증가">+</button>
+                  </div>
+                </div>
+              </div>
+              <div class="custom-time-quick-grid">
+                <button type="button" class="custom-time-nudge-btn" data-time-delta="-10" data-time-row-idx="\${idx}">−10분</button>
+                <button type="button" class="custom-time-nudge-btn" data-time-delta="-5" data-time-row-idx="\${idx}">−5분</button>
+                <button type="button" class="custom-time-nudge-btn" data-time-delta="-1" data-time-row-idx="\${idx}">−1분</button>
+                <button type="button" class="custom-time-nudge-btn" data-time-delta="1" data-time-row-idx="\${idx}">+1분</button>
+                <button type="button" class="custom-time-nudge-btn" data-time-delta="5" data-time-row-idx="\${idx}">+5분</button>
+                <button type="button" class="custom-time-nudge-btn" data-time-delta="10" data-time-row-idx="\${idx}">+10분</button>
+              </div>
+              \${popupTimeError ? \`<div class="custom-time-error">\${escapeHtml(popupTimeError)}</div>\` : ''}
+              <div class="custom-time-footer-row">
+                <button type="button" class="custom-time-reset-btn" data-time-reset="\${escapeHtml(row.node.originalTimeText)}" data-time-row-idx="\${idx}">정시 (\${escapeHtml(row.node.originalTimeText)})</button>
+                <button type="button" class="custom-time-apply-btn" data-time-apply="\${idx}">적용</button>
+              </div>
+            </div>
+          \`;
+        }
 
         const speakerIconSvg = isMuted
-          ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>'
-          : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+          ? '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6m0-6-5 6"/></svg>'
+          : '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m2.8-9.8a9 9 0 0 1 0 12.6"/></svg>';
 
         let html = \`
           <div class="alarm-card">
@@ -5570,12 +5710,18 @@ void main(){
                 <span>\${escapeHtml(row.node.fullTitle)}</span>
                 \${row.dayOffset > 0 ? \`<span class="next-day-badge">+\${row.dayOffset}일</span>\` : ''}
               </div>
-              <div class="alarm-sub">원래 수능 시각: \${escapeHtml(row.node.originalTimeText)} · 연쇄 계산 시각: \${format24hTime(row.customTimeMinutes)}\${row.dayOffset > 0 ? ' (+'+row.dayOffset+'일)' : ''} · \${row.node.bellCode?'타종 '+escapeHtml(row.node.bellCode)+' ('+durSec+'초)':'13:07 듣기 음원'}</div>
+              <div class="alarm-sub">정시 \${escapeHtml(row.node.originalTimeText)} · 타종 \${rowHmStr}\${row.dayOffset > 0 ? ' (+'+row.dayOffset+'일)' : ''} · \${row.node.bellCode?'타종 '+escapeHtml(row.node.bellCode)+' ('+durSec+'초)':'13:07 듣기 음원'}</div>
             </div>
-            <label class="clock-control">
-              <span>연쇄 시각</span>
-              <input type="time" class="time-input" data-time-row="\${idx}" value="\${format24hTime(row.customTimeMinutes)}">
-            </label>
+            <div class="clock-control">
+              <span>타종 시각</span>
+              <div class="custom-select-wrap">
+                <button type="button" class="custom-time-trigger \${isRowPopupOpen?'is-open':''}" data-time-trigger-row="\${idx}" data-time-node-id="\${escapeHtml(row.node.nodeId)}">
+                  <span>\${rowAmPm} \${String(rowH12).padStart(2,'0')}:\${String(rowMm).padStart(2,'0')}</span>
+                  <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                \${popoverHtml}
+              </div>
+            </div>
             <div class="alarm-actions-col">
               <button type="button" class="mute-toggle-btn \${isMuted?'is-muted':''}" data-mute-key="\${escapeHtml(muteKey)}" aria-label="\${isMuted?'타종 소리 켜기':'타종 무음 처리'}" title="\${isMuted?'현재 무음 (클릭 시 소리 켜기)':'소리 켜짐 (클릭 시 무음)'}">\${speakerIconSvg}</button>
             </div>
@@ -5645,7 +5791,7 @@ void main(){
     updatePreviewButtonsUI();
     const totalMin = analysis.totalDurationMinutes;
     const hrText = Math.floor(totalMin/60)>0 ? (Math.floor(totalMin/60)+'시간 '+(totalMin%60)+'분') : (totalMin+'분');
-    builderSummaryText.innerHTML = '선택된 타종: <strong>'+rows.length+'개</strong> · 총 진행 대기 시간: <strong>'+hrText+' ('+totalMin+'분)</strong> · 시계 바늘: <strong>'+(clockSyncMode==='original_csat_time'?'각 타종의 원래 수능 시각 맞춤 (기본)':'간격 연쇄 계산 시각 연동')+'</strong>';
+    builderSummaryText.innerHTML = '선택된 타종: <strong>'+rows.length+'개</strong> · 총 진행 대기 시간: <strong>'+hrText+' ('+totalMin+'분)</strong>';
   }
 
   builderLeftPane.addEventListener('change', e=>{
@@ -5825,8 +5971,212 @@ void main(){
         if(cfg.intervalSecondsMap) delete cfg.intervalSecondsMap[key];
         cfg.intervalMap[key] = clamp(base + delta, 1, 600);
       });
+      return;
+    }
+
+    const timeTrig = e.target.closest('button[data-time-trigger-row]');
+    if(timeTrig){
+      const rIdx = Number(timeTrig.getAttribute('data-time-trigger-row'));
+      const nid = timeTrig.getAttribute('data-time-node-id');
+      if(openTimePopupNodeId === nid){
+        openTimePopupNodeId = null;
+        popupTimeError = '';
+      }else{
+        const rows = computeSequenceNodeRows(draftSequenceConfig);
+        const targetRow = rows[rIdx];
+        if(targetRow){
+          const hmStr = format24hTime(targetRow.customTimeMinutes);
+          const [hh = 8, mm = 5] = hmStr.split(':').map(Number);
+          const h12 = hh % 12 === 0 ? 12 : hh % 12;
+          openTimePopupNodeId = nid;
+          popupHourDraft = String(h12).padStart(2,'0');
+          popupMinDraft = String(mm).padStart(2,'0');
+          popupTimeError = '';
+        }
+      }
+      renderBuilderModal();
+      return;
+    }
+
+    if(e.target.closest('button[data-time-close]')){
+      openTimePopupNodeId = null;
+      popupTimeError = '';
+      renderBuilderModal();
+      return;
+    }
+
+    const ampmBtn = e.target.closest('button[data-time-ampm]');
+    if(ampmBtn){
+      const rIdx = Number(ampmBtn.getAttribute('data-time-row-idx'));
+      const period = ampmBtn.getAttribute('data-time-ampm');
+      const rows = computeSequenceNodeRows(draftSequenceConfig);
+      const targetRow = rows[rIdx];
+      if(targetRow){
+        const hmStr = format24hTime(targetRow.customTimeMinutes);
+        const [hh = 8, mm = 5] = hmStr.split(':').map(Number);
+        let nextH = hh;
+        if(period === 'AM' && hh >= 12) nextH = hh - 12;
+        if(period === 'PM' && hh < 12) nextH = hh + 12;
+        const nextHm = String(nextH).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+        applyStandaloneRowTimeEdit(rIdx, nextHm, false);
+      }
+      return;
+    }
+
+    const deltaBtn = e.target.closest('button[data-time-delta]');
+    if(deltaBtn){
+      const rIdx = Number(deltaBtn.getAttribute('data-time-row-idx'));
+      const deltaMin = Number(deltaBtn.getAttribute('data-time-delta')) || 0;
+      const rows = computeSequenceNodeRows(draftSequenceConfig);
+      const targetRow = rows[rIdx];
+      if(targetRow){
+        const nextMinOfDay = clamp(Math.floor(targetRow.customTimeMinutes)%1440 + deltaMin, 0, 1439);
+        applyStandaloneRowTimeEdit(rIdx, format24hTime(nextMinOfDay), false);
+      }
+      return;
+    }
+
+    const resetBtn = e.target.closest('button[data-time-reset]');
+    if(resetBtn){
+      const rIdx = Number(resetBtn.getAttribute('data-time-row-idx'));
+      const origHm = resetBtn.getAttribute('data-time-reset') || '08:40';
+      applyStandaloneRowTimeEdit(rIdx, origHm, true);
+      return;
+    }
+
+    const applyBtn = e.target.closest('button[data-time-apply]');
+    if(applyBtn){
+      const rIdx = Number(applyBtn.getAttribute('data-time-apply'));
+      commitStandaloneDigitPopup(rIdx);
     }
   });
+
+  function applyStandaloneRowTimeEdit(rowIdx, targetHmStr, closeOnSuccess){
+    const match = String(targetHmStr || '').trim().match(/^(\d{1,2}):([0-5]\d)$/);
+    if(!match || Number(match[1]) > 23){
+      popupTimeError = '당일 시각(00:00 ~ 23:59) 형식으로 입력해 주세요.';
+      renderBuilderModal();
+      return false;
+    }
+    const hh = Number(match[1]);
+    const mm = Number(match[2]);
+    const targetSec = hh * 3600 + mm * 60;
+    const rows = computeSequenceNodeRows(draftSequenceConfig);
+    const currRow = rows[rowIdx];
+    if(!currRow) return false;
+    const prevRow = rowIdx > 0 ? rows[rowIdx - 1] : null;
+    const nextRow = rowIdx < rows.length - 1 ? rows[rowIdx + 1] : null;
+
+    if(rowIdx === 0){
+      mutateDraftConfig(cfg=>{
+        cfg.firstNodeCustomMinutes = targetSec / 60;
+        if(!cfg.intervalMap) cfg.intervalMap = {};
+        if(!cfg.intervalSecondsMap) cfg.intervalSecondsMap = {};
+        if(nextRow){
+          const afterSec = Math.round(nextRow.customTimeMinutes * 60) - targetSec;
+          if(afterSec >= 10 && afterSec <= 36000){
+            const afterKey = currRow.node.nodeId + '__' + nextRow.node.nodeId;
+            cfg.intervalSecondsMap[afterKey] = afterSec;
+            cfg.intervalMap[afterKey] = Math.max(1, Math.round(afterSec / 60));
+          }
+        }
+      });
+    }else if(prevRow){
+      const prevSec = Math.round(prevRow.customTimeMinutes * 60);
+      if(prevSec >= 86400){
+        popupTimeError = '자정(+1일) 이후 단계는 간격(분/초) 입력란으로만 조정할 수 있습니다.';
+        renderBuilderModal();
+        return false;
+      }
+      const diffSec = targetSec - prevSec;
+      if(diffSec <= 0){
+        popupTimeError = '직전 단계('+format24hTime(prevRow.customTimeMinutes)+')보다 이후 시각을 입력해 주세요.';
+        renderBuilderModal();
+        return false;
+      }
+      if(diffSec < 10){
+        popupTimeError = '직전 단계와 최소 10초 이상 간격이 필요합니다.';
+        renderBuilderModal();
+        return false;
+      }
+      if(diffSec > 36000){
+        popupTimeError = '직전 단계와의 간격은 최대 600분을 넘을 수 없습니다.';
+        renderBuilderModal();
+        return false;
+      }
+      const prevKey = prevRow.node.nodeId + '__' + currRow.node.nodeId;
+      const newCurrSec = prevSec + diffSec;
+      mutateDraftConfig(cfg=>{
+        if(!cfg.intervalMap) cfg.intervalMap = {};
+        if(!cfg.intervalSecondsMap) cfg.intervalSecondsMap = {};
+        cfg.intervalSecondsMap[prevKey] = Math.round(diffSec);
+        cfg.intervalMap[prevKey] = Math.max(1, Math.round(diffSec / 60));
+        if(nextRow){
+          const afterSec = Math.round(nextRow.customTimeMinutes * 60) - newCurrSec;
+          if(afterSec >= 10 && afterSec <= 36000){
+            const afterKey = currRow.node.nodeId + '__' + nextRow.node.nodeId;
+            cfg.intervalSecondsMap[afterKey] = afterSec;
+            cfg.intervalMap[afterKey] = Math.max(1, Math.round(afterSec / 60));
+          }
+        }
+      });
+    }
+
+    const h12 = hh % 12 === 0 ? 12 : hh % 12;
+    popupHourDraft = String(h12).padStart(2,'0');
+    popupMinDraft = String(mm).padStart(2,'0');
+    popupTimeError = '';
+    if(closeOnSuccess){
+      openTimePopupNodeId = null;
+    }
+    renderBuilderModal();
+    return true;
+  }
+
+  function commitStandaloneDigitPopup(rowIdx){
+    const rawH = Number(popupHourDraft);
+    const rawM = Number(popupMinDraft);
+    if(!isFinite(rawH) || !isFinite(rawM) || rawH < 1 || rawH > 12 || rawM < 0 || rawM > 59){
+      popupTimeError = '시(1~12)와 분(0~59)을 올바르게 입력해 주세요.';
+      renderBuilderModal();
+      return;
+    }
+    const rows = computeSequenceNodeRows(draftSequenceConfig);
+    const targetRow = rows[rowIdx];
+    if(!targetRow) return;
+    const isPmNow = Math.floor(targetRow.customTimeMinutes % 1440) >= 720;
+    const nextH24 = (Math.round(rawH) % 12) + (isPmNow ? 12 : 0);
+    const nextHm = String(nextH24).padStart(2,'0')+':'+String(Math.round(rawM)).padStart(2,'0');
+    applyStandaloneRowTimeEdit(rowIdx, nextHm, true);
+  }
+
+  builderRightPane.addEventListener('input', e=>{
+    const dig = e.target.closest('input[data-time-digit]');
+    if(!dig) return;
+    const cleaned = String(dig.value || '').replace(/\D/g,'').slice(0,2);
+    if(dig.value !== cleaned) dig.value = cleaned;
+    if(dig.getAttribute('data-time-digit')==='hour') popupHourDraft = cleaned;
+    else popupMinDraft = cleaned;
+  });
+
+  builderRightPane.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){
+      const dig = e.target.closest('input[data-time-digit]');
+      if(dig){
+        e.preventDefault();
+        const pop = dig.closest('[data-time-popover]');
+        if(pop) commitStandaloneDigitPopup(Number(pop.getAttribute('data-time-popover')));
+      }
+    }
+  });
+
+  document.addEventListener('pointerdown', e=>{
+    if(!openTimePopupNodeId) return;
+    if(e.target && e.target.closest && e.target.closest('.custom-select-wrap')) return;
+    openTimePopupNodeId = null;
+    popupTimeError = '';
+    renderBuilderModal();
+  }, true);
 
   builderRightPane.addEventListener('change', e=>{
     const intInput = e.target.closest('input[data-interval-key]');
@@ -5870,43 +6220,6 @@ void main(){
         renderBuilderModal();
       }
       return;
-    }
-    const timeInput = e.target.closest('input[data-time-row]');
-    if(timeInput){
-      const rowIdx = Number(timeInput.getAttribute('data-time-row'));
-      const targetMinOfDay = hmToMinutes(timeInput.value);
-      const rows = computeSequenceNodeRows(draftSequenceConfig);
-      if(rowIdx===0){
-        mutateDraftConfig(cfg=>{
-          cfg.firstNodeCustomMinutes = targetMinOfDay;
-        });
-      }else if(rows[rowIdx-1] && rows[rowIdx]){
-        const prevRow = rows[rowIdx-1];
-        const currRow = rows[rowIdx];
-        const key = prevRow.node.nodeId + '__' + currRow.node.nodeId;
-        const prevDayBase = Math.floor(prevRow.customTimeMinutes / 1440) * 1440;
-        let candidateMin = prevDayBase + targetMinOfDay;
-        let diff = candidateMin - prevRow.customTimeMinutes;
-        let msg = '';
-        if(diff < 1){
-          candidateMin += 1440;
-          diff = candidateMin - prevRow.customTimeMinutes;
-          msg = '직전 단계보다 이른 시각이어서 다음 날(+1일) 시각으로 자동 설정되었습니다.';
-        }
-        if(diff > 600){
-          diff = 600;
-          msg = '직전 단계와의 간격이 최대 600분으로 제한되었습니다.';
-        }
-        mutateDraftConfig(cfg=>{
-          if(!cfg.intervalMap) cfg.intervalMap = {};
-          if(cfg.intervalSecondsMap) delete cfg.intervalSecondsMap[key];
-          cfg.intervalMap[key] = clamp(Math.round(diff), 1, 600);
-        });
-        if(msg){
-          rowAlertMap[key] = msg;
-          renderBuilderModal();
-        }
-      }
     }
   });
 
@@ -6394,7 +6707,7 @@ void main(){
       const raw = localStorage.getItem(STORAGE_KEY);
       if(!raw){
         applyTheme('auto', true);
-        applyClockSyncMode('original_csat_time', true);
+        applyClockSyncMode('custom_cascaded_time', true);
         if(keepScreenAwake) requestWakeLock();
         renderBookmarks();
         return;
@@ -6405,9 +6718,7 @@ void main(){
       }else{
         applyTheme('auto', true);
       }
-      if(parsed.clockSyncMode && ['original_csat_time','custom_cascaded_time'].includes(parsed.clockSyncMode)){
-        applyClockSyncMode(parsed.clockSyncMode, true);
-      }
+      applyClockSyncMode('custom_cascaded_time', true);
       if(typeof parsed.bellVolume==='number' && isFinite(parsed.bellVolume)){
         bellVolume = clamp(parsed.bellVolume,0,1);
         if(bellVolSlider){
@@ -6518,8 +6829,8 @@ void main(){
         if(data.themePref && ['auto','light','dark','sepia'].includes(data.themePref)){
           applyTheme(data.themePref, true);
         }
-        if(data.clockSyncMode && ['original_csat_time','custom_cascaded_time'].includes(data.clockSyncMode)){
-          applyClockSyncMode(data.clockSyncMode, true);
+        if(data.clockSyncMode){
+          applyClockSyncMode('custom_cascaded_time', true);
         }
         if(typeof data.bellVolume==='number' && isFinite(data.bellVolume)){
           bellVolume = clamp(data.bellVolume,0,1);
@@ -6746,7 +7057,7 @@ void main(){
     if(rtCountMeta){
       rtCountMeta.textContent = timetableViewMode==='all'
         ? ('전체 ' + EMBEDDED.timetable.length + '구간')
-        : ('선택 ' + seqRows.length + '단계 (' + (clockSyncMode==='original_csat_time' ? '원래 수능 시각' : '구성 계산 시각') + ')');
+        : ('선택 ' + seqRows.length + '단계');
       if(switchAnimDir){
         rtCountMeta.classList.remove('is-animating');
         void rtCountMeta.offsetWidth;
@@ -6835,15 +7146,13 @@ void main(){
         const expKey = 'sel_'+row.node.nodeId+'_'+idx;
         const isExpanded = expandedRtKey === expKey;
         const isInfoOpen = expandedRtInfoKey === expKey;
-        const dispTime = clockSyncMode==='original_csat_time'
-          ? row.node.originalTimeText
-          : (format24hTime(row.customTimeMinutes) + (row.dayOffset > 0 ? (' (+'+row.dayOffset+'일)') : ''));
+        const dispTime = format24hTime(row.customTimeMinutes) + (row.dayOffset > 0 ? (' (+'+row.dayOffset+'일)') : '');
         const waitUnit = row.intervalAfterSeconds % 60 !== 0
           ? (row.intervalAfterSeconds + '초')
           : (row.intervalAfterMinutes + '분');
         const subDetail = row.nextNode
-          ? ('다음까지 ' + waitUnit + ' 대기 · ' + (clockSyncMode==='original_csat_time' ? ('구성 시각 ' + format24hTime(row.customTimeMinutes)) : ('원래 ' + row.node.originalTimeText)))
-          : ('마지막 단계 (' + waitUnit + ') · ' + (clockSyncMode==='original_csat_time' ? ('구성 시각 ' + format24hTime(row.customTimeMinutes)) : ('원래 ' + row.node.originalTimeText)));
+          ? ('다음까지 ' + waitUnit + ' 대기')
+          : ('마지막 단계 (' + waitUnit + ')');
         const bellCode = row.node.bellCode || '';
         const durSec = bellCode && EMBEDDED.bellDurationSecMap ? (EMBEDDED.bellDurationSecMap[bellCode] || 10) : 0;
 

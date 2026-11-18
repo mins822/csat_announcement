@@ -100,9 +100,7 @@ function readStoredCustomSettings(): {
     const themePref: ThemePreference = VALID_THEME_PREFS.includes(parsed?.themePref)
       ? parsed.themePref
       : 'auto';
-    const clockSyncMode: ClockSyncMode = VALID_SYNC_MODES.includes(parsed?.clockSyncMode)
-      ? parsed.clockSyncMode
-      : 'original_csat_time';
+    const clockSyncMode: ClockSyncMode = 'custom_cascaded_time';
 
     const cfgVal = validateConfig(parsed?.customSequenceConfig);
     correctedCount += cfgVal.correctedCount;
@@ -396,9 +394,7 @@ export default function App() {
   const [themePref, setThemePref] = useState<ThemePreference>(() =>
     initialStored ? initialStored.themePref : 'auto'
   );
-  const [clockSyncMode, setClockSyncMode] = useState<ClockSyncMode>(() =>
-    initialStored ? initialStored.clockSyncMode : 'original_csat_time'
-  );
+  const [clockSyncMode, setClockSyncMode] = useState<ClockSyncMode>('custom_cascaded_time');
   const [customSequenceConfig, setCustomSequenceConfig] = useState<CustomSequenceConfig>(() =>
     initialStored ? initialStored.customSequenceConfig : DEFAULT_CUSTOM_SEQUENCE_CONFIG
   );
@@ -410,9 +406,7 @@ export default function App() {
   const [draftSequenceConfig, setDraftSequenceConfig] = useState<CustomSequenceConfig>(() =>
     cloneSequenceConfig(initialStored ? initialStored.customSequenceConfig : DEFAULT_CUSTOM_SEQUENCE_CONFIG)
   );
-  const [draftClockSyncMode, setDraftClockSyncMode] = useState<ClockSyncMode>(() =>
-    initialStored ? initialStored.clockSyncMode : 'original_csat_time'
-  );
+  const [draftClockSyncMode, setDraftClockSyncMode] = useState<ClockSyncMode>('custom_cascaded_time');
   const [draftUndoStack, setDraftUndoStack] = useState<CustomSequenceConfig[]>([]);
   const [draftRedoStack, setDraftRedoStack] = useState<CustomSequenceConfig[]>([]);
   const [builderStep, setBuilderStep] = useState<1 | 2 | 3>(1);
@@ -477,6 +471,9 @@ export default function App() {
   );
   const [openCustomPopup, setOpenCustomPopup] = useState<string | null>(null);
   const [customTimeDraftText, setCustomTimeDraftText] = useState<string>('');
+  const [popupHourDraft, setPopupHourDraft] = useState<string>('10');
+  const [popupMinDraft, setPopupMinDraft] = useState<string>('25');
+  const [popupTimeError, setPopupTimeError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(() => {
     if (typeof document === 'undefined') return false;
     const doc = document as Document & { webkitFullscreenElement?: Element | null };
@@ -1616,16 +1613,12 @@ export default function App() {
       }
 
       const dispStartMin = isCustomSeq
-        ? syncMode === 'original_csat_time'
-          ? (firstStep.originalStartMinutes ?? preset.startMinutes)
-          : (firstStep.customStartMinutes ?? preset.startMinutes)
+        ? (firstStep.customStartMinutes ?? preset.startMinutes)
         : preset.startMinutes;
 
       const targetEndRow = examEndStep || firstStep;
       const dispEndMin = isCustomSeq
-        ? syncMode === 'original_csat_time'
-          ? (targetEndRow.originalEndMinutes ?? preset.endMinutes)
-          : (targetEndRow.customEndMinutes ?? preset.endMinutes)
+        ? (targetEndRow.customEndMinutes ?? preset.endMinutes)
         : examEndStep
           ? examEndStep.endMinutes
           : preset.endMinutes;
@@ -1681,7 +1674,7 @@ export default function App() {
   useEffect(() => {
     const stored = initialLoadRef.current?.settings ?? null;
     const initialThemePref: ThemePreference = stored ? stored.themePref : 'auto';
-    const initialSyncMode: ClockSyncMode = stored ? stored.clockSyncMode : 'original_csat_time';
+    const initialSyncMode: ClockSyncMode = 'custom_cascaded_time';
     const initialSeqConfig: CustomSequenceConfig = stored
       ? stored.customSequenceConfig
       : DEFAULT_CUSTOM_SEQUENCE_CONFIG;
@@ -1965,17 +1958,9 @@ export default function App() {
 
         if (preset.isCustomSequence) {
           const targetEndStep = examEndStep || activeStep;
-          if (st.clockSyncMode === 'original_csat_time') {
-            dispStartMin = activeStep.originalStartMinutes ?? activeStep.startMinutes;
-            dispEndMin = targetEndStep.originalEndMinutes ?? targetEndStep.endMinutes;
-            const stepOrigEnd = activeStep.originalEndMinutes ?? activeStep.endMinutes;
-            clockHandMinutes =
-              clampedElapsedMs >= totalDurMs ? dispEndMin : Math.min(stepOrigEnd, dispStartMin + stageElapsedMin);
-          } else {
-            dispStartMin = activeStep.customStartMinutes ?? activeStep.startMinutes;
-            dispEndMin = targetEndStep.customEndMinutes ?? targetEndStep.endMinutes;
-            clockHandMinutes = dispStartMin + stageElapsedMin;
-          }
+          dispStartMin = activeStep.customStartMinutes ?? activeStep.startMinutes;
+          dispEndMin = targetEndStep.customEndMinutes ?? targetEndStep.endMinutes;
+          clockHandMinutes = dispStartMin + stageElapsedMin;
         }
 
         if (startLabRef.current) {
@@ -3094,30 +3079,18 @@ export default function App() {
     showToast(`테마 변경: ${labelMap[nextPref]}`, 2400);
   };
 
-  const handleClockSyncModeChange = (nextMode: ClockSyncMode, isInsideModal = false) => {
+  const handleClockSyncModeChange = (_nextMode: ClockSyncMode, isInsideModal = false) => {
+    const enforced: ClockSyncMode = 'custom_cascaded_time';
     if (isInsideModal) {
-      setDraftClockSyncMode(nextMode);
+      setDraftClockSyncMode(enforced);
       return;
     }
-    setClockSyncMode(nextMode);
-    clockSyncModeRef.current = nextMode;
-    engineRef.current.clockSyncMode = nextMode;
+    setClockSyncMode(enforced);
+    clockSyncModeRef.current = enforced;
+    engineRef.current.clockSyncMode = enforced;
     if (engineRef.current.phase === 'idle') {
-      syncUiToPresetIdle(engineRef.current.preset, nextMode);
+      syncUiToPresetIdle(engineRef.current.preset, enforced);
     }
-    saveCustomSettingsToStorage(
-      themePref,
-      selectedPresetId,
-      devMode,
-      nextMode,
-      customSequenceConfig
-    );
-    showToast(
-      nextMode === 'original_csat_time'
-        ? '시계 바늘 연동: 각 타종의 원래 수능 시각 기준 (대기 시간만 설정 간격 적용)'
-        : '시계 바늘 연동: 설정 간격으로 자동 연쇄 계산된 시각 기준',
-      3000
-    );
   };
 
   const handleSelectTimetableRow = (row: CsatTimetableRow, closeModal = true) => {
@@ -3942,9 +3915,7 @@ export default function App() {
 
   const handleLoadBookmarkToEditor = (bm: SavedSequenceBookmark) => {
     const { config: sanitizedCfg } = validateConfig(bm.config);
-    const nextSync: ClockSyncMode = VALID_SYNC_MODES.includes(bm.clockSyncMode)
-      ? bm.clockSyncMode
-      : draftClockSyncMode;
+    const nextSync: ClockSyncMode = 'custom_cascaded_time';
     updateDraftConfig(() => sanitizedCfg);
     syncSubjectComboFromNodeIds(sanitizedCfg.selectedNodeIds);
     setDraftClockSyncMode(nextSync);
@@ -3953,9 +3924,7 @@ export default function App() {
 
   const handleApplyBookmarkDirectly = (bm: SavedSequenceBookmark) => {
     const { config: sanitizedCfg } = validateConfig(bm.config);
-    const nextSync: ClockSyncMode = VALID_SYNC_MODES.includes(bm.clockSyncMode)
-      ? bm.clockSyncMode
-      : clockSyncMode;
+    const nextSync: ClockSyncMode = 'custom_cascaded_time';
 
     if (isBuilderModalOpen) {
       updateDraftConfig(() => sanitizedCfg);
@@ -4114,11 +4083,15 @@ export default function App() {
     handleSetIntervalSeconds(fromNode, toNode, v.seconds);
   };
 
-  // C3: Direct time input validation & update
-  const handleDirectTimeInputChange = (rowIndex: number, newHmValue: string) => {
+  // C3: Direct time input validation & update (preserves subsequent row times when valid)
+  const handleDirectTimeInputChange = (
+    rowIndex: number,
+    newHmValue: string
+  ): { ok: boolean; error?: string } => {
     const currRow = draftRows[rowIndex];
-    if (!currRow) return;
+    if (!currRow) return { ok: false, error: '항목을 찾을 수 없습니다.' };
     const prevRow = rowIndex > 0 ? draftRows[rowIndex - 1] : null;
+    const nextRow = rowIndex < draftRows.length - 1 ? draftRows[rowIndex + 1] : null;
     const errKey = `time_${currRow.node.nodeId}`;
 
     const val = validateRowTimeInput(
@@ -4127,8 +4100,9 @@ export default function App() {
       rowIndex === 0
     );
     if (!val.ok || val.secondsFromMidnight === undefined) {
-      setRowInputErrors((prev) => ({ ...prev, [errKey]: val.reason || '시각 입력 오류' }));
-      return;
+      const errMsg = val.reason || '시각 입력 오류';
+      setRowInputErrors((prev) => ({ ...prev, [errKey]: errMsg }));
+      return { ok: false, error: errMsg };
     }
 
     setRowInputErrors((prev) => {
@@ -4138,17 +4112,62 @@ export default function App() {
     });
 
     if (rowIndex === 0) {
-      const targetMin = val.secondsFromMidnight / 60;
-      updateDraftConfig((prev) => ({
-        ...prev,
-        firstNodeCustomMinutes: targetMin,
-      }));
-      return;
+      const targetSec = val.secondsFromMidnight;
+      const targetMin = targetSec / 60;
+      updateDraftConfig((prev) => {
+        const nextIntervalMap = { ...prev.intervalMap };
+        const nextIntervalSecondsMap = { ...(prev.intervalSecondsMap || {}) };
+        if (nextRow) {
+          const afterSec = nextRow.customTimeSeconds - targetSec;
+          if (afterSec >= 10 && afterSec <= 36000) {
+            const afterKey = getIntervalMapKey(currRow.node.nodeId, nextRow.node.nodeId);
+            nextIntervalSecondsMap[afterKey] = Math.round(afterSec);
+            nextIntervalMap[afterKey] = Math.max(1, Math.round(afterSec / 60));
+          }
+        }
+        return {
+          ...prev,
+          firstNodeCustomMinutes: targetMin,
+          intervalMap: nextIntervalMap,
+          intervalSecondsMap: nextIntervalSecondsMap,
+        };
+      });
+      return { ok: true };
     }
 
     if (prevRow && val.intervalSeconds !== undefined) {
-      handleSetIntervalSeconds(prevRow.node, currRow.node, val.intervalSeconds);
+      const clampedPrevSec = clamp(Math.round(val.intervalSeconds), 10, 36000);
+      const clampedPrevMin = Math.max(1, Math.round(clampedPrevSec / 60));
+      const prevKey = getIntervalMapKey(prevRow.node.nodeId, currRow.node.nodeId);
+      const newCurrSec = prevRow.customTimeSeconds + clampedPrevSec;
+
+      updateDraftConfig((prev) => {
+        const nextIntervalMap = {
+          ...prev.intervalMap,
+          [prevKey]: clampedPrevMin,
+        };
+        const nextIntervalSecondsMap = {
+          ...(prev.intervalSecondsMap || {}),
+          [prevKey]: clampedPrevSec,
+        };
+        if (nextRow) {
+          const afterSec = nextRow.customTimeSeconds - newCurrSec;
+          if (afterSec >= 10 && afterSec <= 36000) {
+            const afterKey = getIntervalMapKey(currRow.node.nodeId, nextRow.node.nodeId);
+            nextIntervalSecondsMap[afterKey] = Math.round(afterSec);
+            nextIntervalMap[afterKey] = Math.max(1, Math.round(afterSec / 60));
+          }
+        }
+        return {
+          ...prev,
+          intervalMap: nextIntervalMap,
+          intervalSecondsMap: nextIntervalSecondsMap,
+        };
+      });
+      return { ok: true };
     }
+
+    return { ok: false, error: '시각을 반영할 수 없습니다.' };
   };
 
   // C1: Apply draft to customSequenceConfig and currentPreset
@@ -4271,8 +4290,8 @@ export default function App() {
           setThemePref(nextTheme);
           resolveAndApplyTheme(nextTheme);
         }
-        if (data.clockSyncMode && VALID_SYNC_MODES.includes(data.clockSyncMode)) {
-          nextSyncMode = data.clockSyncMode as ClockSyncMode;
+        if (data.clockSyncMode) {
+          nextSyncMode = 'custom_cascaded_time';
           setClockSyncMode(nextSyncMode);
           clockSyncModeRef.current = nextSyncMode;
           engineRef.current.clockSyncMode = nextSyncMode;
@@ -5383,29 +5402,6 @@ export default function App() {
                     ))}
                   </div>
 
-                  <div className="pill-group-row" role="group" aria-label="시계 바늘 시각 연동 방식">
-                    <button
-                      type="button"
-                      className={`theme-chip ${
-                        clockSyncMode === 'original_csat_time' ? 'active' : ''
-                      }`}
-                      onClick={() => handleClockSyncModeChange('original_csat_time')}
-                      title="각 타종의 원래 수능 시각으로 시계 바늘을 맞추고 대기 시간만 설정 간격 적용 (기본)"
-                    >
-                      원래 수능 시각 맞춤 (기본)
-                    </button>
-                    <button
-                      type="button"
-                      className={`theme-chip ${
-                        clockSyncMode === 'custom_cascaded_time' ? 'active' : ''
-                      }`}
-                      onClick={() => handleClockSyncModeChange('custom_cascaded_time')}
-                      title="간격 수정에 따라 자동 연쇄 계산된 시각으로 시계 바늘 연동"
-                    >
-                      구성 계산 시각 연동
-                    </button>
-                  </div>
-
                   {/* 화면 켜짐 유지 & 시계 바탕 블러 애니메이션 옵션 */}
                   <div className="drawer-card-panel" aria-label="화면 및 시계 블러 애니메이션 설정">
                     <div className="drawer-card-title">
@@ -5689,9 +5685,7 @@ export default function App() {
             >
               {timetableViewMode === 'all'
                 ? `전체 ${CSAT_FULL_TIMETABLE.length}구간`
-                : `선택 ${computedSequenceRows.length}단계 (${
-                    clockSyncMode === 'original_csat_time' ? '원래 수능 시각' : '구성 계산 시각'
-                  })`}
+                : `선택 ${computedSequenceRows.length}단계`}
             </span>
           </div>
           <div className="rt-head-actions">
@@ -5887,20 +5881,11 @@ export default function App() {
                 const rowKey = `sel_${row.node.nodeId}`;
                 const isExpanded = expandedTimetableKey === rowKey;
                 const isInfoOpen = expandedInfoKey === rowKey;
-                const displayTime =
-                  clockSyncMode === 'original_csat_time'
-                    ? row.node.originalTimeText
-                    : format24hTime(row.customTimeMinutes);
+                const displayTime = format24hTime(row.customTimeMinutes);
                 const waitLabel = formatIntervalSecondsLabel(row.intervalAfterSeconds);
                 const subDetail = row.nextNode
-                  ? `다음까지 ${waitLabel} 대기 · ${
-                      clockSyncMode === 'original_csat_time'
-                        ? `계산 ${format24hTime(row.customTimeMinutes)}`
-                        : `원래 ${row.node.originalTimeText}`
-                    }${row.isMuted ? ' · 무음' : ''}`
-                  : `마지막 단계 (${waitLabel}) · 원래 ${row.node.originalTimeText}${
-                      row.isMuted ? ' · 무음' : ''
-                    }`;
+                  ? `다음까지 ${waitLabel} 대기${row.isMuted ? ' · 무음' : ''}`
+                  : `마지막 단계 (${waitLabel})${row.isMuted ? ' · 무음' : ''}`;
                 const bellItem = row.node.bellCode
                   ? CSAT_37_BELL_FILES.find((b) => b.code === row.node.bellCode)
                   : null;
@@ -6172,7 +6157,7 @@ export default function App() {
                 영역별 타종 체크박스 선택 및 시간 간격 · 시각 설정
               </h1>
               <p>
-                원하는 영역과 타종 단계를 선택하고, 각 타종 사이의 간격과 연쇄 시각을 조정하세요.
+                원하는 영역과 타종 단계를 선택하고, 각 타종 사이의 간격과 타종 시각을 조정하세요.
               </p>
             </div>
             <div className="head-actions">
@@ -6615,28 +6600,6 @@ export default function App() {
                   </div>
                 )}
 
-                <div className="quick-line">
-                  <span className="quick-label">시계 바늘 연동</span>
-                  <button
-                    type="button"
-                    className={`chip ${
-                      draftClockSyncMode === 'original_csat_time' ? 'active' : ''
-                    }`}
-                    onClick={() => handleClockSyncModeChange('original_csat_time', true)}
-                  >
-                    원래 수능 시각 맞춤 + 대기 간격 적용
-                  </button>
-                  <button
-                    type="button"
-                    className={`chip ${
-                      draftClockSyncMode === 'custom_cascaded_time' ? 'active' : ''
-                    }`}
-                    onClick={() => handleClockSyncModeChange('custom_cascaded_time', true)}
-                  >
-                    간격 연쇄 계산 시각 연동
-                  </button>
-                </div>
-
                 <div className="step1-subject-preview-bar">
                   <span>
                     다음(2단계) 표시 과목:{' '}
@@ -6840,9 +6803,6 @@ export default function App() {
               <section className="right-pane step-single-pane" ref={builderRightPaneRef}>
                 <div className="pane-title">
                   <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
-                  <span className="pane-note">
-                    간격 변경 시 이후 시각 자동 계산 · 시각 변경 시 직전 간격 반영
-                  </span>
                 </div>
 
               {/* B4: 일괄 간격 도구 바 */}
@@ -7031,7 +6991,7 @@ export default function App() {
                             )}
                           </div>
                           <div className="alarm-sub">
-                            원래 수능 시각 {row.node.originalTimeText} · 연쇄 계산 시각{' '}
+                            정시 {row.node.originalTimeText} · 타종{' '}
                             {format24hTime(row.customTimeMinutes)} ·{' '}
                             {bellItem ? `타종 ${bellItem.code}` : '영어 듣기 방송'}
                             {row.isMuted ? ' · 음소거' : ''}
@@ -7039,7 +6999,7 @@ export default function App() {
                         </div>
                         <div>
                           <div className="clock-control">
-                            <span>연쇄 시각</span>
+                            <span>타종 시각</span>
                             <div className="custom-select-wrap">
                               <button
                                 type="button"
@@ -7049,12 +7009,15 @@ export default function App() {
                                 onClick={() => {
                                   if (isRowPopupOpen) {
                                     setOpenCustomPopup(null);
+                                    setPopupTimeError(null);
                                   } else {
                                     setCustomTimeDraftText(rowHmStr);
+                                    setPopupHourDraft(String(rowH12).padStart(2, '0'));
+                                    setPopupMinDraft(String(rowMm).padStart(2, '0'));
+                                    setPopupTimeError(null);
                                     setOpenCustomPopup(rowPopupId);
                                   }
                                 }}
-                                title="클릭하여 커스텀 시각 설정 팝업 열기"
                               >
                                 <span>
                                   {rowAmPm} {String(rowH12).padStart(2, '0')}:
@@ -7075,149 +7038,264 @@ export default function App() {
                                 </svg>
                               </button>
 
-                              {isRowPopupOpen && (
-                                <div
-                                  className="custom-time-popover"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <div className="custom-time-head">
-                                    <span className="custom-time-title">
-                                      #{idx + 1} 연쇄 시각 설정 ({rowHmStr})
-                                    </span>
-                                    <button
-                                      type="button"
-                                      className="custom-time-close"
-                                      onClick={() => setOpenCustomPopup(null)}
-                                    >
-                                      닫기
-                                    </button>
-                                  </div>
+                              {isRowPopupOpen && (() => {
+                                const isOpenUp =
+                                  draftRows.length > 2 && idx >= draftRows.length - 1;
+                                const commitRowDigits = (
+                                  h12Text: string,
+                                  mText: string,
+                                  closeOnSuccess = true
+                                ) => {
+                                  const rawH12 = Number(h12Text);
+                                  const rawMm = Number(mText);
+                                  if (
+                                    !Number.isFinite(rawH12) ||
+                                    !Number.isFinite(rawMm) ||
+                                    rawH12 < 1 ||
+                                    rawH12 > 12 ||
+                                    rawMm < 0 ||
+                                    rawMm > 59
+                                  ) {
+                                    setPopupTimeError('시(1~12)와 분(0~59)을 올바르게 입력해 주세요.');
+                                    return;
+                                  }
+                                  const isPmNow = rowHh >= 12;
+                                  const h12Norm = Math.round(rawH12) % 12;
+                                  const nextH24 = isPmNow ? h12Norm + 12 : h12Norm;
+                                  const nextMm = Math.round(rawMm);
+                                  const nextHm = `${String(nextH24).padStart(2, '0')}:${String(
+                                    nextMm
+                                  ).padStart(2, '0')}`;
+                                  const res = handleDirectTimeInputChange(idx, nextHm);
+                                  if (res.ok) {
+                                    setPopupTimeError(null);
+                                    setCustomTimeDraftText(nextHm);
+                                    setPopupHourDraft(String(rawH12).padStart(2, '0'));
+                                    setPopupMinDraft(String(nextMm).padStart(2, '0'));
+                                    if (closeOnSuccess) {
+                                      setOpenCustomPopup(null);
+                                    }
+                                  } else {
+                                    setPopupTimeError(res.error || '시각 입력 오류');
+                                  }
+                                };
 
-                                  <div className="custom-time-ampm-row">
-                                    {(['AM', 'PM'] as const).map((period) => {
-                                      const isAm = rowHh < 12;
-                                      const active =
-                                        (period === 'AM' && isAm) || (period === 'PM' && !isAm);
-                                      return (
-                                        <button
-                                          key={period}
-                                          type="button"
-                                          className={`custom-time-ampm-btn ${
-                                            active ? 'is-active' : ''
-                                          }`}
-                                          onClick={() => {
-                                            let nextH = rowHh;
-                                            if (period === 'AM' && rowHh >= 12) nextH = rowHh - 12;
-                                            if (period === 'PM' && rowHh < 12) nextH = rowHh + 12;
-                                            const nextHm = `${String(nextH).padStart(2, '0')}:${String(rowMm).padStart(2, '0')}`;
-                                            setCustomTimeDraftText(nextHm);
-                                            handleDirectTimeInputChange(idx, nextHm);
-                                          }}
-                                        >
-                                          {period === 'AM' ? '오전 (AM)' : '오후 (PM)'}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
+                                const applyRowDeltaMinutes = (deltaMin: number) => {
+                                  const baseMin = Math.floor(row.customTimeMinutes) % 1440;
+                                  const nextMinOfDay = clamp(baseMin + deltaMin, 0, 23 * 60 + 59);
+                                  const nextHm = format24hInputTime(nextMinOfDay);
+                                  const res = handleDirectTimeInputChange(idx, nextHm);
+                                  if (res.ok) {
+                                    const nh = Math.floor(nextMinOfDay / 60);
+                                    const nm = nextMinOfDay % 60;
+                                    const nh12 = nh % 12 === 0 ? 12 : nh % 12;
+                                    setPopupTimeError(null);
+                                    setCustomTimeDraftText(nextHm);
+                                    setPopupHourDraft(String(nh12).padStart(2, '0'));
+                                    setPopupMinDraft(String(nm).padStart(2, '0'));
+                                  } else {
+                                    setPopupTimeError(res.error || '시각 조정 오류');
+                                  }
+                                };
 
-                                  <div className="custom-time-quick-grid">
-                                    {[
-                                      { label: '−10분', deltaMin: -10 },
-                                      { label: '−5분', deltaMin: -5 },
-                                      { label: '−1분', deltaMin: -1 },
-                                      { label: '+1분', deltaMin: 1 },
-                                      { label: '+5분', deltaMin: 5 },
-                                      { label: '+10분', deltaMin: 10 },
-                                    ].map((nudgeItem) => (
+                                return (
+                                  <div
+                                    className={`custom-time-popover ${isOpenUp ? 'open-up' : ''}`}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <div className="custom-time-head">
+                                      <span className="custom-time-title">
+                                        #{idx + 1} 타종 시각
+                                        <span className="custom-time-badge">{rowHmStr}</span>
+                                      </span>
                                       <button
-                                        key={nudgeItem.label}
                                         type="button"
-                                        className="custom-time-nudge-btn"
+                                        className="custom-time-close"
                                         onClick={() => {
-                                          if (idx === 0) {
-                                            const nextMin = clamp(
-                                              Math.round(row.customTimeMinutes + nudgeItem.deltaMin),
-                                              0,
-                                              23 * 60 + 59
-                                            );
-                                            updateDraftConfig((prev) => ({
-                                              ...prev,
-                                              firstNodeCustomMinutes: nextMin,
-                                            }));
-                                            setCustomTimeDraftText(format24hInputTime(nextMin));
-                                          } else {
-                                            const prevRow = draftRows[idx - 1];
-                                            if (prevRow) {
-                                              const nextSec = Math.max(
-                                                10,
-                                                prevRow.intervalAfterSeconds +
-                                                  nudgeItem.deltaMin * 60
-                                              );
-                                              handleSetIntervalSeconds(
-                                                prevRow.node,
-                                                row.node,
-                                                nextSec
-                                              );
-                                              setCustomTimeDraftText(
-                                                format24hInputTime(
-                                                  prevRow.customTimeMinutes + nextSec / 60
-                                                )
-                                              );
+                                          setPopupTimeError(null);
+                                          setOpenCustomPopup(null);
+                                        }}
+                                      >
+                                        닫기
+                                      </button>
+                                    </div>
+
+                                    <div className="custom-time-ampm-row">
+                                      {(['AM', 'PM'] as const).map((period) => {
+                                        const isAm = rowHh < 12;
+                                        const active =
+                                          (period === 'AM' && isAm) || (period === 'PM' && !isAm);
+                                        return (
+                                          <button
+                                            key={period}
+                                            type="button"
+                                            className={`custom-time-ampm-btn ${
+                                              active ? 'is-active' : ''
+                                            }`}
+                                            onClick={() => {
+                                              let nextH = rowHh;
+                                              if (period === 'AM' && rowHh >= 12) nextH = rowHh - 12;
+                                              if (period === 'PM' && rowHh < 12) nextH = rowHh + 12;
+                                              const nextHm = `${String(nextH).padStart(2, '0')}:${String(rowMm).padStart(2, '0')}`;
+                                              const res = handleDirectTimeInputChange(idx, nextHm);
+                                              if (res.ok) {
+                                                const nh12 = nextH % 12 === 0 ? 12 : nextH % 12;
+                                                setPopupTimeError(null);
+                                                setCustomTimeDraftText(nextHm);
+                                                setPopupHourDraft(String(nh12).padStart(2, '0'));
+                                                setPopupMinDraft(String(rowMm).padStart(2, '0'));
+                                              } else {
+                                                setPopupTimeError(res.error || '시각 변경 오류');
+                                              }
+                                            }}
+                                          >
+                                            {period === 'AM' ? '오전' : '오후'}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+
+                                    <div className="custom-time-digit-grid">
+                                      <div className="custom-time-digit-box">
+                                        <span className="custom-time-digit-label">시</span>
+                                        <div className="custom-time-stepper">
+                                          <button
+                                            type="button"
+                                            className="custom-time-step-btn"
+                                            aria-label="1시간 감소"
+                                            onClick={() => applyRowDeltaMinutes(-60)}
+                                          >
+                                            −
+                                          </button>
+                                          <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            maxLength={2}
+                                            className="custom-time-digit-input"
+                                            aria-label="시 입력"
+                                            value={popupHourDraft}
+                                            onFocus={(e) => e.target.select()}
+                                            onChange={(e) =>
+                                              setPopupHourDraft(e.target.value.replace(/\D/g, '').slice(0, 2))
                                             }
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                commitRowDigits(popupHourDraft, popupMinDraft, true);
+                                              }
+                                            }}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="custom-time-step-btn"
+                                            aria-label="1시간 증가"
+                                            onClick={() => applyRowDeltaMinutes(60)}
+                                          >
+                                            +
+                                          </button>
+                                        </div>
+                                      </div>
+
+                                      <span className="custom-time-colon">:</span>
+
+                                      <div className="custom-time-digit-box">
+                                        <span className="custom-time-digit-label">분</span>
+                                        <div className="custom-time-stepper">
+                                          <button
+                                            type="button"
+                                            className="custom-time-step-btn"
+                                            aria-label="1분 감소"
+                                            onClick={() => applyRowDeltaMinutes(-1)}
+                                          >
+                                            −
+                                          </button>
+                                          <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            maxLength={2}
+                                            className="custom-time-digit-input"
+                                            aria-label="분 입력"
+                                            value={popupMinDraft}
+                                            onFocus={(e) => e.target.select()}
+                                            onChange={(e) =>
+                                              setPopupMinDraft(e.target.value.replace(/\D/g, '').slice(0, 2))
+                                            }
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                commitRowDigits(popupHourDraft, popupMinDraft, true);
+                                              }
+                                            }}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="custom-time-step-btn"
+                                            aria-label="1분 증가"
+                                            onClick={() => applyRowDeltaMinutes(1)}
+                                          >
+                                            +
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="custom-time-quick-grid">
+                                      {[
+                                        { label: '−10분', deltaMin: -10 },
+                                        { label: '−5분', deltaMin: -5 },
+                                        { label: '−1분', deltaMin: -1 },
+                                        { label: '+1분', deltaMin: 1 },
+                                        { label: '+5분', deltaMin: 5 },
+                                        { label: '+10분', deltaMin: 10 },
+                                      ].map((nudgeItem) => (
+                                        <button
+                                          key={nudgeItem.label}
+                                          type="button"
+                                          className="custom-time-nudge-btn"
+                                          onClick={() => applyRowDeltaMinutes(nudgeItem.deltaMin)}
+                                        >
+                                          {nudgeItem.label}
+                                        </button>
+                                      ))}
+                                    </div>
+
+                                    {popupTimeError && (
+                                      <div className="custom-time-error">{popupTimeError}</div>
+                                    )}
+
+                                    <div className="custom-time-footer-row">
+                                      <button
+                                        type="button"
+                                        className="custom-time-reset-btn"
+                                        onClick={() => {
+                                          const res = handleDirectTimeInputChange(
+                                            idx,
+                                            row.node.originalTimeText
+                                          );
+                                          if (res.ok) {
+                                            setPopupTimeError(null);
+                                            setCustomTimeDraftText(row.node.originalTimeText);
+                                            setOpenCustomPopup(null);
+                                          } else {
+                                            setPopupTimeError(res.error || '정시 복원 오류');
                                           }
                                         }}
                                       >
-                                        {nudgeItem.label}
+                                        정시 ({row.node.originalTimeText})
                                       </button>
-                                    ))}
-                                  </div>
-
-                                  <div className="custom-time-direct-row">
-                                    <input
-                                      type="text"
-                                      className="custom-time-direct-input"
-                                      value={customTimeDraftText}
-                                      placeholder="HH:MM (예: 08:40)"
-                                      onChange={(e) => setCustomTimeDraftText(e.target.value)}
-                                      onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                          e.preventDefault();
-                                          handleDirectTimeInputChange(
-                                            idx,
-                                            customTimeDraftText.trim()
-                                          );
-                                          setOpenCustomPopup(null);
+                                      <button
+                                        type="button"
+                                        className="custom-time-apply-btn"
+                                        onClick={() =>
+                                          commitRowDigits(popupHourDraft, popupMinDraft, true)
                                         }
-                                      }}
-                                    />
-                                    <button
-                                      type="button"
-                                      className="custom-time-apply-btn"
-                                      onClick={() => {
-                                        handleDirectTimeInputChange(
-                                          idx,
-                                          customTimeDraftText.trim()
-                                        );
-                                        setOpenCustomPopup(null);
-                                      }}
-                                    >
-                                      적용
-                                    </button>
+                                      >
+                                        적용
+                                      </button>
+                                    </div>
                                   </div>
-
-                                  <button
-                                    type="button"
-                                    className="custom-time-nudge-btn"
-                                    onClick={() => {
-                                      handleDirectTimeInputChange(idx, row.node.originalTimeText);
-                                      setCustomTimeDraftText(row.node.originalTimeText);
-                                      setOpenCustomPopup(null);
-                                    }}
-                                  >
-                                    공식 수능 시각({row.node.originalTimeText})으로 맞추기
-                                  </button>
-                                </div>
-                              )}
+                                );
+                              })()}
                             </div>
                           </div>
                           {timeErr && <div className="field-error-msg">{timeErr}</div>}
@@ -7506,12 +7584,6 @@ export default function App() {
                 {Math.floor(totalDraftMinutes / 60) > 0
                   ? `${Math.floor(totalDraftMinutes / 60)}시간 ${totalDraftMinutes % 60}분 (${totalDraftMinutes}분)`
                   : `${totalDraftMinutes}분`}
-              </strong>{' '}
-              · 시계 바늘{' '}
-              <strong>
-                {draftClockSyncMode === 'original_csat_time'
-                  ? '원래 수능 시각 기준'
-                  : '간격 연쇄 계산 시각 기준'}
               </strong>
             </div>
 
@@ -7533,22 +7605,44 @@ export default function App() {
                 </button>
               )}
               {builderStep < 3 && (
+                <div className="lg-pill-cta-wrap is-next">
+                  <div className="lg-pill-cta-shadow" aria-hidden="true" />
+                  <button
+                    type="button"
+                    className="lg-pill-cta-btn"
+                    onClick={() => goToBuilderStep((builderStep + 1) as 1 | 2 | 3)}
+                  >
+                    <span className="lg-pill-cta-label">
+                      다음
+                      <svg
+                        className="lg-pill-cta-chevron"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              )}
+              <div className="lg-pill-cta-wrap is-save">
+                <div className="lg-pill-cta-shadow" aria-hidden="true" />
                 <button
                   type="button"
-                  className="footer-btn step-next-btn"
-                  onClick={() => goToBuilderStep((builderStep + 1) as 1 | 2 | 3)}
+                  className="lg-pill-cta-btn"
+                  disabled={Object.keys(rowInputErrors).length > 0 || draftRows.length === 0}
+                  onClick={handleApplyCustomSequenceToTimer}
                 >
-                  다음
+                  <span className="lg-pill-cta-label">선택 구성 저장</span>
                 </button>
-              )}
-              <button
-                type="button"
-                className="footer-btn primary"
-                disabled={Object.keys(rowInputErrors).length > 0 || draftRows.length === 0}
-                onClick={handleApplyCustomSequenceToTimer}
-              >
-                선택 구성 저장
-              </button>
+              </div>
             </div>
           </footer>
         </main>

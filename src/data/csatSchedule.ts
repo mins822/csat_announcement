@@ -502,8 +502,8 @@ export function validateRowTimeInput(
     const msg = '시각을 비울 수 없습니다. 당일 시각(HH:MM)을 입력해 주세요.';
     return { ok: false, error: msg, reason: msg };
   }
-  const match = trimmed.match(/^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$/);
-  if (!match) {
+  const match = trimmed.match(/^(\d{1,2}):([0-5]\d)(?::([0-5]\d))?$/);
+  if (!match || Number(match[1]) > 23) {
     const msg = '당일 시각(00:00 ~ 23:59) 형식으로 입력해 주세요.';
     return { ok: false, error: msg, reason: msg };
   }
@@ -1176,7 +1176,7 @@ export function buildCustomSequencePreset(config: CustomSequenceConfig): CsatSes
       id: `custom_seq_0_${only.node.nodeId}`,
       periodLabel: only.node.periodLabel,
       displayTitle: only.node.subjectTitle,
-      timeRangeText: `${format24hTime(only.node.originalMinutes)} (${durLabel})`,
+      timeRangeText: `${format24hTime(only.customTimeMinutes, true)} (${durLabel})`,
       startMinutes: 0,
       endMinutes: durMin,
       originalStartMinutes: only.node.originalMinutes,
