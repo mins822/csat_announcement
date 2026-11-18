@@ -1148,26 +1148,6 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   border-color:var(--glass-rim);
   box-shadow:var(--btn-shadow);
 }
-.toll-dialog .step1-subject-preview-bar{
-  padding:10px 14px;
-  border-radius:14px;
-  border:1px dashed rgba(120,122,128,.34);
-  background:rgba(244,245,247,.64);
-  -webkit-backdrop-filter:blur(14px) saturate(.95);
-  backdrop-filter:blur(14px) saturate(.95);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
-  font-size:11px;
-  line-height:1.45;
-  color:var(--toll-ink-2);
-}
-.toll-dialog .step1-subject-preview-bar strong{
-  color:var(--toll-ink);
-  font-weight:760;
-}
-[data-theme="dark"] .toll-dialog .step1-subject-preview-bar{
-  background:rgba(255,255,255,.04);
-  border-color:rgba(255,255,255,.16);
-}
 .toll-dialog .left-pane.step-single-pane,
 .toll-dialog .right-pane.step-single-pane{
   padding:0;
@@ -2878,7 +2858,6 @@ html:not(.app-ready) #rightTimetablePanel{
 [data-theme="light"] .toll-dialog .quickbar.quickbar-step{background:transparent}
 [data-theme="light"] .toll-dialog .quickbar.quickbar-step .quick-line{background-color:rgba(255,255,255,.14);background-image:none}
 [data-theme="light"] .toll-dialog .dialog-footer{background:transparent}
-[data-theme="light"] .toll-dialog .step1-subject-preview-bar{background:rgba(244,245,247,.64)}
 [data-theme="light"] .toll-dialog .subj-auto-box{background:rgba(244,245,247,.74)}
 [data-theme="light"] .toll-dialog .builder-select-sm{background-color:rgba(247,248,250,.84)}
 [data-theme="light"] .toll-dialog .bookmark-modal-chip{background-color:rgba(244,245,247,.80)}
@@ -3341,7 +3320,6 @@ html:not(.app-ready) #rightTimetablePanel{
           </div>
           <div id="modalBookmarkMoveBar" class="bookmark-modal-move-bar" style="display:none"></div>
         </div>
-        <div id="step1SubjectPreviewBar" class="step1-subject-preview-bar"></div>
       </section>
 
       <aside id="builderLeftPane" class="left-pane step-single-pane is-step-hidden"></aside>
@@ -3565,7 +3543,6 @@ html:not(.app-ready) #rightTimetablePanel{
         builderStepper=document.getElementById('builderStepper'),
         builderStepBody=document.getElementById('builderStepBody'),
         builderQuickbar=document.getElementById('builderQuickbar'),
-        step1SubjectPreviewBar=document.getElementById('step1SubjectPreviewBar'),
         builderLeftPane=document.getElementById('builderLeftPane'),
         builderRightPane=document.getElementById('builderRightPane'),
         builderSummaryText=document.getElementById('builderSummaryText'),
@@ -5752,9 +5729,6 @@ void main(){
       const chk = lbl.querySelector('input[type="checkbox"]');
       if(chk) lbl.classList.toggle('is-checked', Boolean(chk.checked));
     });
-    if(!step1SubjectPreviewBar) return;
-    const names = EMBEDDED.subjectGroups.filter(g=>isGroupEnabledInStep2(g.id)).map(g=>g.title);
-    step1SubjectPreviewBar.innerHTML = '<span>다음(2단계) 표시 과목: <strong>' + (names.length ? escapeHtml(names.join(' · ')) : '선택된 과목 없음') + '</strong></span>';
   }
 
   function goToBuilderStep(nextStep){

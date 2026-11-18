@@ -7434,18 +7434,6 @@ export default function App() {
                   </div>
                 )}
 
-                <div className="step1-subject-preview-bar">
-                  <span>
-                    다음(2단계) 표시 과목:{' '}
-                    <strong>
-                      {enabledSubjectGroups.size > 0
-                        ? CSAT_SUBJECT_GROUPS.filter((g) => enabledSubjectGroups.has(g.id))
-                            .map((g) => g.title)
-                            .join(' · ')
-                        : '선택된 과목 없음'}
-                    </strong>
-                  </span>
-                </div>
               </section>
             )}
 
