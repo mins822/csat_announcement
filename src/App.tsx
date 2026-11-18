@@ -20,7 +20,9 @@ import {
   CsatStageType,
   CsatSubjectGroupId,
   CsatTimetableRow,
+  BookmarkFolder,
   CustomSequenceConfig,
+  DEFAULT_BOOKMARK_FOLDERS,
   DEFAULT_CUSTOM_SEQUENCE_CONFIG,
   DEFAULT_SEQUENCE_BOOKMARKS,
   SavedSequenceBookmark,
@@ -37,6 +39,7 @@ import {
   formatIntervalInputDisplay,
   formatIntervalSecondsLabel,
   getIntervalMapKey,
+  validateBookmarkFolders,
   validateBookmarks,
   validateConfig,
   validateIntervalInput,
@@ -77,6 +80,7 @@ interface StoredCustomSettings {
   devMode: boolean;
   clockSyncMode: ClockSyncMode;
   customSequenceConfig: CustomSequenceConfig;
+  bookmarkFolders: BookmarkFolder[];
   bookmarks: SavedSequenceBookmark[];
   bellVolume: number;
   englishVolume: number;
@@ -105,8 +109,14 @@ function readStoredCustomSettings(): {
     const cfgVal = validateConfig(parsed?.customSequenceConfig);
     correctedCount += cfgVal.correctedCount;
 
+    const folderVal = Array.isArray(parsed?.bookmarkFolders)
+      ? validateBookmarkFolders(parsed.bookmarkFolders)
+      : { folders: DEFAULT_BOOKMARK_FOLDERS, correctedCount: 0 };
+    correctedCount += folderVal.correctedCount;
+    const validFolderIds = new Set(folderVal.folders.map((f) => f.id));
+
     const bmVal = Array.isArray(parsed?.bookmarks)
-      ? validateBookmarks(parsed.bookmarks)
+      ? validateBookmarks(parsed.bookmarks, validFolderIds)
       : { bookmarks: DEFAULT_SEQUENCE_BOOKMARKS, correctedCount: 0 };
     correctedCount += bmVal.correctedCount;
 
@@ -144,6 +154,7 @@ function readStoredCustomSettings(): {
         devMode,
         clockSyncMode,
         customSequenceConfig: cfgVal.config,
+        bookmarkFolders: folderVal.folders,
         bookmarks: bmVal.bookmarks,
         bellVolume,
         englishVolume,
@@ -398,6 +409,9 @@ export default function App() {
   const [customSequenceConfig, setCustomSequenceConfig] = useState<CustomSequenceConfig>(() =>
     initialStored ? initialStored.customSequenceConfig : DEFAULT_CUSTOM_SEQUENCE_CONFIG
   );
+  const [bookmarkFolders, setBookmarkFolders] = useState<BookmarkFolder[]>(() =>
+    initialStored ? initialStored.bookmarkFolders : DEFAULT_BOOKMARK_FOLDERS
+  );
   const [bookmarks, setBookmarks] = useState<SavedSequenceBookmark[]>(() =>
     initialStored ? initialStored.bookmarks : DEFAULT_SEQUENCE_BOOKMARKS
   );
@@ -509,9 +523,18 @@ export default function App() {
   const [scheduledTargetMs, setScheduledTargetMs] = useState<number | null>(null);
   const [scheduleRemainSec, setScheduleRemainSec] = useState<number>(0);
 
-  // C4: Bookmark management states
+  // C4: Bookmark & Folder management states
   const [bookmarkNameInput, setBookmarkNameInput] = useState<string>('');
   const [isDrawerBookmarkInputOpen, setIsDrawerBookmarkInputOpen] = useState<boolean>(false);
+  const [isDrawerFolderInputOpen, setIsDrawerFolderInputOpen] = useState<boolean>(false);
+  const [isModalFolderInputOpen, setIsModalFolderInputOpen] = useState<boolean>(false);
+  const [folderNameInput, setFolderNameInput] = useState<string>('');
+  const [activeBookmarkFolderFilter, setActiveBookmarkFolderFilter] = useState<string>('all');
+  const [saveTargetFolderId, setSaveTargetFolderId] = useState<string>('');
+  const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
+  const [editingFolderName, setEditingFolderName] = useState<string>('');
+  const [movingBookmarkId, setMovingBookmarkId] = useState<string | null>(null);
+  const [collapsedBookmarkFolders, setCollapsedBookmarkFolders] = useState<Record<string, boolean>>({});
   const [editingBookmarkId, setEditingBookmarkId] = useState<string | null>(null);
   const [editingBookmarkName, setEditingBookmarkName] = useState<string>('');
   const [deletedBookmarkUndo, setDeletedBookmarkUndo] = useState<{
@@ -524,6 +547,7 @@ export default function App() {
     existingId: string;
     sourceConfig: CustomSequenceConfig;
     sourceSync: ClockSyncMode;
+    sourceFolderId: string | null;
   } | null>(null);
 
   // B1: Dedicated Preview Player state
@@ -576,6 +600,9 @@ export default function App() {
 
   const customSequenceConfigRef = useRef<CustomSequenceConfig>(customSequenceConfig);
   customSequenceConfigRef.current = customSequenceConfig;
+
+  const bookmarkFoldersRef = useRef<BookmarkFolder[]>(bookmarkFolders);
+  bookmarkFoldersRef.current = bookmarkFolders;
 
   const bookmarksRef = useRef<SavedSequenceBookmark[]>(bookmarks);
   bookmarksRef.current = bookmarks;
@@ -1049,7 +1076,8 @@ export default function App() {
       nextKeepAwake: boolean = keepScreenAwakeRef.current,
       nextMainGlow: boolean = mainBellGlowAnimRef.current,
       nextPrelimGlow: boolean = prelimBellGlowAnimRef.current,
-      nextTtOpacity: number = timetableOpacityRef.current
+      nextTtOpacity: number = timetableOpacityRef.current,
+      nextBookmarkFolders: BookmarkFolder[] = bookmarkFoldersRef.current
     ) => {
       try {
         const validTheme: ThemePreference = VALID_THEME_PREFS.includes(nextThemePref)
@@ -1064,6 +1092,7 @@ export default function App() {
           devMode: Boolean(nextDevMode),
           clockSyncMode: validSync,
           customSequenceConfig: nextSeqConfig,
+          bookmarkFolders: nextBookmarkFolders,
           bookmarks: nextBookmarks,
           bellVolume: clamp(Math.round(nextBellVol), 0, 100),
           englishVolume: clamp(Math.round(nextEngVol), 0, 100),
@@ -2750,6 +2779,44 @@ export default function App() {
       });
     }
 
+    const activePressedMap = new Map<number, HTMLElement>();
+    const PRESSABLE_SELECTOR =
+      'button:not(:disabled), .lg-btn:not(:disabled), .lg-pill-cta-btn:not(:disabled)';
+
+    const handlePressStart = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      const target = (e.target as HTMLElement | null)?.closest?.(
+        PRESSABLE_SELECTOR
+      ) as HTMLElement | null;
+      if (!target) return;
+      target.classList.add('is-pressed');
+      activePressedMap.set(e.pointerId, target);
+    };
+
+    const handlePressEnd = (e: PointerEvent) => {
+      const el = activePressedMap.get(e.pointerId);
+      if (!el) return;
+      activePressedMap.delete(e.pointerId);
+      let stillHeld = false;
+      activePressedMap.forEach((otherEl) => {
+        if (otherEl === el) stillHeld = true;
+      });
+      if (!stillHeld) {
+        el.classList.remove('is-pressed');
+      }
+    };
+
+    const clearAllPressed = () => {
+      activePressedMap.forEach((el) => el.classList.remove('is-pressed'));
+      activePressedMap.clear();
+    };
+
+    const handleTouchEndClear = (e: TouchEvent) => {
+      if (e.touches.length === 0) {
+        clearAllPressed();
+      }
+    };
+
     const handlePointerMove = (e: PointerEvent) => {
       const target = (e.target as HTMLElement | null)?.closest?.(
         '.lg-btn, .pill-group-row'
@@ -2804,6 +2871,13 @@ export default function App() {
     document.addEventListener('webkitfullscreenchange', handleFullscreenSettle);
     cv.addEventListener('webglcontextlost', handleContextLost);
     cv.addEventListener('webglcontextrestored', handleContextRestored);
+    document.addEventListener('pointerdown', handlePressStart, { capture: true, passive: true });
+    window.addEventListener('pointerup', handlePressEnd, { capture: true, passive: true });
+    window.addEventListener('pointercancel', handlePressEnd, { capture: true, passive: true });
+    window.addEventListener('touchend', handleTouchEndClear, { capture: true, passive: true });
+    window.addEventListener('touchcancel', handleTouchEndClear, { capture: true, passive: true });
+    window.addEventListener('blur', clearAllPressed);
+    document.addEventListener('visibilitychange', clearAllPressed);
     document.addEventListener('pointermove', handlePointerMove, { passive: true });
     document.addEventListener('pointerout', handlePointerOut, { passive: true });
     return () => {
@@ -2814,6 +2888,14 @@ export default function App() {
       document.removeEventListener('webkitfullscreenchange', handleFullscreenSettle);
       cv.removeEventListener('webglcontextlost', handleContextLost);
       cv.removeEventListener('webglcontextrestored', handleContextRestored);
+      document.removeEventListener('pointerdown', handlePressStart, true);
+      window.removeEventListener('pointerup', handlePressEnd, true);
+      window.removeEventListener('pointercancel', handlePressEnd, true);
+      window.removeEventListener('touchend', handleTouchEndClear, true);
+      window.removeEventListener('touchcancel', handleTouchEndClear, true);
+      window.removeEventListener('blur', clearAllPressed);
+      document.removeEventListener('visibilitychange', clearAllPressed);
+      clearAllPressed();
       document.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('pointerout', handlePointerOut);
       if (fsRaf) cancelAnimationFrame(fsRaf);
@@ -3828,13 +3910,175 @@ export default function App() {
     }
   };
 
-  // ---------- C4: Bookmark Save / Load / Edit / Duplicate / Overwrite / Delete Undo ----------
+  // ---------- C4: Bookmark & Folder Save / Load / Edit / Move / Duplicate / Overwrite / Delete Undo ----------
+  const handleSelectBookmarkFolderFilter = (folderKey: string) => {
+    setActiveBookmarkFolderFilter(folderKey);
+    if (folderKey === 'all' || folderKey === 'uncategorized') {
+      setSaveTargetFolderId('');
+    } else {
+      setSaveTargetFolderId(folderKey);
+    }
+    setEditingFolderId(null);
+  };
+
+  const handleCreateBookmarkFolder = (rawName: string, closeDrawerInput = true) => {
+    const trimmed = rawName.trim().slice(0, 30);
+    if (!trimmed) {
+      showToast('새 폴더 이름을 입력해 주세요.', 2400);
+      return;
+    }
+    if (bookmarkFolders.some((f) => f.name === trimmed)) {
+      showToast(`이미 '${trimmed}' 폴더가 있습니다.`, 2400);
+      return;
+    }
+    const newFolder: BookmarkFolder = {
+      id: `bmf_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      name: trimmed,
+      createdAt: new Date().toISOString(),
+    };
+    const nextFolders = [...bookmarkFolders, newFolder];
+    setBookmarkFolders(nextFolders);
+    bookmarkFoldersRef.current = nextFolders;
+    setFolderNameInput('');
+    if (closeDrawerInput) {
+      setIsDrawerFolderInputOpen(false);
+    }
+    setIsModalFolderInputOpen(false);
+    setActiveBookmarkFolderFilter(newFolder.id);
+    setSaveTargetFolderId(newFolder.id);
+    saveCustomSettingsToStorage(
+      themePref,
+      selectedPresetId,
+      devMode,
+      clockSyncMode,
+      customSequenceConfig,
+      bookmarksRef.current,
+      bellVolumeRef.current,
+      englishVolumeRef.current,
+      keepScreenAwakeRef.current,
+      mainBellGlowAnimRef.current,
+      prelimBellGlowAnimRef.current,
+      timetableOpacityRef.current,
+      nextFolders
+    );
+    showToast(`'${trimmed}' 북마크 폴더가 생성되었습니다.`, 2500);
+  };
+
+  const handleRenameBookmarkFolder = (folderId: string, rawName: string) => {
+    const trimmed = rawName.trim().slice(0, 30);
+    if (!trimmed) {
+      showToast('폴더 이름을 입력해 주세요.', 2200);
+      return;
+    }
+    if (bookmarkFolders.some((f) => f.id !== folderId && f.name === trimmed)) {
+      showToast(`이미 '${trimmed}' 폴더가 있습니다.`, 2400);
+      return;
+    }
+    const nextFolders = bookmarkFolders.map((f) =>
+      f.id === folderId ? { ...f, name: trimmed } : f
+    );
+    setBookmarkFolders(nextFolders);
+    bookmarkFoldersRef.current = nextFolders;
+    setEditingFolderId(null);
+    saveCustomSettingsToStorage(
+      themePref,
+      selectedPresetId,
+      devMode,
+      clockSyncMode,
+      customSequenceConfig,
+      bookmarksRef.current,
+      bellVolumeRef.current,
+      englishVolumeRef.current,
+      keepScreenAwakeRef.current,
+      mainBellGlowAnimRef.current,
+      prelimBellGlowAnimRef.current,
+      timetableOpacityRef.current,
+      nextFolders
+    );
+    showToast(`폴더 이름을 '${trimmed}'(으)로 변경했습니다.`, 2200);
+  };
+
+  const handleDeleteBookmarkFolder = (folderId: string) => {
+    const targetFolder = bookmarkFolders.find((f) => f.id === folderId);
+    if (!targetFolder) return;
+    const nextFolders = bookmarkFolders.filter((f) => f.id !== folderId);
+    const nextBookmarks = bookmarks.map((b) =>
+      b.folderId === folderId ? { ...b, folderId: null } : b
+    );
+    setBookmarkFolders(nextFolders);
+    bookmarkFoldersRef.current = nextFolders;
+    setBookmarks(nextBookmarks);
+    bookmarksRef.current = nextBookmarks;
+    if (activeBookmarkFolderFilter === folderId) {
+      setActiveBookmarkFolderFilter('all');
+    }
+    if (saveTargetFolderId === folderId) {
+      setSaveTargetFolderId('');
+    }
+    if (editingFolderId === folderId) {
+      setEditingFolderId(null);
+    }
+    saveCustomSettingsToStorage(
+      themePref,
+      selectedPresetId,
+      devMode,
+      clockSyncMode,
+      customSequenceConfig,
+      nextBookmarks,
+      bellVolumeRef.current,
+      englishVolumeRef.current,
+      keepScreenAwakeRef.current,
+      mainBellGlowAnimRef.current,
+      prelimBellGlowAnimRef.current,
+      timetableOpacityRef.current,
+      nextFolders
+    );
+    showToast(`'${targetFolder.name}' 폴더를 삭제했습니다. 내부 구성은 미분류로 이동되었습니다.`, 2800);
+  };
+
+  const handleMoveBookmarkToFolder = (bmId: string, targetFolderId: string | null) => {
+    const targetBm = bookmarks.find((b) => b.id === bmId);
+    if (!targetBm) return;
+    const normalizedFolderId =
+      targetFolderId && bookmarkFolders.some((f) => f.id === targetFolderId)
+        ? targetFolderId
+        : null;
+    const nextBookmarks = bookmarks.map((b) =>
+      b.id === bmId ? { ...b, folderId: normalizedFolderId } : b
+    );
+    setBookmarks(nextBookmarks);
+    bookmarksRef.current = nextBookmarks;
+    setMovingBookmarkId(null);
+    saveCustomSettingsToStorage(
+      themePref,
+      selectedPresetId,
+      devMode,
+      clockSyncMode,
+      customSequenceConfig,
+      nextBookmarks
+    );
+    const destFolder = normalizedFolderId
+      ? bookmarkFolders.find((f) => f.id === normalizedFolderId)?.name || '폴더'
+      : '미분류';
+    showToast(`'${targetBm.name}' 구성을 '${destFolder}'(으)로 이동했습니다.`, 2400);
+  };
+
   const executeSaveNewBookmark = (
     finalName: string,
     sourceConfig: CustomSequenceConfig,
     sourceSync: ClockSyncMode,
-    overwriteId?: string
+    overwriteId?: string,
+    folderId?: string | null
   ) => {
+    const resolvedFolderId =
+      folderId !== undefined
+        ? folderId && bookmarkFoldersRef.current.some((f) => f.id === folderId)
+          ? folderId
+          : null
+        : saveTargetFolderId && bookmarkFoldersRef.current.some((f) => f.id === saveTargetFolderId)
+          ? saveTargetFolderId
+          : null;
+
     let nextBookmarks: SavedSequenceBookmark[];
     if (overwriteId) {
       nextBookmarks = bookmarks.map((b) =>
@@ -3842,6 +4086,7 @@ export default function App() {
           ? {
               ...b,
               name: finalName,
+              folderId: folderId !== undefined ? resolvedFolderId : b.folderId ?? null,
               config: cloneSequenceConfig(sourceConfig),
               clockSyncMode: sourceSync,
               createdAt: new Date().toISOString(),
@@ -3852,6 +4097,7 @@ export default function App() {
       const newBm: SavedSequenceBookmark = {
         id: `bm_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
         name: finalName,
+        folderId: resolvedFolderId,
         config: cloneSequenceConfig(sourceConfig),
         clockSyncMode: sourceSync,
         createdAt: new Date().toISOString(),
@@ -3872,10 +4118,15 @@ export default function App() {
       customSequenceConfig,
       nextBookmarks
     );
+    const folderLabel = resolvedFolderId
+      ? bookmarkFoldersRef.current.find((f) => f.id === resolvedFolderId)?.name
+      : null;
     showToast(
       overwriteId
         ? `'${finalName}' 북마크 구성을 덮어썼습니다.`
-        : `'${finalName}' 구성이 자주 쓰는 타종 구성에 저장되었습니다.`,
+        : folderLabel
+          ? `'${finalName}' 구성이 '${folderLabel}' 폴더에 저장되었습니다.`
+          : `'${finalName}' 구성이 자주 쓰는 타종 구성에 저장되었습니다.`,
       2800
     );
   };
@@ -3898,6 +4149,10 @@ export default function App() {
         ? `${uniqueSubjects.join('·')} (${targetRows.length}단계)`
         : `${uniqueSubjects[0]} 외 ${uniqueSubjects.length - 1}과목 (${targetRows.length}단계)`;
     const finalName = (rawName || autoTitle).slice(0, 60);
+    const targetFolderId =
+      saveTargetFolderId && bookmarkFolders.some((f) => f.id === saveTargetFolderId)
+        ? saveTargetFolderId
+        : null;
 
     const existing = bookmarks.find((b) => b.name === finalName);
     if (existing) {
@@ -3906,11 +4161,12 @@ export default function App() {
         existingId: existing.id,
         sourceConfig: cloneSequenceConfig(targetCfg),
         sourceSync: targetSync,
+        sourceFolderId: targetFolderId,
       });
       return;
     }
 
-    executeSaveNewBookmark(finalName, targetCfg, targetSync);
+    executeSaveNewBookmark(finalName, targetCfg, targetSync, undefined, targetFolderId);
   };
 
   const handleLoadBookmarkToEditor = (bm: SavedSequenceBookmark) => {
@@ -3984,13 +4240,13 @@ export default function App() {
 
   const handleDuplicateBookmark = (bm: SavedSequenceBookmark) => {
     const copyName = `${bm.name} (복사)`.slice(0, 60);
-    executeSaveNewBookmark(copyName, bm.config, bm.clockSyncMode);
+    executeSaveNewBookmark(copyName, bm.config, bm.clockSyncMode, undefined, bm.folderId ?? null);
   };
 
   const handleOverwriteBookmark = (bm: SavedSequenceBookmark, useDraft = false) => {
     const srcCfg = useDraft ? draftSequenceConfig : customSequenceConfig;
     const srcSync = useDraft ? draftClockSyncMode : clockSyncMode;
-    executeSaveNewBookmark(bm.name, srcCfg, srcSync, bm.id);
+    executeSaveNewBookmark(bm.name, srcCfg, srcSync, bm.id, bm.folderId ?? null);
   };
 
   const handleDeleteBookmark = (bmId: string, e: React.MouseEvent) => {
@@ -4237,6 +4493,7 @@ export default function App() {
       devMode,
       clockSyncMode,
       customSequenceConfig,
+      bookmarkFolders,
       bookmarks,
       bellVolume,
       englishVolume,
@@ -4277,6 +4534,7 @@ export default function App() {
         let nextDev = devMode;
         let nextSyncMode = clockSyncMode;
         let nextSeqConfig = customSequenceConfig;
+        let nextBookmarkFolders = bookmarkFolders;
         let nextBookmarks = bookmarks;
         let nextBellVol = bellVolume;
         let nextEngVol = englishVolume;
@@ -4307,8 +4565,16 @@ export default function App() {
             syncSubjectComboFromNodeIds(nextSeqConfig.selectedNodeIds);
           }
         }
+        if (Array.isArray(data.bookmarkFolders)) {
+          const folderVal = validateBookmarkFolders(data.bookmarkFolders);
+          nextBookmarkFolders = folderVal.folders;
+          correctedTotal += folderVal.correctedCount;
+          setBookmarkFolders(nextBookmarkFolders);
+          bookmarkFoldersRef.current = nextBookmarkFolders;
+        }
         if (Array.isArray(data.bookmarks)) {
-          const bmVal = validateBookmarks(data.bookmarks);
+          const validFolderIds = new Set(nextBookmarkFolders.map((f) => f.id));
+          const bmVal = validateBookmarks(data.bookmarks, validFolderIds);
           nextBookmarks = bmVal.bookmarks;
           correctedTotal += bmVal.correctedCount;
           setBookmarks(nextBookmarks);
@@ -4380,7 +4646,8 @@ export default function App() {
           nextKeepAwake,
           nextMainGlow,
           nextPrelimGlow,
-          nextTtOpacity
+          nextTtOpacity,
+          nextBookmarkFolders
         );
         showToast(
           correctedTotal > 0
@@ -5215,168 +5482,489 @@ export default function App() {
                     </span>
                   </button>
 
-                  {isBookmarkCardOpen && (
-                    <div className="bookmark-drawer-card" aria-label="자주 쓰는 타종 구성">
-                      <div className="bookmark-drawer-head">
-                        <span className="bookmark-drawer-title">자주 쓰는 타종 구성</span>
-                        <button
-                          type="button"
-                          className="bookmark-add-toggle"
-                          onClick={() => setIsDrawerBookmarkInputOpen((prev) => !prev)}
-                        >
-                          {isDrawerBookmarkInputOpen ? '닫기' : '+ 현재 구성 저장'}
-                        </button>
-                      </div>
+                  {isBookmarkCardOpen && (() => {
+                    const folderCounts = new Map<string, number>();
+                    let uncategorizedCount = 0;
+                    bookmarks.forEach((b) => {
+                      if (b.folderId && bookmarkFolders.some((f) => f.id === b.folderId)) {
+                        folderCounts.set(b.folderId, (folderCounts.get(b.folderId) || 0) + 1);
+                      } else {
+                        uncategorizedCount++;
+                      }
+                    });
 
-                      {isDrawerBookmarkInputOpen && (
-                        <div className="bookmark-save-row">
-                          <input
-                            type="text"
-                            className="bookmark-name-input"
-                            placeholder="구성 이름 (비우면 자동)"
-                            value={bookmarkNameInput}
-                            maxLength={60}
-                            onChange={(e) => setBookmarkNameInput(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleSaveCurrentAsBookmark(false);
-                              }
-                            }}
-                          />
-                          <button
-                            type="button"
-                            className="bookmark-save-btn"
-                            onClick={() => handleSaveCurrentAsBookmark(false)}
-                          >
-                            저장
-                          </button>
-                        </div>
-                      )}
+                    const filteredBookmarks =
+                      activeBookmarkFolderFilter === 'all'
+                        ? bookmarks
+                        : activeBookmarkFolderFilter === 'uncategorized'
+                          ? bookmarks.filter(
+                              (b) => !b.folderId || !bookmarkFolders.some((f) => f.id === b.folderId)
+                            )
+                          : bookmarks.filter((b) => b.folderId === activeBookmarkFolderFilter);
 
-                      {deletedBookmarkUndo && (
-                        <div className="bm-undo-bar">
-                          <span>'{deletedBookmarkUndo.bookmark.name}' 삭제됨</span>
-                          <button
-                            type="button"
-                            className="bm-mini-act"
-                            onClick={handleUndoDeleteBookmark}
-                          >
-                            실행 취소
-                          </button>
-                        </div>
-                      )}
+                    const activeFolderObj = bookmarkFolders.find(
+                      (f) => f.id === activeBookmarkFolderFilter
+                    );
 
-                      {bookmarks.length === 0 ? (
-                        <div className="bookmark-empty-hint">저장된 구성이 없습니다.</div>
-                      ) : (
-                        <div className="bookmark-pill-list">
-                          {bookmarks.map((bm) => (
-                            <div key={bm.id} className="bookmark-pill-item-col">
-                              {editingBookmarkId === bm.id ? (
-                                <div className="bookmark-save-row">
-                                  <input
-                                    type="text"
-                                    className="bookmark-name-input"
-                                    value={editingBookmarkName}
-                                    maxLength={60}
-                                    onChange={(e) => setEditingBookmarkName(e.target.value)}
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        handleRenameBookmark(bm.id, editingBookmarkName);
-                                      }
-                                    }}
-                                  />
-                                  <button
-                                    type="button"
-                                    className="bm-mini-act"
-                                    onClick={() => handleRenameBookmark(bm.id, editingBookmarkName)}
-                                  >
-                                    확인
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="bm-mini-act"
-                                    onClick={() => setEditingBookmarkId(null)}
-                                  >
-                                    취소
-                                  </button>
-                                </div>
-                              ) : (
-                                <>
-                                  <div className="bookmark-item-top">
-                                    <button
-                                      type="button"
-                                      className="bookmark-pill-apply"
-                                      onClick={() => handleApplyBookmarkDirectly(bm)}
-                                      title="이 북마크로 즉시 타이머 적용"
-                                    >
-                                      <span className="bookmark-pill-name">{bm.name}</span>
-                                      <span className="bookmark-pill-count">
-                                        {bm.config.selectedNodeIds.length}개
-                                      </span>
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="bookmark-pill-del"
-                                      onClick={(e) => handleDeleteBookmark(bm.id, e)}
-                                      aria-label={`${bm.name} 삭제`}
-                                      title="이 북마크 삭제"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                  <div className="bookmark-item-actions">
-                                    <button
-                                      type="button"
-                                      className="bm-mini-act"
-                                      onClick={() => handleApplyBookmarkDirectly(bm)}
-                                    >
-                                      바로 적용
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="bm-mini-act"
-                                      onClick={() => {
-                                        openBuilderModal();
-                                        window.setTimeout(() => handleLoadBookmarkToEditor(bm), 30);
-                                      }}
-                                    >
-                                      편집기로 열기
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="bm-mini-act"
-                                      onClick={() => {
-                                        setEditingBookmarkId(bm.id);
-                                        setEditingBookmarkName(bm.name);
-                                      }}
-                                    >
-                                      이름 변경
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="bm-mini-act"
-                                      onClick={() => handleDuplicateBookmark(bm)}
-                                    >
-                                      복제
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="bm-mini-act"
-                                      onClick={() => handleOverwriteBookmark(bm, false)}
-                                    >
-                                      덮어쓰기
-                                    </button>
-                                  </div>
-                                </>
+                    const renderDrawerBookmarkCardItem = (bm: SavedSequenceBookmark) => (
+                      <div key={bm.id} className="bookmark-pill-item-col">
+                        {editingBookmarkId === bm.id ? (
+                          <div className="bookmark-save-row">
+                            <input
+                              type="text"
+                              className="bookmark-name-input"
+                              value={editingBookmarkName}
+                              maxLength={60}
+                              onChange={(e) => setEditingBookmarkName(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleRenameBookmark(bm.id, editingBookmarkName);
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="bm-mini-act"
+                              onClick={() => handleRenameBookmark(bm.id, editingBookmarkName)}
+                            >
+                              확인
+                            </button>
+                            <button
+                              type="button"
+                              className="bm-mini-act"
+                              onClick={() => setEditingBookmarkId(null)}
+                            >
+                              취소
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="bookmark-item-top">
+                              <button
+                                type="button"
+                                className="bookmark-pill-apply"
+                                onClick={() => handleApplyBookmarkDirectly(bm)}
+                                title="이 북마크로 즉시 타이머 적용"
+                              >
+                                <span className="bookmark-pill-name">{bm.name}</span>
+                                <span className="bookmark-pill-count">
+                                  {bm.config.selectedNodeIds.length}개
+                                </span>
+                              </button>
+                              <button
+                                type="button"
+                                className="bookmark-pill-del"
+                                onClick={(e) => handleDeleteBookmark(bm.id, e)}
+                                aria-label={`${bm.name} 삭제`}
+                                title="이 북마크 삭제"
+                              >
+                                ×
+                              </button>
+                            </div>
+                            <div className="bookmark-item-actions">
+                              <button
+                                type="button"
+                                className="bm-mini-act"
+                                onClick={() => handleApplyBookmarkDirectly(bm)}
+                              >
+                                바로 적용
+                              </button>
+                              <button
+                                type="button"
+                                className="bm-mini-act"
+                                onClick={() => {
+                                  openBuilderModal();
+                                  window.setTimeout(() => handleLoadBookmarkToEditor(bm), 30);
+                                }}
+                              >
+                                편집기로 열기
+                              </button>
+                              <button
+                                type="button"
+                                className="bm-mini-act"
+                                onClick={() => {
+                                  setEditingBookmarkId(bm.id);
+                                  setEditingBookmarkName(bm.name);
+                                }}
+                              >
+                                이름 변경
+                              </button>
+                              <button
+                                type="button"
+                                className="bm-mini-act"
+                                onClick={() => handleDuplicateBookmark(bm)}
+                              >
+                                복제
+                              </button>
+                              <button
+                                type="button"
+                                className="bm-mini-act"
+                                onClick={() => handleOverwriteBookmark(bm, false)}
+                              >
+                                덮어쓰기
+                              </button>
+                              {bookmarkFolders.length > 0 && (
+                                <button
+                                  type="button"
+                                  className={`bm-mini-act ${movingBookmarkId === bm.id ? 'is-active' : ''}`}
+                                  onClick={() =>
+                                    setMovingBookmarkId((prev) => (prev === bm.id ? null : bm.id))
+                                  }
+                                >
+                                  폴더 이동
+                                </button>
                               )}
                             </div>
-                          ))}
+                            {movingBookmarkId === bm.id && bookmarkFolders.length > 0 && (
+                              <div className="bookmark-move-row">
+                                <span className="bookmark-move-label">이동:</span>
+                                <button
+                                  type="button"
+                                  className={`bm-folder-pill ${!bm.folderId ? 'is-active' : ''}`}
+                                  onClick={() => handleMoveBookmarkToFolder(bm.id, null)}
+                                >
+                                  미분류
+                                </button>
+                                {bookmarkFolders.map((folder) => (
+                                  <button
+                                    key={folder.id}
+                                    type="button"
+                                    className={`bm-folder-pill ${bm.folderId === folder.id ? 'is-active' : ''}`}
+                                    onClick={() => handleMoveBookmarkToFolder(bm.id, folder.id)}
+                                  >
+                                    {folder.name}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    );
+
+                    return (
+                      <div className="bookmark-drawer-card" aria-label="자주 쓰는 타종 구성">
+                        <div className="bookmark-drawer-head">
+                          <span className="bookmark-drawer-title">자주 쓰는 타종 구성</span>
+                          <div className="bookmark-drawer-head-actions">
+                            <button
+                              type="button"
+                              className="bookmark-add-toggle"
+                              onClick={() => {
+                                setIsDrawerFolderInputOpen((prev) => !prev);
+                                setIsDrawerBookmarkInputOpen(false);
+                              }}
+                            >
+                              {isDrawerFolderInputOpen ? '닫기' : '+ 새 폴더'}
+                            </button>
+                            <button
+                              type="button"
+                              className="bookmark-add-toggle"
+                              onClick={() => {
+                                setIsDrawerBookmarkInputOpen((prev) => !prev);
+                                setIsDrawerFolderInputOpen(false);
+                              }}
+                            >
+                              {isDrawerBookmarkInputOpen ? '닫기' : '+ 구성 저장'}
+                            </button>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  )}
+
+                        {isDrawerFolderInputOpen && (
+                          <div className="bookmark-save-row">
+                            <input
+                              type="text"
+                              className="bookmark-name-input"
+                              placeholder="새 폴더 이름 (예: 국수탐, 모의고사)"
+                              value={folderNameInput}
+                              maxLength={30}
+                              onChange={(e) => setFolderNameInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  handleCreateBookmarkFolder(folderNameInput, true);
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="bookmark-save-btn"
+                              onClick={() => handleCreateBookmarkFolder(folderNameInput, true)}
+                            >
+                              생성
+                            </button>
+                          </div>
+                        )}
+
+                        {isDrawerBookmarkInputOpen && (
+                          <div className="bookmark-save-block">
+                            <div className="bookmark-save-row">
+                              <input
+                                type="text"
+                                className="bookmark-name-input"
+                                placeholder="구성 이름 (비우면 자동)"
+                                value={bookmarkNameInput}
+                                maxLength={60}
+                                onChange={(e) => setBookmarkNameInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleSaveCurrentAsBookmark(false);
+                                  }
+                                }}
+                              />
+                              <button
+                                type="button"
+                                className="bookmark-save-btn"
+                                onClick={() => handleSaveCurrentAsBookmark(false)}
+                              >
+                                저장
+                              </button>
+                            </div>
+                            {bookmarkFolders.length > 0 && (
+                              <div className="bookmark-folder-select-row">
+                                <span className="bookmark-move-label">저장 폴더:</span>
+                                <button
+                                  type="button"
+                                  className={`bm-folder-pill ${saveTargetFolderId === '' ? 'is-active' : ''}`}
+                                  onClick={() => setSaveTargetFolderId('')}
+                                >
+                                  미분류
+                                </button>
+                                {bookmarkFolders.map((folder) => (
+                                  <button
+                                    key={folder.id}
+                                    type="button"
+                                    className={`bm-folder-pill ${saveTargetFolderId === folder.id ? 'is-active' : ''}`}
+                                    onClick={() => setSaveTargetFolderId(folder.id)}
+                                  >
+                                    {folder.name}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {bookmarkFolders.length > 0 && (
+                          <div className="bookmark-folder-tabs" role="tablist" aria-label="북마크 폴더 필터">
+                            <button
+                              type="button"
+                              role="tab"
+                              aria-selected={activeBookmarkFolderFilter === 'all'}
+                              className={`bm-folder-pill ${activeBookmarkFolderFilter === 'all' ? 'is-active' : ''}`}
+                              onClick={() => handleSelectBookmarkFolderFilter('all')}
+                            >
+                              전체 ({bookmarks.length})
+                            </button>
+                            <button
+                              type="button"
+                              role="tab"
+                              aria-selected={activeBookmarkFolderFilter === 'uncategorized'}
+                              className={`bm-folder-pill ${activeBookmarkFolderFilter === 'uncategorized' ? 'is-active' : ''}`}
+                              onClick={() => handleSelectBookmarkFolderFilter('uncategorized')}
+                            >
+                              미분류 ({uncategorizedCount})
+                            </button>
+                            {bookmarkFolders.map((folder) => (
+                              <button
+                                key={folder.id}
+                                type="button"
+                                role="tab"
+                                aria-selected={activeBookmarkFolderFilter === folder.id}
+                                className={`bm-folder-pill ${activeBookmarkFolderFilter === folder.id ? 'is-active' : ''}`}
+                                onClick={() => handleSelectBookmarkFolderFilter(folder.id)}
+                              >
+                                <span className="bm-folder-icon" aria-hidden="true">📁</span>
+                                <span>{folder.name}</span>
+                                <span className="bm-folder-cnt">({folderCounts.get(folder.id) || 0})</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                        {activeFolderObj && (
+                          <div className="bookmark-folder-toolbar">
+                            {editingFolderId === activeFolderObj.id ? (
+                              <div className="bookmark-save-row" style={{ width: '100%' }}>
+                                <input
+                                  type="text"
+                                  className="bookmark-name-input"
+                                  value={editingFolderName}
+                                  maxLength={30}
+                                  onChange={(e) => setEditingFolderName(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      handleRenameBookmarkFolder(activeFolderObj.id, editingFolderName);
+                                    }
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  className="bm-mini-act"
+                                  onClick={() =>
+                                    handleRenameBookmarkFolder(activeFolderObj.id, editingFolderName)
+                                  }
+                                >
+                                  확인
+                                </button>
+                                <button
+                                  type="button"
+                                  className="bm-mini-act"
+                                  onClick={() => setEditingFolderId(null)}
+                                >
+                                  취소
+                                </button>
+                              </div>
+                            ) : (
+                              <>
+                                <span className="bookmark-folder-toolbar-name">
+                                  📁 {activeFolderObj.name}
+                                </span>
+                                <div className="bookmark-folder-toolbar-actions">
+                                  <button
+                                    type="button"
+                                    className="bm-mini-act"
+                                    onClick={() => {
+                                      setEditingFolderId(activeFolderObj.id);
+                                      setEditingFolderName(activeFolderObj.name);
+                                    }}
+                                  >
+                                    폴더 이름 변경
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="bm-mini-act is-danger"
+                                    onClick={() => handleDeleteBookmarkFolder(activeFolderObj.id)}
+                                  >
+                                    폴더 삭제
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+
+                        {deletedBookmarkUndo && (
+                          <div className="bm-undo-bar">
+                            <span>'{deletedBookmarkUndo.bookmark.name}' 삭제됨</span>
+                            <button
+                              type="button"
+                              className="bm-mini-act"
+                              onClick={handleUndoDeleteBookmark}
+                            >
+                              실행 취소
+                            </button>
+                          </div>
+                        )}
+
+                        {bookmarks.length === 0 && bookmarkFolders.length === 0 ? (
+                          <div className="bookmark-empty-hint">저장된 구성이 없습니다.</div>
+                        ) : activeBookmarkFolderFilter === 'all' && bookmarkFolders.length > 0 ? (
+                          <div className="bookmark-pill-list">
+                            {bookmarkFolders.map((folder) => {
+                              const folderBms = bookmarks.filter((b) => b.folderId === folder.id);
+                              const isFoldCollapsed = Boolean(collapsedBookmarkFolders[folder.id]);
+                              return (
+                                <div key={folder.id} className="bookmark-folder-group">
+                                  <div className="bookmark-folder-group-head">
+                                    <button
+                                      type="button"
+                                      className="bookmark-folder-group-toggle"
+                                      onClick={() =>
+                                        setCollapsedBookmarkFolders((prev) => ({
+                                          ...prev,
+                                          [folder.id]: !prev[folder.id],
+                                        }))
+                                      }
+                                    >
+                                      <span>{isFoldCollapsed ? '▸' : '▾'}</span>
+                                      <span>📁 {folder.name}</span>
+                                      <span className="bookmark-pill-count">{folderBms.length}개</span>
+                                    </button>
+                                    <div className="bookmark-folder-group-acts">
+                                      <button
+                                        type="button"
+                                        className="bm-mini-act"
+                                        onClick={() => {
+                                          setSaveTargetFolderId(folder.id);
+                                          setIsDrawerBookmarkInputOpen(true);
+                                          setIsDrawerFolderInputOpen(false);
+                                        }}
+                                        title="이 폴더에 현재 구성 저장"
+                                      >
+                                        + 저장
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="bm-mini-act"
+                                        onClick={() => handleSelectBookmarkFolderFilter(folder.id)}
+                                      >
+                                        관리
+                                      </button>
+                                    </div>
+                                  </div>
+                                  {!isFoldCollapsed && (
+                                    <div className="bookmark-folder-group-body">
+                                      {folderBms.length === 0 ? (
+                                        <div className="bookmark-empty-hint">
+                                          이 폴더가 비어 있습니다.
+                                        </div>
+                                      ) : (
+                                        folderBms.map(renderDrawerBookmarkCardItem)
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                            {uncategorizedCount > 0 && (
+                              <div className="bookmark-folder-group">
+                                <div className="bookmark-folder-group-head">
+                                  <button
+                                    type="button"
+                                    className="bookmark-folder-group-toggle"
+                                    onClick={() =>
+                                      setCollapsedBookmarkFolders((prev) => ({
+                                        ...prev,
+                                        uncategorized: !prev.uncategorized,
+                                      }))
+                                    }
+                                  >
+                                    <span>
+                                      {collapsedBookmarkFolders.uncategorized ? '▸' : '▾'}
+                                    </span>
+                                    <span>미분류</span>
+                                    <span className="bookmark-pill-count">{uncategorizedCount}개</span>
+                                  </button>
+                                </div>
+                                {!collapsedBookmarkFolders.uncategorized && (
+                                  <div className="bookmark-folder-group-body">
+                                    {bookmarks
+                                      .filter(
+                                        (b) =>
+                                          !b.folderId ||
+                                          !bookmarkFolders.some((f) => f.id === b.folderId)
+                                      )
+                                      .map(renderDrawerBookmarkCardItem)}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ) : filteredBookmarks.length === 0 ? (
+                          <div className="bookmark-empty-hint">
+                            이 폴더에 저장된 구성이 없습니다.
+                          </div>
+                        ) : (
+                          <div className="bookmark-pill-list">
+                            {filteredBookmarks.map(renderDrawerBookmarkCardItem)}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </>
               )}
 
@@ -6245,7 +6833,7 @@ export default function App() {
               onClick={() => goToBuilderStep(2)}
             >
               <span className="step-badge">2</span>
-              <span className="step-title">1. 진행할 영역 및 타종 단계 선택</span>
+              <span className="step-title">진행할 영역 및 타종 단계 선택</span>
             </button>
             <button
               type="button"
@@ -6254,7 +6842,7 @@ export default function App() {
               onClick={() => goToBuilderStep(3)}
             >
               <span className="step-badge">3</span>
-              <span className="step-title">2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+              <span className="step-title">선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
             </button>
           </nav>
 
@@ -6507,54 +7095,297 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* C4: 자주 쓰는 구성 */}
-                <div className="quick-line">
-                  <span className="quick-label">자주 쓰는 구성</span>
-                  {bookmarks.map((bm) => (
-                    <span key={bm.id} className="bookmark-modal-chip">
-                      <button
-                        type="button"
-                        className="bookmark-modal-apply"
-                        onClick={() => handleLoadBookmarkToEditor(bm)}
-                        title={`'${bm.name}' 구성 불러오기`}
-                      >
-                        {bm.name} ({bm.config.selectedNodeIds.length})
-                      </button>
-                      <button
-                        type="button"
-                        className="bookmark-modal-del"
-                        onClick={(e) => handleDeleteBookmark(bm.id, e)}
-                        aria-label={`${bm.name} 삭제`}
-                        title="북마크 삭제"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                  <div className="bookmark-modal-save-group">
-                    <input
-                      type="text"
-                      className="bookmark-modal-input"
-                      value={bookmarkNameInput}
-                      maxLength={28}
-                      aria-label="자주 쓰는 구성 이름"
-                      onChange={(e) => setBookmarkNameInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          handleSaveCurrentAsBookmark(true);
-                        }
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="chip"
-                      onClick={() => handleSaveCurrentAsBookmark(true)}
-                    >
-                      현재 구성 저장
-                    </button>
-                  </div>
-                </div>
+                {/* C4: 자주 쓰는 구성 + 북마크 폴더 관리 */}
+                {(() => {
+                  const modalFolderCounts = new Map<string, number>();
+                  let modalUncategorizedCount = 0;
+                  bookmarks.forEach((b) => {
+                    if (b.folderId && bookmarkFolders.some((f) => f.id === b.folderId)) {
+                      modalFolderCounts.set(b.folderId, (modalFolderCounts.get(b.folderId) || 0) + 1);
+                    } else {
+                      modalUncategorizedCount++;
+                    }
+                  });
+                  const modalVisibleBookmarks =
+                    activeBookmarkFolderFilter === 'all'
+                      ? bookmarks
+                      : activeBookmarkFolderFilter === 'uncategorized'
+                        ? bookmarks.filter(
+                            (b) => !b.folderId || !bookmarkFolders.some((f) => f.id === b.folderId)
+                          )
+                        : bookmarks.filter((b) => b.folderId === activeBookmarkFolderFilter);
+                  const activeModalFolder = bookmarkFolders.find(
+                    (f) => f.id === activeBookmarkFolderFilter
+                  );
+                  const movingTargetBm = movingBookmarkId
+                    ? bookmarks.find((b) => b.id === movingBookmarkId) || null
+                    : null;
+
+                  return (
+                    <div className="quick-line bookmark-modal-quickline">
+                      <div className="bookmark-modal-folder-bar">
+                        <span className="quick-label">자주 쓰는 구성</span>
+                        <div className="bookmark-modal-folder-pills">
+                          <button
+                            type="button"
+                            className={`chip bookmark-folder-chip ${activeBookmarkFolderFilter === 'all' ? 'active' : ''}`}
+                            onClick={() => handleSelectBookmarkFolderFilter('all')}
+                          >
+                            전체 ({bookmarks.length})
+                          </button>
+                          {bookmarkFolders.length > 0 && (
+                            <button
+                              type="button"
+                              className={`chip bookmark-folder-chip ${activeBookmarkFolderFilter === 'uncategorized' ? 'active' : ''}`}
+                              onClick={() => handleSelectBookmarkFolderFilter('uncategorized')}
+                            >
+                              미분류 ({modalUncategorizedCount})
+                            </button>
+                          )}
+                          {bookmarkFolders.map((folder) => (
+                            <button
+                              key={folder.id}
+                              type="button"
+                              className={`chip bookmark-folder-chip ${activeBookmarkFolderFilter === folder.id ? 'active' : ''}`}
+                              onClick={() => handleSelectBookmarkFolderFilter(folder.id)}
+                            >
+                              <span>📁 {folder.name}</span>
+                              <span>({modalFolderCounts.get(folder.id) || 0})</span>
+                            </button>
+                          ))}
+                          <button
+                            type="button"
+                            className={`chip bookmark-folder-chip ${isModalFolderInputOpen ? 'active' : ''}`}
+                            onClick={() => setIsModalFolderInputOpen((prev) => !prev)}
+                          >
+                            {isModalFolderInputOpen ? '닫기' : '+ 새 폴더'}
+                          </button>
+                        </div>
+
+                        {activeModalFolder && (
+                          <div className="bookmark-modal-folder-actions">
+                            {editingFolderId === activeModalFolder.id ? (
+                              <>
+                                <input
+                                  type="text"
+                                  className="bookmark-modal-input"
+                                  value={editingFolderName}
+                                  maxLength={30}
+                                  aria-label="폴더 이름 변경"
+                                  onChange={(e) => setEditingFolderName(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      handleRenameBookmarkFolder(
+                                        activeModalFolder.id,
+                                        editingFolderName
+                                      );
+                                    }
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  className="chip"
+                                  onClick={() =>
+                                    handleRenameBookmarkFolder(
+                                      activeModalFolder.id,
+                                      editingFolderName
+                                    )
+                                  }
+                                >
+                                  확인
+                                </button>
+                                <button
+                                  type="button"
+                                  className="chip"
+                                  onClick={() => setEditingFolderId(null)}
+                                >
+                                  취소
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  className="chip"
+                                  onClick={() => {
+                                    setEditingFolderId(activeModalFolder.id);
+                                    setEditingFolderName(activeModalFolder.name);
+                                  }}
+                                >
+                                  폴더 이름 변경
+                                </button>
+                                <button
+                                  type="button"
+                                  className="chip"
+                                  onClick={() => handleDeleteBookmarkFolder(activeModalFolder.id)}
+                                >
+                                  폴더 삭제
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {isModalFolderInputOpen && (
+                        <div className="bookmark-modal-folder-create">
+                          <input
+                            type="text"
+                            className="bookmark-modal-input"
+                            value={folderNameInput}
+                            maxLength={30}
+                            placeholder="새 북마크 폴더 이름"
+                            aria-label="새 북마크 폴더 이름"
+                            onChange={(e) => setFolderNameInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleCreateBookmarkFolder(folderNameInput, false);
+                              }
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="chip"
+                            onClick={() => handleCreateBookmarkFolder(folderNameInput, false)}
+                          >
+                            폴더 생성
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="bookmark-modal-items-bar">
+                        {modalVisibleBookmarks.length === 0 ? (
+                          <span className="pane-note">
+                            {bookmarks.length === 0
+                              ? '저장된 구성이 없습니다.'
+                              : '이 폴더에 저장된 구성이 없습니다.'}
+                          </span>
+                        ) : (
+                          modalVisibleBookmarks.map((bm) => {
+                            const bmFolderName =
+                              bm.folderId &&
+                              bookmarkFolders.find((f) => f.id === bm.folderId)?.name;
+                            return (
+                              <span key={bm.id} className="bookmark-modal-chip">
+                                <button
+                                  type="button"
+                                  className="bookmark-modal-apply"
+                                  onClick={() => handleLoadBookmarkToEditor(bm)}
+                                  title={`'${bm.name}' 구성 불러오기`}
+                                >
+                                  {bm.name} ({bm.config.selectedNodeIds.length})
+                                  {activeBookmarkFolderFilter === 'all' && bmFolderName && (
+                                    <span className="bookmark-modal-folder-tag">
+                                      📁 {bmFolderName}
+                                    </span>
+                                  )}
+                                </button>
+                                {bookmarkFolders.length > 0 && (
+                                  <button
+                                    type="button"
+                                    className={`bookmark-modal-move ${movingBookmarkId === bm.id ? 'is-open' : ''}`}
+                                    onClick={() =>
+                                      setMovingBookmarkId((prev) => (prev === bm.id ? null : bm.id))
+                                    }
+                                    aria-label={`${bm.name} 폴더 이동`}
+                                    title="폴더 이동"
+                                  >
+                                    📁
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  className="bookmark-modal-del"
+                                  onClick={(e) => handleDeleteBookmark(bm.id, e)}
+                                  aria-label={`${bm.name} 삭제`}
+                                  title="북마크 삭제"
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            );
+                          })
+                        )}
+
+                        <div className="bookmark-modal-save-group">
+                          {bookmarkFolders.length > 0 && (
+                            <select
+                              className="builder-select-sm bookmark-modal-folder-select"
+                              aria-label="저장할 북마크 폴더 선택"
+                              value={saveTargetFolderId}
+                              onChange={(e) => setSaveTargetFolderId(e.target.value)}
+                            >
+                              <option value="">미분류</option>
+                              {bookmarkFolders.map((folder) => (
+                                <option key={folder.id} value={folder.id}>
+                                  📁 {folder.name}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <input
+                            type="text"
+                            className="bookmark-modal-input"
+                            value={bookmarkNameInput}
+                            maxLength={28}
+                            placeholder="저장할 구성 이름"
+                            aria-label="자주 쓰는 구성 이름"
+                            onChange={(e) => setBookmarkNameInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleSaveCurrentAsBookmark(true);
+                              }
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="chip"
+                            onClick={() => handleSaveCurrentAsBookmark(true)}
+                          >
+                            현재 구성 저장
+                          </button>
+                        </div>
+                      </div>
+
+                      {movingTargetBm && bookmarkFolders.length > 0 && (
+                        <div className="bookmark-modal-move-bar">
+                          <span className="pane-note">
+                            '{movingTargetBm.name}' 이동할 폴더:
+                          </span>
+                          <button
+                            type="button"
+                            className={`chip bookmark-folder-chip ${!movingTargetBm.folderId ? 'active' : ''}`}
+                            onClick={() => handleMoveBookmarkToFolder(movingTargetBm.id, null)}
+                          >
+                            미분류
+                          </button>
+                          {bookmarkFolders.map((folder) => (
+                            <button
+                              key={folder.id}
+                              type="button"
+                              className={`chip bookmark-folder-chip ${movingTargetBm.folderId === folder.id ? 'active' : ''}`}
+                              onClick={() =>
+                                handleMoveBookmarkToFolder(movingTargetBm.id, folder.id)
+                              }
+                            >
+                              📁 {folder.name}
+                            </button>
+                          ))}
+                          <button
+                            type="button"
+                            className="chip bookmark-folder-chip"
+                            onClick={() => setMovingBookmarkId(null)}
+                          >
+                            닫기
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {duplicateNamePrompt && (
                   <div className="bm-undo-bar">
@@ -6570,7 +7401,8 @@ export default function App() {
                             duplicateNamePrompt.name,
                             duplicateNamePrompt.sourceConfig,
                             duplicateNamePrompt.sourceSync,
-                            duplicateNamePrompt.existingId
+                            duplicateNamePrompt.existingId,
+                            duplicateNamePrompt.sourceFolderId
                           )
                         }
                       >
@@ -6583,7 +7415,9 @@ export default function App() {
                           executeSaveNewBookmark(
                             `${duplicateNamePrompt.name} (새 구성)`.slice(0, 60),
                             duplicateNamePrompt.sourceConfig,
-                            duplicateNamePrompt.sourceSync
+                            duplicateNamePrompt.sourceSync,
+                            undefined,
+                            duplicateNamePrompt.sourceFolderId
                           )
                         }
                       >
@@ -6619,7 +7453,7 @@ export default function App() {
               /* 2단계: 1. 진행할 영역 및 타종 단계 선택 (1단계에서 체크한 과목만 표시) */
               <section className="left-pane step-single-pane">
                 <div className="pane-title">
-                  <span>1. 진행할 영역 및 타종 단계 선택</span>
+                  <span>진행할 영역 및 타종 단계 선택</span>
                   <span className="pane-note">
                     응시 조합에서 체크한 과목만 표시됩니다 · 영역별 필요한 단계만 선택
                   </span>
@@ -6802,7 +7636,7 @@ export default function App() {
               /* 3단계: 2. 선택된 타종 진행 순서, 시간 간격 및 연쇄 시각 설정 */
               <section className="right-pane step-single-pane" ref={builderRightPaneRef}>
                 <div className="pane-title">
-                  <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+                  <span>선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
                 </div>
 
               {/* B4: 일괄 간격 도구 바 */}

@@ -142,9 +142,16 @@ export interface CustomSequenceConfig {
   mutedNodeIds?: string[];
 }
 
+export interface BookmarkFolder {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
 export interface SavedSequenceBookmark {
   id: string;
   name: string;
+  folderId?: string | null;
   config: CustomSequenceConfig;
   clockSyncMode: ClockSyncMode;
   createdAt: string;
@@ -401,6 +408,7 @@ export const DEFAULT_CUSTOM_SEQUENCE_CONFIG: CustomSequenceConfig = {
   mutedNodeIds: [],
 };
 
+export const DEFAULT_BOOKMARK_FOLDERS: BookmarkFolder[] = [];
 export const DEFAULT_SEQUENCE_BOOKMARKS: SavedSequenceBookmark[] = [];
 
 export function cloneSequenceConfig(config: CustomSequenceConfig): CustomSequenceConfig {
@@ -668,9 +676,66 @@ export function validateConfig(
 }
 
 /**
+ * 북마크 폴더 목록 검증 함수
+ */
+export function validateBookmarkFolders(rawList: unknown): {
+  folders: BookmarkFolder[];
+  correctedCount: number;
+} {
+  if (!Array.isArray(rawList)) return { folders: [], correctedCount: rawList ? 1 : 0 };
+  const result: BookmarkFolder[] = [];
+  const seenIds = new Set<string>();
+  const seenNames = new Set<string>();
+  let correctedCount = 0;
+
+  for (let i = 0; i < rawList.length; i++) {
+    const item = rawList[i];
+    if (!item || typeof item !== 'object') {
+      correctedCount++;
+      continue;
+    }
+    const rec = item as Record<string, unknown>;
+    const rawName = typeof rec.name === 'string' ? rec.name.trim() : '';
+    if (!rawName) {
+      correctedCount++;
+      continue;
+    }
+    const safeName = rawName.slice(0, 30);
+    if (seenNames.has(safeName)) {
+      correctedCount++;
+      continue;
+    }
+    const rawId =
+      typeof rec.id === 'string' && rec.id.trim()
+        ? rec.id.trim().slice(0, 80)
+        : `bmf_${Date.now()}_${i}`;
+    if (seenIds.has(rawId)) {
+      correctedCount++;
+      continue;
+    }
+    const createdAt =
+      typeof rec.createdAt === 'string' && rec.createdAt.trim()
+        ? rec.createdAt.trim().slice(0, 40)
+        : new Date().toISOString();
+
+    seenIds.add(rawId);
+    seenNames.add(safeName);
+    result.push({
+      id: rawId,
+      name: safeName,
+      createdAt,
+    });
+  }
+  return { folders: result, correctedCount };
+}
+
+/**
  * A3 & C4: 즐겨찾기 배열 형태 및 내부 구성 검증 함수 (XSS 및 깨진 데이터 방어)
  */
-export function validateBookmarks(rawList: unknown): {
+export function validateBookmarks(
+  rawList: unknown,
+  validFolderIds?: Set<string>
+): {
   bookmarks: SavedSequenceBookmark[];
   correctedCount: number;
 } {
@@ -715,10 +780,20 @@ export function validateBookmarks(rawList: unknown): {
         ? rec.createdAt.trim().slice(0, 40)
         : new Date().toISOString();
 
+    let folderId: string | null =
+      typeof rec.folderId === 'string' && rec.folderId.trim()
+        ? rec.folderId.trim().slice(0, 80)
+        : null;
+    if (folderId && validFolderIds && !validFolderIds.has(folderId)) {
+      folderId = null;
+      correctedCount++;
+    }
+
     seenIds.add(rawId);
     result.push({
       id: rawId,
       name: safeName,
+      folderId,
       config: validated.config,
       clockSyncMode: syncMode,
       createdAt,

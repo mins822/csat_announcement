@@ -111,12 +111,12 @@ export function buildStandaloneCsatHtml(
   --min-hand:#171717;
   --sec-hand:#4d4d4d;
   --glass-fill:rgba(246,246,248,.16);
-  --glass-rim:rgba(255,255,255,.66);
-  --glint:rgba(255,255,255,.84);
-  --btn-shadow:0 9px 24px rgba(35,43,58,.09),inset 0 1px 0 rgba(255,255,255,.68),inset 0 -1px 0 rgba(40,48,62,.08);
-  --btn-shadow-hover:0 13px 30px rgba(31,39,54,.12),inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(40,48,62,.07);
-  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,255,255,.07),transparent 100%),linear-gradient(150deg,rgba(255,255,255,.045),transparent 43%,rgba(255,255,255,.01) 76%,rgba(255,255,255,.03));
-  --btn-after-opacity:.28;
+  --glass-rim:rgba(255,255,255,.64);
+  --glint:rgba(255,255,255,.68);
+  --btn-shadow:0 9px 24px rgba(35,43,58,.09),inset 0 1px 0 rgba(255,255,255,.48),inset 0 -1px 0 rgba(40,48,62,.08);
+  --btn-shadow-hover:0 13px 30px rgba(31,39,54,.12),inset 0 1px 0 rgba(255,255,255,.58),inset 0 -1px 0 rgba(40,48,62,.07);
+  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,255,255,.055),transparent 100%),linear-gradient(150deg,rgba(255,255,255,.035),transparent 43%,rgba(255,255,255,.008) 76%,rgba(255,255,255,.022));
+  --btn-after-opacity:.18;
   --btn-text-shadow:0 1px 2px rgba(255,255,255,.24);
   --focus-ring:#7c9cc5;
   --modal-bg:linear-gradient(155deg,rgba(255,255,255,.88) 0%,rgba(244,244,246,.82) 100%);
@@ -161,12 +161,12 @@ export function buildStandaloneCsatHtml(
   --min-hand:#f1f1f1;
   --sec-hand:#686868;
   --glass-fill:rgba(28,28,30,.52);
-  --glass-rim:rgba(255,255,255,.23);
-  --glint:rgba(255,255,255,.42);
-  --btn-shadow:0 6px 18px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.17),inset 0 -1px 0 rgba(255,255,255,.03);
-  --btn-shadow-hover:0 10px 24px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.05);
-  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,255,255,.08),transparent 100%),linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.03));
-  --btn-after-opacity:.18;
+  --glass-rim:rgba(255,255,255,.22);
+  --glint:rgba(255,255,255,.28);
+  --btn-shadow:0 6px 18px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.03);
+  --btn-shadow-hover:0 10px 24px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.17),inset 0 -1px 0 rgba(255,255,255,.05);
+  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,255,255,.06),transparent 100%),linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.02));
+  --btn-after-opacity:.13;
   --btn-text-shadow:0 1px 2px rgba(0,0,0,.32);
   --focus-ring:#e2e2e2;
   --modal-bg:rgba(26,26,28,.94);
@@ -208,12 +208,12 @@ export function buildStandaloneCsatHtml(
   --min-hand:#2b1f16;
   --sec-hand:#4d4d4d;
   --glass-fill:rgba(246,238,224,.28);
-  --glass-rim:rgba(255,248,235,.66);
-  --glint:rgba(255,248,235,.82);
-  --btn-shadow:0 9px 24px rgba(54,41,30,.09),inset 0 1px 0 rgba(255,248,235,.68),inset 0 -1px 0 rgba(54,41,30,.08);
-  --btn-shadow-hover:0 13px 30px rgba(54,41,30,.12),inset 0 1px 0 rgba(255,248,235,.82),inset 0 -1px 0 rgba(54,41,30,.07);
-  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,248,235,.115),transparent 100%),linear-gradient(150deg,rgba(255,248,235,.075),transparent 43%,rgba(255,248,235,.018) 76%,rgba(255,248,235,.055));
-  --btn-after-opacity:.26;
+  --glass-rim:rgba(255,248,235,.64);
+  --glint:rgba(255,248,235,.66);
+  --btn-shadow:0 9px 24px rgba(54,41,30,.09),inset 0 1px 0 rgba(255,248,235,.48),inset 0 -1px 0 rgba(54,41,30,.08);
+  --btn-shadow-hover:0 13px 30px rgba(54,41,30,.12),inset 0 1px 0 rgba(255,248,235,.58),inset 0 -1px 0 rgba(54,41,30,.07);
+  --btn-before:radial-gradient(ellipse 43% 72% at var(--px,50%) var(--py,12%),rgba(255,248,235,.085),transparent 100%),linear-gradient(150deg,rgba(255,248,235,.055),transparent 43%,rgba(255,248,235,.014) 76%,rgba(255,248,235,.04));
+  --btn-after-opacity:.17;
   --btn-text-shadow:0 1px 2px rgba(255,248,235,.24);
   --focus-ring:#8c6d53;
   --modal-bg:linear-gradient(155deg,rgba(248,240,225,.95) 0%,rgba(238,228,208,.90) 100%);
@@ -356,11 +356,13 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   pointer-events:auto;
   visibility:visible;
   transform:translateX(0) scale(1);
+  touch-action:none;
+  -webkit-touch-callout:none;
 }
 #fullscreenBtn.is-open:hover{
   transform:translateY(-1.5px) scale(1.04);
 }
-#fullscreenBtn.is-open:active{
+#fullscreenBtn.is-open:active,#fullscreenBtn.is-open.is-pressed{
   transform:translateY(0) scale(.95);
 }
 #fullscreenBtn.is-selected{
@@ -473,7 +475,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   border-radius:inherit;
   pointer-events:none;
   background:var(--btn-before);
-  opacity:.92;
+  opacity:.76;
 }
 .lg-btn::after,.pill-group-row::after,.drawer-card-panel::after,.bookmark-drawer-card::after,.toll-dialog::after{
   content:"";
@@ -482,7 +484,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   z-index:0;
   border-radius:inherit;
   pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,.52),transparent 11%),linear-gradient(0deg,rgba(255,255,255,.16),transparent 16%);
+  background:linear-gradient(180deg,rgba(255,255,255,.36),transparent 11%),linear-gradient(0deg,rgba(255,255,255,.11),transparent 16%);
   opacity:var(--btn-after-opacity);
   mix-blend-mode:screen;
 }
@@ -495,6 +497,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   letter-spacing:.14em;
   cursor:pointer;
   white-space:nowrap;
+  touch-action:none;
+  -webkit-touch-callout:none;
 }
 .lg-btn:hover{
   transform:translateY(-1.5px) scale(1.025);
@@ -863,12 +867,12 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   justify-content:space-between;
   gap:16px;
   border-bottom:1px solid var(--toll-line);
-  background:rgba(255,255,255,.13);
+  background:transparent;
   position:relative;
   flex:none;
 }
 [data-theme="dark"] .toll-dialog .dialog-header{
-  background:rgba(255,255,255,.03);
+  background:transparent;
 }
 .toll-dialog .dialog-heading{min-width:0}
 .toll-dialog .dialog-heading h1{
@@ -905,6 +909,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   font-size:11px;
   font-weight:650;
   cursor:pointer;
+  touch-action:none;
+  -webkit-touch-callout:none;
   transition:background .16s,transform .16s,border-color .16s,opacity .16s;
 }
 .toll-dialog .icon-button svg{
@@ -920,42 +926,79 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   opacity:.36;
   cursor:not-allowed;
 }
-.toll-dialog .icon-button:active:not(:disabled){transform:scale(.95)}
+.toll-dialog .icon-button:active:not(:disabled),.toll-dialog .icon-button.is-pressed:not(:disabled){transform:scale(.95)}
 .toll-dialog .builder-stepper{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
   padding:10px 22px;
   border-bottom:1px solid var(--toll-line);
-  background:rgba(255,255,255,.16);
+  background:transparent;
   flex:none;
+  perspective:520px;
 }
+[data-theme="sepia"] .toll-dialog .builder-stepper{background:transparent}
 [data-theme="dark"] .toll-dialog .builder-stepper{
-  background:rgba(255,255,255,.025);
+  background:transparent;
 }
 .toll-dialog .builder-step-tab{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
   display:flex;
   align-items:center;
   gap:8px;
   min-width:0;
   padding:8px 11px;
   border-radius:14px;
-  border:1px solid var(--toll-glass-edge-low);
-  background:linear-gradient(145deg,rgba(255,255,255,.42),rgba(255,255,255,.16));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
-  color:var(--toll-ink-2);
+  border:none;
+  background-color:rgba(246,247,249,.72);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(216,218,224,.10) 100%);
+  -webkit-backdrop-filter:blur(20px) saturate(.92);
+  backdrop-filter:blur(20px) saturate(.92);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.08),0 5px 14px -2px rgba(0,0,0,.16);
+  color:rgba(32,33,36,.90);
+  text-shadow:0 1px 0 rgba(255,255,255,.30);
   font-size:10.5px;
-  font-weight:680;
+  font-weight:740;
   letter-spacing:-.025em;
   text-align:left;
   cursor:pointer;
-  transition:background .18s,border-color .18s,transform .15s,box-shadow .18s;
+  touch-action:none;
+  -webkit-touch-callout:none;
+  user-select:none;
+  -webkit-user-select:none;
+  transition:all 400ms cubic-bezier(.25,1,.5,1);
 }
+.toll-dialog .builder-step-tab::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  z-index:1;
+  background:linear-gradient(var(--angle-2,-45deg),rgba(255,255,255,0) 0%,rgba(255,255,255,.09) 28%,rgba(255,255,255,.17) 46% 54%,rgba(255,255,255,0) 72%);
+  mix-blend-mode:screen;
+  background-size:200% 200%;
+  background-position:0% 50%;
+  background-repeat:no-repeat;
+  transition:background-position 500ms cubic-bezier(.25,1,.5,1),--angle-2 500ms cubic-bezier(.25,1,.5,1);
+}
+.toll-dialog .builder-step-tab > *{position:relative;z-index:2}
 .toll-dialog .builder-step-tab:hover{
-  background:linear-gradient(145deg,rgba(255,255,255,.60),rgba(255,255,255,.28));
-  border-color:rgba(255,255,255,.88);
+  transform:scale(.985);
+  background-color:rgba(250,251,252,.84);
+  -webkit-backdrop-filter:blur(18px) saturate(.95);
+  backdrop-filter:blur(18px) saturate(.95);
+  text-shadow:0 1px 0 rgba(255,255,255,.38);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.48),inset 0 0 14px 3px rgba(255,255,255,.17),inset 0 -1px 2px rgba(0,0,0,.08),0 3px 9px -2px rgba(0,0,0,.18);
 }
-.toll-dialog .builder-step-tab:active{transform:scale(.985)}
+.toll-dialog .builder-step-tab:hover::before{background-position:28% 50%}
+.toll-dialog .builder-step-tab:active,.toll-dialog .builder-step-tab.is-pressed{
+  transform:scale(.975);
+  box-shadow:inset 0 .14em .125em rgba(0,0,0,.10),inset 0 -.125em .125em rgba(255,255,255,.34),0 2px 6px -1px rgba(0,0,0,.16);
+}
+.toll-dialog .builder-step-tab:active::before,.toll-dialog .builder-step-tab.is-pressed::before{background-position:54% 15%;--angle-2:-15deg}
 .toll-dialog .builder-step-tab .step-badge{
   flex:none;
   width:22px;
@@ -965,9 +1008,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   place-items:center;
   font-size:10px;
   font-weight:800;
-  background:rgba(80,80,85,.12);
-  color:var(--toll-ink-2);
-  border:1px solid rgba(255,255,255,.65);
+  background:rgba(60,62,68,.12);
+  color:rgba(36,37,41,.88);
+  border:none;
 }
 .toll-dialog .builder-step-tab .step-title{
   min-width:0;
@@ -975,50 +1018,80 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   word-break:keep-all;
 }
 .toll-dialog .builder-step-tab.is-active{
-  color:var(--toll-ink);
-  font-weight:760;
-  border-color:rgba(45,45,48,.34);
-  background:linear-gradient(145deg,rgba(60,60,64,.18),rgba(255,255,255,.42));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 4px 12px rgba(0,0,0,.06);
+  color:rgba(24,25,28,.96);
+  font-weight:820;
+  border:none;
+  background-color:#e2e4e8;
+  background-image:none;
+  -webkit-backdrop-filter:blur(20px) saturate(.92);
+  backdrop-filter:blur(20px) saturate(.92);
+  text-shadow:0 1px 0 rgba(255,255,255,.34);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.08),0 5px 14px -2px rgba(0,0,0,.16);
+}
+.toll-dialog .builder-step-tab.is-active:hover{
+  background-color:#dcdfe4;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.48),inset 0 0 14px 3px rgba(255,255,255,.17),inset 0 -1px 2px rgba(0,0,0,.08),0 3px 9px -2px rgba(0,0,0,.18);
 }
 .toll-dialog .builder-step-tab.is-active .step-badge{
-  background:var(--toll-ink);
+  background:rgba(34,35,39,.92);
   color:#ffffff;
-  border-color:transparent;
+  border:none;
+  box-shadow:0 2px 5px rgba(0,0,0,.18);
 }
-.toll-dialog .builder-step-tab.is-done{color:var(--toll-ink)}
+.toll-dialog .builder-step-tab.is-done{color:rgba(32,33,36,.92)}
 .toll-dialog .builder-step-tab.is-done .step-badge{
-  background:rgba(60,60,64,.22);
-  color:var(--toll-ink);
+  background:rgba(52,54,60,.20);
+  color:rgba(28,29,32,.94);
 }
+[data-theme="sepia"] .toll-dialog .builder-step-tab{
+  background-color:rgba(246,245,243,.74);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(232,231,229,.04) 56%,rgba(214,213,210,.11) 100%);
+  color:#26221e;
+}
+[data-theme="sepia"] .toll-dialog .builder-step-tab:hover{background-color:rgba(250,249,247,.86)}
+[data-theme="sepia"] .toll-dialog .builder-step-tab.is-active{
+  background-color:#e2e1de;
+  background-image:none;
+  color:rgba(30,29,28,.95);
+  text-shadow:0 1px 0 rgba(255,255,255,.34);
+}
+[data-theme="sepia"] .toll-dialog .builder-step-tab.is-active:hover{background-color:#dcdbd7}
 [data-theme="dark"] .toll-dialog .builder-step-tab{
-  color:var(--toll-ink-2);
-  border-color:rgba(255,255,255,.13);
-  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+  color:rgba(235,237,242,.90);
+  border:none;
+  background-color:rgba(255,255,255,.12);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.03) 56%,rgba(255,255,255,.08) 100%);
+  -webkit-backdrop-filter:blur(20px) saturate(.95);
+  backdrop-filter:blur(20px) saturate(.95);
+  text-shadow:none;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.24),inset 0 0 12px 2px rgba(255,255,255,.06),inset 0 -1px 2px rgba(0,0,0,.28),0 5px 14px -2px rgba(0,0,0,.36);
 }
 [data-theme="dark"] .toll-dialog .builder-step-tab:hover{
-  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
-  border-color:rgba(255,255,255,.25);
+  background-color:rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.30),inset 0 0 14px 3px rgba(255,255,255,.08),inset 0 -1px 2px rgba(0,0,0,.30),0 4px 12px -2px rgba(0,0,0,.40);
 }
 [data-theme="dark"] .toll-dialog .builder-step-tab .step-badge{
-  background:rgba(255,255,255,.10);
-  color:var(--toll-ink);
-  border-color:rgba(255,255,255,.18);
+  background:rgba(255,255,255,.14);
+  color:#f2f3f6;
+  border:none;
 }
 [data-theme="dark"] .toll-dialog .builder-step-tab.is-active{
-  color:#f6f6f6;
-  border-color:rgba(255,255,255,.36);
-  background:linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.08));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 4px 12px rgba(0,0,0,.24);
+  color:#16171a;
+  border:none;
+  background-color:#e0e2e7;
+  background-image:none;
+  text-shadow:0 1px 0 rgba(255,255,255,.28);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.14),0 6px 16px -2px rgba(0,0,0,.46);
 }
+[data-theme="dark"] .toll-dialog .builder-step-tab.is-active:hover{background-color:#d7d9df}
 [data-theme="dark"] .toll-dialog .builder-step-tab.is-active .step-badge{
-  background:#f2f2f2;
-  color:#1c1c1c;
+  background:#1b1c20;
+  color:#f6f7f9;
+  border:none;
 }
 [data-theme="dark"] .toll-dialog .builder-step-tab.is-done .step-badge{
-  background:rgba(255,255,255,.22);
-  color:#f4f4f4;
+  background:rgba(255,255,255,.20);
+  color:#ffffff;
 }
 .toll-dialog .builder-step-body{
   flex:1 1 auto;
@@ -1029,10 +1102,10 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   scrollbar-width:thin;
   scrollbar-color:var(--toll-scroll) transparent;
   padding:16px 22px 96px;
-  background:rgba(255,255,255,.045);
+  background:transparent;
 }
 [data-theme="dark"] .toll-dialog .builder-step-body{
-  background:rgba(0,0,0,.12);
+  background:transparent;
 }
 .toll-dialog .is-step-hidden{display:none!important}
 .toll-dialog .quickbar{
@@ -1041,7 +1114,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   display:flex;
   flex-direction:column;
   gap:7px;
-  background:rgba(255,255,255,.075);
+  background:rgba(244,245,247,.56);
   flex:none;
 }
 .toll-dialog .quickbar.quickbar-step{
@@ -1054,9 +1127,15 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   position:relative;
   padding:12px 14px;
   border-radius:18px;
-  border:1px solid var(--toll-glass-edge-low);
-  background:linear-gradient(145deg,rgba(255,255,255,.32),rgba(255,255,255,.12));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 12px rgba(0,0,0,.02);
+  border:1px solid var(--glass-rim);
+  background-color:rgba(255,255,255,.14);
+  background-image:none;
+  -webkit-backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
+  backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
+  box-shadow:var(--btn-shadow);
+}
+[data-theme="sepia"] .toll-dialog .quickbar.quickbar-step .quick-line{
+  background-color:rgba(255,248,235,.16);
 }
 [data-theme="dark"] .toll-dialog .quickbar{
   background:rgba(255,255,255,.018);
@@ -1065,15 +1144,18 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   background:transparent;
 }
 [data-theme="dark"] .toll-dialog .quickbar.quickbar-step .quick-line{
-  background:linear-gradient(145deg,rgba(44,44,44,.78),rgba(31,31,31,.62));
-  border-color:var(--toll-glass-edge-low);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 3px 12px rgba(0,0,0,.16);
+  background:rgba(28,28,32,.24);
+  border-color:var(--glass-rim);
+  box-shadow:var(--btn-shadow);
 }
 .toll-dialog .step1-subject-preview-bar{
   padding:10px 14px;
   border-radius:14px;
-  border:1px dashed var(--toll-line);
-  background:rgba(255,255,255,.20);
+  border:1px dashed rgba(120,122,128,.34);
+  background:rgba(244,245,247,.64);
+  -webkit-backdrop-filter:blur(14px) saturate(.95);
+  backdrop-filter:blur(14px) saturate(.95);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
   font-size:11px;
   line-height:1.45;
   color:var(--toll-ink-2);
@@ -1083,7 +1165,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   font-weight:760;
 }
 [data-theme="dark"] .toll-dialog .step1-subject-preview-bar{
-  background:rgba(255,255,255,.03);
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.16);
 }
 .toll-dialog .left-pane.step-single-pane,
 .toll-dialog .right-pane.step-single-pane{
@@ -1127,7 +1210,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   cursor:pointer;
   transition:background .16s,border-color .16s,transform .16s;
 }
-.toll-dialog .chip:active{transform:scale(.97)}
+.toll-dialog .chip:active,.toll-dialog .chip.is-pressed{transform:scale(.97)}
 .toll-dialog .subj-auto-box{
   display:inline-flex;
   align-items:center;
@@ -1155,11 +1238,98 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   white-space:nowrap;
 }
 .toll-dialog .subj-check-label input[type="checkbox"]{
-  width:13px;
-  height:13px;
-  accent-color:var(--toll-button);
-  cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+  flex:none;
+  position:relative;
+  width:17px;
+  height:17px;
   margin:0;
+  border-radius:5.5px;
+  border:1px solid rgba(190,194,202,.48);
+  background-color:rgba(232,234,238,.86);
+  background-image:none;
+  -webkit-backdrop-filter:blur(18px) saturate(.92);
+  backdrop-filter:blur(18px) saturate(.92);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+  display:grid;
+  place-content:center;
+  cursor:pointer;
+  transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .14s ease;
+}
+.toll-dialog .subj-check-label input[type="checkbox"]:hover{
+  background-color:rgba(238,240,243,.92);
+  border-color:rgba(164,168,176,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.82);
+}
+.toll-dialog .subj-check-label input[type="checkbox"]:active{transform:scale(.95)}
+.toll-dialog .subj-check-label input[type="checkbox"]:checked{
+  border-color:rgba(255,255,255,.34);
+  background-color:rgba(58,60,65,.88);
+  background-image:none;
+  -webkit-backdrop-filter:blur(18px) saturate(.95);
+  backdrop-filter:blur(18px) saturate(.95);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26);
+}
+.toll-dialog .subj-check-label input[type="checkbox"]:checked:hover{
+  background-color:rgba(50,52,57,.92);
+  border-color:rgba(255,255,255,.44);
+}
+.toll-dialog .subj-check-label input[type="checkbox"]:checked::after{
+  content:"";
+  width:12px;
+  height:12px;
+  border:0;
+  transform:none;
+  filter:none;
+  background-color:rgba(255,255,255,.96);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.6 8.3L6.6 11.3L12.4 5.1' stroke='black' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.6 8.3L6.6 11.3L12.4 5.1' stroke='black' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+[data-theme="sepia"] .toll-dialog .subj-check-label input[type="checkbox"]{
+  background-color:rgba(232,231,229,.87);
+  background-image:none;
+  border-color:rgba(182,178,170,.46);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+[data-theme="sepia"] .toll-dialog .subj-check-label input[type="checkbox"]:hover{
+  background-color:rgba(238,237,235,.92);
+  border-color:rgba(158,154,146,.62);
+}
+[data-theme="sepia"] .toll-dialog .subj-check-label input[type="checkbox"]:checked{
+  background-color:rgba(62,60,58,.88);
+  background-image:none;
+  border-color:rgba(255,250,242,.34);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24);
+}
+[data-theme="sepia"] .toll-dialog .subj-check-label input[type="checkbox"]:checked::after{
+  background-color:rgba(255,253,249,.96);
+  filter:none;
+}
+[data-theme="dark"] .toll-dialog .subj-check-label input[type="checkbox"]{
+  border-color:rgba(255,255,255,.50);
+  background-color:rgba(226,228,232,.85);
+  background-image:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.52);
+}
+[data-theme="dark"] .toll-dialog .subj-check-label input[type="checkbox"]:hover{
+  background-color:rgba(232,234,238,.91);
+  border-color:rgba(255,255,255,.66);
+}
+[data-theme="dark"] .toll-dialog .subj-check-label input[type="checkbox"]:checked{
+  border-color:rgba(255,255,255,.38);
+  background-color:rgba(66,68,74,.88);
+  background-image:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.26);
+}
+[data-theme="dark"] .toll-dialog .subj-check-label input[type="checkbox"]:checked:hover{
+  background-color:rgba(74,76,82,.92);
+  border-color:rgba(255,255,255,.48);
+}
+[data-theme="dark"] .toll-dialog .subj-check-label input[type="checkbox"]:checked::after{
+  background-color:rgba(255,255,255,.96);
+  border:0;
+  filter:none;
 }
 .toll-dialog .builder-select-sm{
   height:25px;
@@ -1351,7 +1521,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   border:1px solid var(--toll-glass-edge-low);
   background:rgba(255,255,255,.42);
   cursor:pointer;
-  transition:background .15s,border-color .15s;
+  transition:background .15s,border-color .15s,transform .15s;
 }
 [data-theme="dark"] .toll-dialog .stage-type-chip{
   background:rgba(255,255,255,.045);
@@ -1359,6 +1529,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
 .toll-dialog .stage-type-chip:hover{
   background:rgba(255,255,255,.68);
   border-color:var(--toll-glass-edge);
+}
+.toll-dialog .stage-type-chip:active,.toll-dialog .stage-type-chip.is-pressed{
+  transform:scale(.96);
 }
 [data-theme="dark"] .toll-dialog .stage-type-chip:hover{
   background:rgba(255,255,255,.11);
@@ -1434,42 +1607,66 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
 }
 .toll-dialog .stage-row{
   position:relative;
-  min-height:33px;
+  min-height:36px;
   height:auto;
-  padding:5px 7px;
+  padding:6px 12px;
   display:grid;
   grid-template-columns:18px minmax(0,1fr) auto;
   align-items:center;
   gap:8px;
-  border-radius:10px;
-  margin-top:2px;
+  border-radius:999px;
+  margin-top:4px;
   cursor:pointer;
-  border:1px solid transparent;
-  background:rgba(255,255,255,.065);
-  transition:background .15s,border-color .15s,box-shadow .15s;
+  border:none;
+  transform-origin:center;
+  transform:scale(.945);
+  opacity:.88;
+  background-color:rgba(244,245,247,.72);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.09) 100%);
+  -webkit-backdrop-filter:blur(18px) saturate(.95);
+  backdrop-filter:blur(18px) saturate(.95);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.44),inset 0 0 10px 2px rgba(255,255,255,.10),inset 0 -1px 2px rgba(0,0,0,.05),0 3px 10px -2px rgba(0,0,0,.08);
+  transition:background-color .24s cubic-bezier(.22,1,.36,1),box-shadow .24s cubic-bezier(.22,1,.36,1),opacity .22s ease,transform .32s cubic-bezier(.34,1.42,.64,1);
 }
 .toll-dialog .stage-row:hover{
-  background:rgba(255,255,255,.25);
-  border-color:rgba(255,255,255,.62);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.52),0 3px 10px rgba(0,0,0,.025);
+  transform:scale(.968);
+  opacity:.96;
+  background-color:rgba(248,249,251,.86);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.54),inset 0 0 12px 3px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.06),0 4px 12px -2px rgba(0,0,0,.12);
+}
+.toll-dialog .stage-row:active{
+  transform:scale(.925);
 }
 .toll-dialog .stage-row.selected{
-  background:linear-gradient(125deg,rgba(75,75,78,.105),rgba(255,255,255,.14));
-  border-color:rgba(255,255,255,.75);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.76),inset 0 0 0 1px rgba(75,75,78,.055),0 3px 12px rgba(0,0,0,.035);
+  transform:scale(1);
+  opacity:1;
+  background-color:rgba(228,230,235,.90);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(228,230,235,.04) 56%,rgba(208,210,216,.12) 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.50),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.08),0 4px 12px -2px rgba(0,0,0,.12);
 }
+.toll-dialog .stage-row.selected:hover{
+  transform:scale(1.008);
+}
+.toll-dialog .stage-row.selected:active{
+  transform:scale(.975);
+}
+[data-theme="sepia"] .toll-dialog .stage-row{background-color:rgba(243,242,240,.74);border:none}
+[data-theme="sepia"] .toll-dialog .stage-row:hover{background-color:rgba(248,246,242,.88)}
+[data-theme="sepia"] .toll-dialog .stage-row.selected{background-color:rgba(232,229,224,.90)}
 [data-theme="dark"] .toll-dialog .stage-row{
-  background:rgba(255,255,255,.024);
+  background-color:rgba(255,255,255,.06);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.02) 56%,rgba(0,0,0,.08) 100%);
+  border:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 10px 1px rgba(255,255,255,.03),0 2px 8px rgba(0,0,0,.20);
 }
 [data-theme="dark"] .toll-dialog .stage-row:hover{
-  background:rgba(255,255,255,.075);
-  border-color:rgba(255,255,255,.16);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 3px 10px rgba(0,0,0,.18);
+  background-color:rgba(255,255,255,.11);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 3px 10px rgba(0,0,0,.24);
 }
 [data-theme="dark"] .toll-dialog .stage-row.selected{
-  background:linear-gradient(125deg,rgba(255,255,255,.115),rgba(255,255,255,.05));
-  border-color:rgba(255,255,255,.24);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.03),0 3px 12px rgba(0,0,0,.22);
+  background-color:rgba(255,255,255,.14);
+  background-image:linear-gradient(145deg,rgba(255,255,255,.17),rgba(255,255,255,.07));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.22),inset 0 -1px 2px rgba(0,0,0,.14),0 4px 12px rgba(0,0,0,.26);
 }
 .toll-dialog .stage-row input[type="checkbox"],
 .toll-dialog .area-check input[type="checkbox"]{
@@ -1766,7 +1963,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   background:var(--toll-pill-hover);
   border-color:var(--toll-glass-edge);
 }
-.toll-dialog .mute-toggle-btn:active{transform:scale(.94)}
+.toll-dialog .mute-toggle-btn:active,.toll-dialog .mute-toggle-btn.is-pressed{transform:scale(.94)}
 .toll-dialog .mute-toggle-btn.is-muted{
   background:rgba(214,110,110,.14);
   border-color:rgba(214,110,110,.38);
@@ -1782,7 +1979,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   cursor:pointer;
   transition:background .16s,transform .16s;
 }
-.toll-dialog .preview-btn:active{transform:scale(.96)}
+.toll-dialog .preview-btn:active,.toll-dialog .preview-btn.is-pressed{transform:scale(.96)}
 .toll-dialog .interval-row{
   min-height:54px;
   margin:7px 0 0 22px;
@@ -1839,7 +2036,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   cursor:pointer;
   transition:background .15s,transform .15s;
 }
-.toll-dialog .nudge:active{transform:scale(.93)}
+.toll-dialog .nudge:active,.toll-dialog .nudge.is-pressed{transform:scale(.93)}
 .toll-dialog .interval-input{
   width:56px;
   height:28px;
@@ -1922,10 +2119,13 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   justify-content:space-between;
   gap:12px;
   border-top:1px solid var(--toll-glass-edge-low);
-  background:var(--toll-glass-strong);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 -8px 26px rgba(0,0,0,.045);
+  background:transparent;
+  -webkit-backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
+  backdrop-filter:blur(18px) saturate(1.42) contrast(1.02);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 -8px 26px rgba(0,0,0,.045);
 }
 [data-theme="dark"] .toll-dialog .dialog-footer{
+  background:transparent;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 -8px 28px rgba(0,0,0,.28);
 }
 .toll-dialog .summary{
@@ -1954,20 +2154,45 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   font-weight:750;
   cursor:pointer;
   white-space:nowrap;
+  touch-action:none;
+  -webkit-touch-callout:none;
   transition:transform .16s,background .16s,box-shadow .16s,border-color .16s;
 }
-.toll-dialog .footer-btn:active{transform:scale(.97)}
+.toll-dialog .footer-btn:active,.toll-dialog .footer-btn.is-pressed{transform:scale(.97)}
 .toll-dialog .chip,
 .toll-dialog .area-tag,
+.toll-dialog .collapse-btn,
 .toll-dialog .preview-btn,
 .toll-dialog .nudge,
 .toll-dialog .footer-btn,
 .toll-dialog .icon-button,
+.toll-dialog .stage-type-chip,
+.toll-dialog .fix-btn,
+.toll-dialog .mute-toggle-btn,
+.toll-dialog .custom-time-trigger,
+.toll-dialog .bookmark-modal-chip{
+  border:1px solid rgba(255,255,255,.62);
+  background-color:rgba(244,245,247,.80);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.09) 100%);
+  -webkit-backdrop-filter:blur(18px) saturate(.95);
+  backdrop-filter:blur(18px) saturate(.95);
+  color:rgba(32,33,36,.94);
+  text-shadow:0 1px 0 rgba(255,255,255,.26);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 10px 2px rgba(255,255,255,.10),inset 0 -1px 2px rgba(0,0,0,.05),0 3px 10px -2px rgba(0,0,0,.10),0 0 0 1px inset rgba(255,255,255,.28);
+}
 .toll-dialog .time-input,
-.toll-dialog .interval-input{
+.toll-dialog .interval-input,
+.toll-dialog .builder-select-sm,
+.toll-dialog .bookmark-modal-input,
+.toll-dialog .builder-search-input,
+.toll-dialog .batch-num-input{
   border:1px solid rgba(255,255,255,.68);
-  background:linear-gradient(145deg,rgba(255,255,255,.42),rgba(255,255,255,.16));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.72),inset 0 -1px 0 rgba(255,255,255,.12),0 2px 7px rgba(0,0,0,.035);
+  background-color:rgba(247,248,250,.84);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.14) 0%,rgba(232,234,238,.05) 100%);
+  -webkit-backdrop-filter:blur(16px) saturate(.95);
+  backdrop-filter:blur(16px) saturate(.95);
+  color:rgba(28,29,32,.95);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.52),inset 0 -1px 2px rgba(0,0,0,.04),0 2px 7px rgba(0,0,0,.06);
 }
 .toll-dialog .preview-btn,
 .toll-dialog .nudge,
@@ -1988,60 +2213,113 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   inset:0;
   border-radius:inherit;
   pointer-events:none;
-  background:linear-gradient(118deg,rgba(255,255,255,.34),transparent 42%,rgba(255,255,255,.07));
-  opacity:.7;
+  background:linear-gradient(118deg,rgba(255,255,255,.18),transparent 42%,rgba(255,255,255,.04));
+  opacity:.65;
 }
 .toll-dialog .chip:hover,
 .toll-dialog .area-tag:hover,
+.toll-dialog .collapse-btn:hover,
 .toll-dialog .preview-btn:hover,
 .toll-dialog .nudge:hover,
 .toll-dialog .footer-btn:hover,
-.toll-dialog .icon-button:hover:not(:disabled){
-  background:linear-gradient(145deg,rgba(255,255,255,.56),rgba(255,255,255,.22));
-  border-color:rgba(255,255,255,.92);
+.toll-dialog .icon-button:hover:not(:disabled),
+.toll-dialog .stage-type-chip:hover,
+.toll-dialog .fix-btn:hover,
+.toll-dialog .mute-toggle-btn:hover,
+.toll-dialog .custom-time-trigger:hover{
+  background-color:rgba(248,249,251,.87);
+  border-color:rgba(255,255,255,.84);
 }
-.toll-dialog .chip.active{
-  color:var(--toll-ink);
-  border-color:rgba(65,65,68,.24);
-  background:linear-gradient(145deg,rgba(70,70,73,.19),rgba(70,70,73,.085));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.82),inset 0 0 0 1px rgba(255,255,255,.15),0 3px 11px rgba(0,0,0,.055);
+.toll-dialog .chip.active,
+.toll-dialog .stage-type-chip.active,
+.toll-dialog .custom-time-trigger.is-open{
+  color:rgba(24,25,28,.96);
+  font-weight:780;
+  border-color:rgba(45,46,50,.32);
+  background-color:rgba(228,230,235,.89);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(228,230,235,.04) 56%,rgba(208,210,216,.12) 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.46),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.08),0 4px 12px -2px rgba(0,0,0,.14),0 0 0 1px inset rgba(255,255,255,.34);
 }
 [data-theme="dark"] .toll-dialog .chip,
 [data-theme="dark"] .toll-dialog .area-tag,
+[data-theme="dark"] .toll-dialog .collapse-btn,
 [data-theme="dark"] .toll-dialog .preview-btn,
 [data-theme="dark"] .toll-dialog .nudge,
 [data-theme="dark"] .toll-dialog .footer-btn,
 [data-theme="dark"] .toll-dialog .icon-button,
-[data-theme="dark"] .toll-dialog .time-input,
-[data-theme="dark"] .toll-dialog .interval-input{
-  color:var(--toll-ink);
-  border-color:rgba(255,255,255,.16);
-  background:linear-gradient(145deg,rgba(255,255,255,.095),rgba(255,255,255,.035));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.025),0 2px 8px rgba(0,0,0,.16);
+[data-theme="dark"] .toll-dialog .stage-type-chip,
+[data-theme="dark"] .toll-dialog .fix-btn,
+[data-theme="dark"] .toll-dialog .mute-toggle-btn,
+[data-theme="dark"] .toll-dialog .custom-time-trigger,
+[data-theme="dark"] .toll-dialog .bookmark-modal-chip{
+  color:#1c1d21;
+  border-color:rgba(255,255,255,.36);
+  background-color:rgba(234,236,240,.80);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(234,236,240,.04) 56%,rgba(208,210,216,.11) 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.40),inset 0 0 10px 2px rgba(255,255,255,.12),inset 0 -1px 2px rgba(0,0,0,.12),0 4px 12px -2px rgba(0,0,0,.34),0 0 0 1px inset rgba(255,255,255,.30);
 }
-[data-theme="dark"] .toll-dialog .chip::before,
-[data-theme="dark"] .toll-dialog .area-tag::before,
-[data-theme="dark"] .toll-dialog .preview-btn::before,
-[data-theme="dark"] .toll-dialog .nudge::before,
-[data-theme="dark"] .toll-dialog .footer-btn::before,
-[data-theme="dark"] .toll-dialog .icon-button::before{
-  background:linear-gradient(118deg,rgba(255,255,255,.15),transparent 45%,rgba(255,255,255,.025));
-  opacity:.85;
+[data-theme="dark"] .toll-dialog .time-input,
+[data-theme="dark"] .toll-dialog .interval-input,
+[data-theme="dark"] .toll-dialog .builder-select-sm,
+[data-theme="dark"] .toll-dialog .bookmark-modal-input,
+[data-theme="dark"] .toll-dialog .builder-search-input,
+[data-theme="dark"] .toll-dialog .batch-num-input{
+  color:var(--toll-ink);
+  border-color:rgba(255,255,255,.22);
+  background-color:rgba(42,43,46,.84);
+  background-image:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.025),0 2px 8px rgba(0,0,0,.18);
 }
 [data-theme="dark"] .toll-dialog .chip:hover,
 [data-theme="dark"] .toll-dialog .area-tag:hover,
+[data-theme="dark"] .toll-dialog .collapse-btn:hover,
 [data-theme="dark"] .toll-dialog .preview-btn:hover,
 [data-theme="dark"] .toll-dialog .nudge:hover,
 [data-theme="dark"] .toll-dialog .footer-btn:hover,
-[data-theme="dark"] .toll-dialog .icon-button:hover:not(:disabled){
-  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.06));
-  border-color:rgba(255,255,255,.28);
+[data-theme="dark"] .toll-dialog .icon-button:hover:not(:disabled),
+[data-theme="dark"] .toll-dialog .stage-type-chip:hover,
+[data-theme="dark"] .toll-dialog .fix-btn:hover,
+[data-theme="dark"] .toll-dialog .mute-toggle-btn:hover,
+[data-theme="dark"] .toll-dialog .custom-time-trigger:hover{
+  background-color:rgba(242,244,247,.86);
+  border-color:rgba(255,255,255,.50);
 }
-[data-theme="dark"] .toll-dialog .chip.active{
-  color:#f5f5f5;
-  border-color:rgba(255,255,255,.32);
-  background:linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.075));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.26),inset 0 0 0 1px rgba(255,255,255,.04),0 3px 12px rgba(0,0,0,.24);
+[data-theme="dark"] .toll-dialog .chip.active,
+[data-theme="dark"] .toll-dialog .stage-type-chip.active,
+[data-theme="dark"] .toll-dialog .custom-time-trigger.is-open{
+  color:#141518;
+  border-color:rgba(255,255,255,.56);
+  background-color:rgba(222,224,229,.90);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.46),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.14),0 5px 14px -2px rgba(0,0,0,.42),0 0 0 1px inset rgba(255,255,255,.36);
+}
+.toll-dialog .area-tag,
+.toll-dialog .stage-type-chip,
+[data-theme="sepia"] .toll-dialog .area-tag,
+[data-theme="sepia"] .toll-dialog .stage-type-chip{
+  border:none;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 10px 2px rgba(255,255,255,.10),inset 0 -1px 2px rgba(0,0,0,.05),0 3px 10px -2px rgba(0,0,0,.10);
+}
+.toll-dialog .area-tag:hover,
+.toll-dialog .stage-type-chip:hover{
+  border:none;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.48),inset 0 0 12px 3px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.06),0 3px 8px -2px rgba(0,0,0,.13);
+}
+.toll-dialog .stage-type-chip.active,
+.toll-dialog .area-tag.is-core-all{
+  border:none;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.46),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.08),0 4px 12px -2px rgba(0,0,0,.14);
+}
+[data-theme="dark"] .toll-dialog .area-tag,
+[data-theme="dark"] .toll-dialog .stage-type-chip,
+[data-theme="dark"] .toll-dialog .area-tag:hover,
+[data-theme="dark"] .toll-dialog .stage-type-chip:hover{
+  border:none;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.40),inset 0 0 10px 2px rgba(255,255,255,.12),inset 0 -1px 2px rgba(0,0,0,.12),0 4px 12px -2px rgba(0,0,0,.34);
+}
+[data-theme="dark"] .toll-dialog .stage-type-chip.active,
+[data-theme="dark"] .toll-dialog .area-tag.is-core-all{
+  border:none;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.46),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.14),0 5px 14px -2px rgba(0,0,0,.42);
 }
 .toll-dialog .time-input:focus,
 .toll-dialog .interval-input:focus,
@@ -2063,43 +2341,46 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
 .toll-dialog .lg-pill-cta-shadow{--shadow-cuttoff-fix:1.5em;position:absolute;width:calc(100% + var(--shadow-cuttoff-fix));height:calc(100% + var(--shadow-cuttoff-fix));top:calc(0% - var(--shadow-cuttoff-fix) / 2);left:calc(0% - var(--shadow-cuttoff-fix) / 2);filter:blur(clamp(2px,.14em,10px));overflow:visible;pointer-events:none}
 .toll-dialog .lg-pill-cta-shadow::after{content:"";position:absolute;z-index:0;inset:0;border-radius:999vw;background:linear-gradient(180deg,rgba(0,0,0,.24),rgba(0,0,0,.10));width:calc(100% - var(--shadow-cuttoff-fix) - .14em);height:calc(100% - var(--shadow-cuttoff-fix) - .14em);top:calc(var(--shadow-cuttoff-fix) / 2 + .26em);left:calc(var(--shadow-cuttoff-fix) / 2 + .06em);padding:.125em;box-sizing:border-box;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;transition:all var(--anim--hover-time) var(--anim--hover-ease);overflow:visible;opacity:.92}
 [data-theme="dark"] .toll-dialog .lg-pill-cta-shadow::after{background:linear-gradient(180deg,rgba(0,0,0,.52),rgba(0,0,0,.28))}
-.toll-dialog .lg-pill-cta-btn{--border-width:clamp(1px,.085em,1.5px);all:unset;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:rgba(0,0,0,0);pointer-events:auto;z-index:3;border-radius:999vw;background:linear-gradient(180deg,rgba(255,255,255,.56) 0%,rgba(255,255,255,.18) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.24) 100%),linear-gradient(-75deg,rgba(244,245,248,.34),rgba(255,255,255,.62),rgba(242,244,247,.36));box-shadow:inset 0 0 2px 1px rgba(255,255,255,.54),inset 0 0 12px 4px rgba(255,255,255,.26),inset 0 .125em .125em rgba(0,0,0,.05),inset 0 -.14em .14em rgba(255,255,255,.74),0 .25em .18em -.125em rgba(0,0,0,.20),0 0 0 .08em inset rgba(255,255,255,.34);-webkit-backdrop-filter:blur(12px) saturate(1.25);backdrop-filter:blur(12px) saturate(1.25);transition:all var(--anim--hover-time) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-btn{--border-width:clamp(1px,.085em,1.5px);all:unset;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:none;pointer-events:auto;z-index:3;border-radius:999vw;background-color:rgba(244,245,247,.80);background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.09) 100%);box-shadow:inset 0 1px 1px rgba(255,255,255,.40),inset 0 0 10px 2px rgba(255,255,255,.12),inset 0 -1px 2px rgba(0,0,0,.06),0 4px 12px -2px rgba(0,0,0,.14),0 0 0 1px inset rgba(255,255,255,.28);-webkit-backdrop-filter:blur(18px) saturate(.95);backdrop-filter:blur(18px) saturate(.95);transition:all var(--anim--hover-time) var(--anim--hover-ease)}
 .toll-dialog .lg-pill-cta-btn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
 .toll-dialog .lg-pill-cta-btn:disabled{opacity:.42;cursor:not-allowed;filter:grayscale(.25)}
-.toll-dialog .lg-pill-cta-btn:not(:disabled):hover{transform:scale(.975);-webkit-backdrop-filter:blur(5px) saturate(1.32);backdrop-filter:blur(5px) saturate(1.32);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.68),inset 0 0 12px 4px rgba(255,255,255,.34),inset 0 .125em .125em rgba(0,0,0,.05),inset 0 -.14em .14em rgba(255,255,255,.80),0 .15em .08em -.1em rgba(0,0,0,.24),0 0 0 .08em inset rgba(255,255,255,.62)}
-.toll-dialog .lg-pill-cta-label{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:5px;height:38px;padding-inline:18px;user-select:none;letter-spacing:-.025em;font-weight:780;font-size:11.5px;line-height:1;white-space:nowrap;color:rgba(36,36,40,.94);text-shadow:0 1px 1px rgba(255,255,255,.35);transition:all var(--anim--hover-time) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover{transform:scale(.98);background-color:rgba(248,249,251,.86);-webkit-backdrop-filter:blur(16px) saturate(.98);backdrop-filter:blur(16px) saturate(.98);box-shadow:inset 0 1px 1px rgba(255,255,255,.46),inset 0 0 12px 3px rgba(255,255,255,.15),inset 0 -1px 2px rgba(0,0,0,.07),0 3px 8px -2px rgba(0,0,0,.16),0 0 0 1px inset rgba(255,255,255,.36)}
+.toll-dialog .lg-pill-cta-label{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:5px;height:38px;padding-inline:18px;user-select:none;letter-spacing:-.025em;font-weight:780;font-size:11.5px;line-height:1;white-space:nowrap;color:rgba(32,33,36,.94);text-shadow:0 1px 0 rgba(255,255,255,.30);transition:all var(--anim--hover-time) var(--anim--hover-ease)}
 .toll-dialog .lg-pill-cta-chevron{flex:none;transition:transform var(--anim--hover-time) var(--anim--hover-ease)}
 .toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-chevron{transform:translateX(2px)}
-.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-label{text-shadow:.025em .04em .06em rgba(0,0,0,.12)}
-.toll-dialog .lg-pill-cta-label::after{content:"";display:block;position:absolute;width:calc(100% - var(--border-width));height:calc(100% - var(--border-width));top:calc(0% + var(--border-width) / 2);left:calc(0% + var(--border-width) / 2);box-sizing:border-box;border-radius:999vw;overflow:clip;background:linear-gradient(var(--angle-2),rgba(255,255,255,0) 0%,rgba(255,255,255,.34) 33%,rgba(255,255,255,.80) 43% 51%,rgba(255,255,255,0) 60%);z-index:3;mix-blend-mode:screen;pointer-events:none;background-size:200% 200%;background-position:0% 50%;background-repeat:no-repeat;transition:background-position calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease),--angle-2 calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease)}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-label{text-shadow:0 1px 0 rgba(255,255,255,.38)}
+.toll-dialog .lg-pill-cta-label::after{content:"";display:block;position:absolute;width:calc(100% - var(--border-width));height:calc(100% - var(--border-width));top:calc(0% + var(--border-width) / 2);left:calc(0% + var(--border-width) / 2);box-sizing:border-box;border-radius:999vw;overflow:clip;background:linear-gradient(var(--angle-2),rgba(255,255,255,0) 0%,rgba(255,255,255,.09) 28%,rgba(255,255,255,.17) 46% 54%,rgba(255,255,255,0) 72%);z-index:3;mix-blend-mode:screen;pointer-events:none;background-size:200% 200%;background-position:0% 50%;background-repeat:no-repeat;transition:background-position calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease),--angle-2 calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease)}
 .toll-dialog .lg-pill-cta-btn:not(:disabled):hover .lg-pill-cta-label::after{background-position:28% 50%}
-.toll-dialog .lg-pill-cta-btn:not(:disabled):active .lg-pill-cta-label::after{background-position:54% 15%;--angle-2:-15deg}
-.toll-dialog .lg-pill-cta-btn::after{content:"";position:absolute;z-index:1;inset:0;border-radius:999vw;width:calc(100% + var(--border-width));height:calc(100% + var(--border-width));top:calc(0% - var(--border-width) / 2);left:calc(0% - var(--border-width) / 2);padding:var(--border-width);box-sizing:border-box;background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.45),rgba(0,0,0,0) 5% 40%,rgba(0,0,0,.45) 50%,rgba(0,0,0,0) 60% 95%,rgba(0,0,0,.45)),linear-gradient(180deg,rgba(255,255,255,.84),rgba(255,255,255,.56));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;transition:all var(--anim--hover-time) var(--anim--hover-ease),--angle-1 500ms ease;box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.76);pointer-events:none}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):active .lg-pill-cta-label::after,.toll-dialog .lg-pill-cta-btn:not(:disabled).is-pressed .lg-pill-cta-label::after{background-position:54% 15%;--angle-2:-15deg}
+.toll-dialog .lg-pill-cta-btn::after{content:"";position:absolute;z-index:1;inset:0;border-radius:999vw;width:calc(100% + var(--border-width));height:calc(100% + var(--border-width));top:calc(0% - var(--border-width) / 2);left:calc(0% - var(--border-width) / 2);padding:var(--border-width);box-sizing:border-box;background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.14),rgba(0,0,0,0) 8% 40%,rgba(0,0,0,.14) 50%,rgba(0,0,0,0) 60% 92%,rgba(0,0,0,.14)),linear-gradient(180deg,rgba(255,255,255,.44),rgba(226,228,232,.28));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;transition:all var(--anim--hover-time) var(--anim--hover-ease),--angle-1 500ms ease;box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.32);pointer-events:none}
 .toll-dialog .lg-pill-cta-btn:not(:disabled):hover::after{--angle-1:-125deg}
-.toll-dialog .lg-pill-cta-btn:not(:disabled):active::after{--angle-1:-75deg}
+.toll-dialog .lg-pill-cta-btn:not(:disabled):active::after,.toll-dialog .lg-pill-cta-btn:not(:disabled).is-pressed::after{--angle-1:-75deg}
 .toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):hover) .lg-pill-cta-shadow{filter:blur(clamp(1.5px,.06em,5px));transition:filter var(--anim--hover-time) var(--anim--hover-ease)}
 .toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):hover) .lg-pill-cta-shadow::after{top:calc(var(--shadow-cuttoff-fix) / 2 + .18em);opacity:1}
-.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active){transform:rotate3d(1,0,0,22deg)}
-.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn{box-shadow:inset 0 .125em .125em rgba(0,0,0,.07),inset 0 -.125em .125em rgba(255,255,255,.72),0 .125em .125em -.125em rgba(0,0,0,.22),0 0 0 .1em inset rgba(255,255,255,.36),0 .2em .06em 0 rgba(0,0,0,.06),0 .22em 0 0 rgba(255,255,255,.82),inset 0 .2em .06em 0 rgba(0,0,0,.14)}
-.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow{filter:blur(clamp(2px,.125em,10px))}
-.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow::after{top:calc(var(--shadow-cuttoff-fix) / 2 + .14em);opacity:.72}
-.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{padding-inline:22px;font-weight:820;color:rgba(34,35,38,.95);text-shadow:0 1px 1px rgba(255,255,255,.55)}
-.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.46) 0%,rgba(255,255,255,.14) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.18) 100%),linear-gradient(-75deg,rgba(220,222,226,.76),rgba(236,238,242,.86),rgba(218,220,224,.76));-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.78),inset 0 0 12px 4px rgba(255,255,255,.36),inset 0 .125em .125em rgba(0,0,0,.06),inset 0 -.14em .14em rgba(255,255,255,.86),0 .26em .20em -.12em rgba(0,0,0,.18),0 0 0 .08em inset rgba(255,255,255,.52)}
-.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.42),rgba(0,0,0,0) 5% 40%,rgba(0,0,0,.42) 50%,rgba(0,0,0,0) 60% 95%,rgba(0,0,0,.42)),linear-gradient(180deg,rgba(255,255,255,.90),rgba(235,236,240,.68));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.86)}
-.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover{-webkit-backdrop-filter:blur(7px) saturate(1.15);backdrop-filter:blur(7px) saturate(1.15);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.88),inset 0 0 14px 5px rgba(255,255,255,.42),inset 0 .125em .125em rgba(0,0,0,.06),inset 0 -.14em .14em rgba(255,255,255,.90),0 .16em .10em -.1em rgba(0,0,0,.22),0 0 0 .08em inset rgba(255,255,255,.68)}
-.toll-dialog .lg-pill-cta-wrap.is-save:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn{box-shadow:inset 0 .14em .125em rgba(0,0,0,.10),inset 0 -.125em .125em rgba(255,255,255,.82),0 .125em .125em -.125em rgba(0,0,0,.20),0 0 0 .1em inset rgba(255,255,255,.46),0 .2em .06em 0 rgba(0,0,0,.06),0 .22em 0 0 rgba(255,255,255,.88),inset 0 .18em .06em 0 rgba(0,0,0,.14)}
-[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.56) 0%,rgba(255,255,255,.18) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.24) 100%),linear-gradient(-75deg,rgba(255,248,236,.40),rgba(255,251,245,.68),rgba(255,248,236,.42))}
-[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label{color:#2c2117}
-[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.46) 0%,rgba(255,255,255,.14) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.18) 100%),linear-gradient(-75deg,rgba(224,223,221,.78),rgba(238,237,235,.88),rgba(222,221,219,.78))}
-[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{color:rgba(36,35,34,.95);text-shadow:0 1px 1px rgba(255,255,255,.55)}
-[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,.08) 44%,rgba(255,255,255,0) 52%,rgba(255,255,255,.14) 100%),linear-gradient(-75deg,rgba(46,48,54,.46),rgba(84,88,96,.42),rgba(42,44,50,.46));box-shadow:inset 0 0 2px 1px rgba(255,255,255,.32),inset 0 0 12px 4px rgba(255,255,255,.14),inset 0 .125em .125em rgba(0,0,0,.34),inset 0 -.14em .14em rgba(255,255,255,.36),0 .28em .22em -.12em rgba(0,0,0,.48),0 0 0 .08em inset rgba(255,255,255,.24)}
-[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn:not(:disabled):hover{box-shadow:inset 0 0 2px 1px rgba(255,255,255,.42),inset 0 0 12px 4px rgba(255,255,255,.18),inset 0 .125em .125em rgba(0,0,0,.34),inset 0 -.14em .14em rgba(255,255,255,.42),0 .16em .10em -.1em rgba(0,0,0,.50),0 0 0 .08em inset rgba(255,255,255,.32)}
-[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label{color:#f4f4f6;text-shadow:0 1px 2px rgba(0,0,0,.36)}
-[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(255,255,255,.76),rgba(255,255,255,.10) 8% 38%,rgba(255,255,255,.76) 50%,rgba(255,255,255,.10) 62% 94%,rgba(255,255,255,.76)),linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.14));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.40)}
-[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background:linear-gradient(180deg,rgba(255,255,255,.46) 0%,rgba(255,255,255,.14) 44%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.18) 100%),linear-gradient(-75deg,rgba(206,208,212,.78),rgba(228,230,234,.88),rgba(202,204,208,.78));-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);box-shadow:inset 0 0 2px 1px rgba(255,255,255,.82),inset 0 0 12px 4px rgba(255,255,255,.40),inset 0 .125em .125em rgba(0,0,0,.10),inset 0 -.14em .14em rgba(255,255,255,.88),0 .30em .26em -.12em rgba(0,0,0,.52),0 0 0 .08em inset rgba(255,255,255,.52)}
-[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{color:#1a1a1d;text-shadow:0 1px 1px rgba(255,255,255,.42)}
-[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.36),rgba(0,0,0,.04) 8% 38%,rgba(0,0,0,.36) 50%,rgba(0,0,0,.04) 62% 94%,rgba(0,0,0,.36)),linear-gradient(180deg,rgba(255,255,255,.94),rgba(235,236,240,.66));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.84)}
-@media (hover:none) and (pointer:coarse){.toll-dialog .lg-pill-cta-label::after,.toll-dialog .lg-pill-cta-btn:active .lg-pill-cta-label::after{--angle-2:-45deg}.toll-dialog .lg-pill-cta-btn::after,.toll-dialog .lg-pill-cta-btn:hover::after,.toll-dialog .lg-pill-cta-btn:active::after{--angle-1:-75deg}}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active),.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled).is-pressed){transform:rotate3d(1,0,0,22deg)}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn,.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled).is-pressed) .lg-pill-cta-btn{transform:scale(.975);box-shadow:inset 0 .125em .125em rgba(0,0,0,.08),inset 0 -.125em .125em rgba(255,255,255,.32),0 2px 6px -1px rgba(0,0,0,.16),0 0 0 1px inset rgba(255,255,255,.24)}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow,.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled).is-pressed) .lg-pill-cta-shadow{filter:blur(clamp(2px,.125em,10px))}
+.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-shadow::after,.toll-dialog .lg-pill-cta-wrap:has(.lg-pill-cta-btn:not(:disabled).is-pressed) .lg-pill-cta-shadow::after{top:calc(var(--shadow-cuttoff-fix) / 2 + .14em);opacity:.72}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{padding-inline:22px;font-weight:820;color:rgba(28,29,32,.96);text-shadow:0 1px 0 rgba(255,255,255,.34)}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background-color:rgba(232,234,238,.86);background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(232,234,238,.04) 56%,rgba(212,214,220,.11) 100%);-webkit-backdrop-filter:blur(20px) saturate(.92);backdrop-filter:blur(20px) saturate(.92);box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.08),0 5px 14px -2px rgba(0,0,0,.16),0 0 0 1px inset rgba(255,255,255,.32)}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.15),rgba(0,0,0,0) 8% 40%,rgba(0,0,0,.15) 50%,rgba(0,0,0,0) 60% 92%,rgba(0,0,0,.15)),linear-gradient(180deg,rgba(255,255,255,.46),rgba(224,226,230,.30));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.34)}
+.toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover{background-color:rgba(238,240,243,.90);-webkit-backdrop-filter:blur(18px) saturate(.95);backdrop-filter:blur(18px) saturate(.95);box-shadow:inset 0 1px 1px rgba(255,255,255,.48),inset 0 0 14px 3px rgba(255,255,255,.17),inset 0 -1px 2px rgba(0,0,0,.08),0 3px 9px -2px rgba(0,0,0,.18),0 0 0 1px inset rgba(255,255,255,.38)}
+.toll-dialog .lg-pill-cta-wrap.is-save:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn,.toll-dialog .lg-pill-cta-wrap.is-save:has(.lg-pill-cta-btn:not(:disabled).is-pressed) .lg-pill-cta-btn{transform:scale(.975);box-shadow:inset 0 .14em .125em rgba(0,0,0,.10),inset 0 -.125em .125em rgba(255,255,255,.34),0 2px 6px -1px rgba(0,0,0,.16),0 0 0 1px inset rgba(255,255,255,.26)}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn{background-color:rgba(243,242,240,.82);background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,235,233,.04) 56%,rgba(220,219,216,.09) 100%)}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn:not(:disabled):hover{background-color:rgba(247,246,244,.88)}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label{color:#26221e}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background-color:rgba(232,231,229,.87);background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(232,231,229,.04) 56%,rgba(214,213,210,.11) 100%)}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover{background-color:rgba(238,237,235,.91)}
+[data-theme="sepia"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{color:rgba(30,29,28,.95);text-shadow:0 1px 0 rgba(255,255,255,.34)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn{background-color:rgba(236,238,242,.80);background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(236,238,242,.04) 56%,rgba(210,212,218,.11) 100%);-webkit-backdrop-filter:blur(18px) saturate(.95);backdrop-filter:blur(18px) saturate(.95);box-shadow:inset 0 1px 1px rgba(255,255,255,.40),inset 0 0 10px 2px rgba(255,255,255,.12),inset 0 -1px 2px rgba(0,0,0,.12),0 6px 16px -2px rgba(0,0,0,.42),0 0 0 1px inset rgba(255,255,255,.30)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn:not(:disabled):hover{background-color:rgba(242,244,247,.86);-webkit-backdrop-filter:blur(16px) saturate(.98);backdrop-filter:blur(16px) saturate(.98);box-shadow:inset 0 1px 1px rgba(255,255,255,.46),inset 0 0 12px 3px rgba(255,255,255,.15),inset 0 -1px 2px rgba(0,0,0,.12),0 4px 12px -2px rgba(0,0,0,.46),0 0 0 1px inset rgba(255,255,255,.36)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label{color:#1e1f23;text-shadow:0 1px 0 rgba(255,255,255,.28)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.15),rgba(0,0,0,0) 8% 40%,rgba(0,0,0,.15) 50%,rgba(0,0,0,0) 60% 92%,rgba(0,0,0,.15)),linear-gradient(180deg,rgba(255,255,255,.46),rgba(226,228,232,.30));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.34)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn{background-color:rgba(226,228,232,.85);background-image:linear-gradient(180deg,rgba(255,255,255,.14) 0%,rgba(226,228,232,.04) 56%,rgba(202,204,210,.11) 100%);-webkit-backdrop-filter:blur(20px) saturate(.92);backdrop-filter:blur(20px) saturate(.92);box-shadow:inset 0 1px 1px rgba(255,255,255,.42),inset 0 0 12px 2px rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.14),0 6px 16px -2px rgba(0,0,0,.46),0 0 0 1px inset rgba(255,255,255,.32)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover{background-color:rgba(232,234,238,.89)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label{color:#16171a;text-shadow:0 1px 0 rgba(255,255,255,.28)}
+[data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after{background:conic-gradient(from var(--angle-1) at 50% 50%,rgba(0,0,0,.16),rgba(0,0,0,0) 8% 40%,rgba(0,0,0,.16) 50%,rgba(0,0,0,0) 60% 92%,rgba(0,0,0,.16)),linear-gradient(180deg,rgba(255,255,255,.48),rgba(224,226,230,.30));box-shadow:inset 0 0 0 calc(var(--border-width) / 2) rgba(255,255,255,.36)}
+@media (hover:none) and (pointer:coarse){.toll-dialog .lg-pill-cta-label::after,.toll-dialog .lg-pill-cta-btn:active .lg-pill-cta-label::after,.toll-dialog .lg-pill-cta-btn.is-pressed .lg-pill-cta-label::after{--angle-2:-45deg}.toll-dialog .lg-pill-cta-btn::after,.toll-dialog .lg-pill-cta-btn:hover::after,.toll-dialog .lg-pill-cta-btn:active::after,.toll-dialog .lg-pill-cta-btn.is-pressed::after{--angle-1:-75deg}}
 @media (prefers-reduced-motion:reduce){.toll-dialog .lg-pill-cta-wrap,.toll-dialog .lg-pill-cta-shadow::after,.toll-dialog .lg-pill-cta-btn,.toll-dialog .lg-pill-cta-btn::after,.toll-dialog .lg-pill-cta-label,.toll-dialog .lg-pill-cta-label::after,.toll-dialog .lg-pill-cta-chevron{transition:none}}
 @media (max-width:960px){
   .toll-dialog .workspace{grid-template-columns:minmax(250px,39%) minmax(0,1fr)}
@@ -2148,20 +2429,25 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;bac
   display:none;
   flex-direction:column;
   gap:8px;
-  width:286px;
+  width:312px;
   max-width:calc(100vw - 44px);
 }
 .bookmark-drawer-card.open{display:flex}
-.bookmark-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bookmark-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.bookmark-drawer-head-actions{display:inline-flex;align-items:center;gap:4px;flex:none}
 .bookmark-drawer-title{font-size:11.5px;font-weight:750;letter-spacing:-.02em;color:var(--ink);opacity:.9}
-.bookmark-add-toggle{border:1px solid var(--glass-rim);background:rgba(255,255,255,.22);color:var(--btn);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.bookmark-add-toggle{border:1px solid var(--glass-rim);background:rgba(255,255,255,.22);color:var(--btn);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;touch-action:none;-webkit-touch-callout:none;transition:background .18s ease,transform .16s ease}
+.bookmark-add-toggle:active,.bookmark-add-toggle.is-pressed{transform:scale(.96)}
+.bookmark-save-block{display:none;flex-direction:column;gap:5px}
+.bookmark-save-block.open{display:flex}
 .bookmark-save-row{display:none;align-items:center;gap:6px}
 .bookmark-save-row.open{display:flex}
 .bookmark-name-input{flex:1;min-width:0;height:30px;border-radius:999px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.32);color:var(--ink);padding:0 11px;font-size:11.5px;font-weight:600;outline:none}
 [data-theme="dark"] .bookmark-name-input{background:rgba(255,255,255,.07)}
-.bookmark-save-btn{flex:none;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.36);color:var(--ink);font-size:11px;font-weight:750;cursor:pointer}
+.bookmark-save-btn{flex:none;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.36);color:var(--ink);font-size:11px;font-weight:750;cursor:pointer;touch-action:none;-webkit-touch-callout:none;transition:background .16s ease,transform .16s ease}
+.bookmark-save-btn:active,.bookmark-save-btn.is-pressed{transform:scale(.96)}
 [data-theme="dark"] .bookmark-save-btn{background:rgba(255,255,255,.14)}
-.bookmark-pill-list{display:flex;flex-direction:column;gap:5px;max-height:158px;overflow-y:auto;scrollbar-width:thin}
+.bookmark-pill-list{display:flex;flex-direction:column;gap:6px;max-height:224px;overflow-y:auto;scrollbar-width:thin}
 .bookmark-empty-hint{font-size:11px;color:var(--modal-muted);padding:4px 2px}
 .bookmark-pill-item{display:flex;align-items:center;justify-content:space-between;gap:6px;border-radius:999px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.18);padding:3px 5px 3px 11px}
 [data-theme="dark"] .bookmark-pill-item{background:rgba(255,255,255,.05)}
@@ -2275,10 +2561,12 @@ html:not(.app-ready) #rightTimetablePanel{
   color:var(--toll-ink);
   display:inline-flex;align-items:center;justify-content:center;
   cursor:pointer;
+  touch-action:none;
+  -webkit-touch-callout:none;
   transition:background .16s ease,transform .2s var(--ease),border-color .16s ease;
 }
 .rt-arrow-btn:hover{background:var(--toll-pill-hover)}
-.rt-arrow-btn:active{transform:scale(.92)}
+.rt-arrow-btn:active,.rt-arrow-btn.is-pressed{transform:scale(.92)}
 .rt-arrow-btn svg{transition:transform .24s var(--ease)}
 .rt-arrow-btn.is-collapsed svg{transform:rotate(180deg)}
 .rt-options-outer{
@@ -2315,10 +2603,10 @@ html:not(.app-ready) #rightTimetablePanel{
 .rt-mode-btn{
   position:relative;z-index:1;border:1px solid transparent;background:transparent;color:var(--toll-ink-2);
   border-radius:11px;padding:7px 8px;font-size:11.5px;font-weight:700;letter-spacing:-.02em;
-  cursor:pointer;line-height:1.25;text-align:center;white-space:nowrap;
+  cursor:pointer;touch-action:none;-webkit-touch-callout:none;line-height:1.25;text-align:center;white-space:nowrap;
   transition:color .22s ease,transform .14s ease;
 }
-.rt-mode-btn:active{transform:scale(.98)}
+.rt-mode-btn:active,.rt-mode-btn.is-pressed{transform:scale(.98)}
 .rt-mode-btn.active{color:var(--toll-ink)}
 [data-theme="dark"] .rt-mode-btn.active{color:#f4f4f6}
 .rt-sub-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -2326,10 +2614,10 @@ html:not(.app-ready) #rightTimetablePanel{
 .rt-edit-seq-btn{
   flex:none;border:1px solid var(--toll-glass-edge);background:var(--toll-pill);color:var(--toll-ink);
   border-radius:999px;padding:4px 10px;font-size:10.5px;font-weight:700;letter-spacing:-.015em;
-  cursor:pointer;white-space:nowrap;transition:background .16s ease,transform .14s ease;
+  cursor:pointer;touch-action:none;-webkit-touch-callout:none;white-space:nowrap;transition:background .16s ease,transform .14s ease;
 }
 .rt-edit-seq-btn:hover{background:var(--toll-pill-hover)}
-.rt-edit-seq-btn:active{transform:scale(.96)}
+.rt-edit-seq-btn:active,.rt-edit-seq-btn.is-pressed{transform:scale(.96)}
 .rt-scroll-list{
   flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;
   padding:10px 12px 14px;
@@ -2375,7 +2663,7 @@ html:not(.app-ready) #rightTimetablePanel{
 }
 .rt-item-btn > *{position:relative;z-index:1}
 .rt-item-btn:hover{background:linear-gradient(135deg,rgba(255,255,255,.56),rgba(255,255,255,.24));border-color:rgba(255,255,255,.88)}
-.rt-item-btn:active{transform:scale(.988)}
+.rt-item-btn:active,.rt-item-btn.is-pressed{transform:scale(.988)}
 .rt-item-btn.is-current,
 .rt-item-btn.is-current:hover{
   border-color:transparent;
@@ -2476,7 +2764,7 @@ html:not(.app-ready) #rightTimetablePanel{
 .run-aux-btn.pos-left{right:calc(100% + 12px);top:50%;transform:translateY(-50%) scale(.9)}
 .run-aux-btn.pos-right{left:calc(100% + 12px);top:50%;transform:translateY(-50%) scale(.9)}
 .run-aux-btn.pos-top-center{left:50%;bottom:calc(100% + 10px);transform:translateX(-50%) scale(.9)}
-#runTouchZone.is-revealed .run-aux-btn{opacity:1;visibility:visible;pointer-events:auto}
+#runTouchZone.is-revealed .run-aux-btn{opacity:1;visibility:visible;pointer-events:auto;touch-action:none;-webkit-touch-callout:none}
 #runTouchZone.is-revealed .run-aux-btn.pos-left{transform:translateY(-50%) scale(1)}
 #runTouchZone.is-revealed .run-aux-btn.pos-right{transform:translateY(-50%) scale(1)}
 #runTouchZone.is-revealed .run-aux-btn.pos-top-center{transform:translateX(-50%) scale(1)}
@@ -2484,6 +2772,9 @@ html:not(.app-ready) #rightTimetablePanel{
 #runTouchZone.is-revealed .run-aux-btn.pos-right:hover:not(:disabled){transform:translateY(-50%) scale(1.06);background:rgba(255,255,255,.42)}
 #runTouchZone.is-revealed .run-aux-btn.pos-top-center:hover:not(:disabled){transform:translateX(-50%) scale(1.06);background:rgba(255,255,255,.42)}
 [data-theme="dark"] #runTouchZone.is-revealed .run-aux-btn:hover:not(:disabled){background:rgba(255,255,255,.16)}
+#runTouchZone.is-revealed .run-aux-btn.pos-left:active:not(:disabled),#runTouchZone.is-revealed .run-aux-btn.pos-left.is-pressed:not(:disabled){transform:translateY(-50%) scale(.94)}
+#runTouchZone.is-revealed .run-aux-btn.pos-right:active:not(:disabled),#runTouchZone.is-revealed .run-aux-btn.pos-right.is-pressed:not(:disabled){transform:translateY(-50%) scale(.94)}
+#runTouchZone.is-revealed .run-aux-btn.pos-top-center:active:not(:disabled),#runTouchZone.is-revealed .run-aux-btn.pos-top-center.is-pressed:not(:disabled){transform:translateX(-50%) scale(.94)}
 #runTouchZone.is-revealed .run-aux-btn:disabled{opacity:.36;cursor:not-allowed}
 .dock-status-badges{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 74px);transform:translate3d(calc(-50% + var(--tt-shift-x,0px)),var(--dock-shift-y,0px),0);z-index:23;display:flex;align-items:center;gap:6px;pointer-events:auto;transition:transform .52s cubic-bezier(.22,1,.36,1)}
 .status-pill-badge{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;background:var(--toll-pill);border:1px solid var(--toll-glass-edge);color:var(--toll-ink);font-size:11px;font-weight:700;backdrop-filter:blur(12px)}
@@ -2517,9 +2808,44 @@ html:not(.app-ready) #rightTimetablePanel{
 .bm-act-btn:hover{background:var(--toll-pill-hover)}
 .bm-act-btn.primary{background:var(--toll-button);border-color:var(--toll-button);color:#fff}
 [data-theme="dark"] .bm-act-btn.primary{color:var(--toll-button-text);border-color:rgba(255,255,255,.62);background:linear-gradient(145deg,rgba(240,240,240,.96),rgba(205,205,205,.86))}
+.bm-act-btn.is-active{background:rgba(255,255,255,.56);border-color:var(--glint)}
 .bm-act-btn.danger:hover{color:#e03131;border-color:rgba(224,49,49,.4)}
 .bm-undo-bar{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 8px;border-radius:8px;background:var(--toll-warn-bg);border:1px solid var(--toll-warn-line);font-size:11px;font-weight:700;color:var(--toll-warn)}
 .bm-undo-bar button{appearance:none;border:none;background:var(--toll-button);color:var(--toll-button-text);border-radius:999px;padding:2px 8px;font-size:10.5px;font-weight:700;cursor:pointer}
+.bookmark-folder-select-row,.bookmark-move-row{display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding-top:2px}
+.bookmark-move-label{font-size:10px;font-weight:700;color:var(--modal-muted);margin-right:2px}
+.bookmark-folder-tabs{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.bm-folder-pill{display:inline-flex;align-items:center;gap:3px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.18);color:var(--ink);border-radius:999px;padding:3px 8px;font-size:10px;font-weight:680;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+.bm-folder-pill:hover{background:rgba(255,255,255,.34)}
+.bm-folder-pill.is-active{background:rgba(255,255,255,.56);border-color:var(--glint);font-weight:780}
+[data-theme="dark"] .bm-folder-pill{background:rgba(255,255,255,.06)}
+[data-theme="dark"] .bm-folder-pill:hover{background:rgba(255,255,255,.14)}
+[data-theme="dark"] .bm-folder-pill.is-active{background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.52)}
+.bm-folder-icon{font-size:9.5px;line-height:1}
+.bm-folder-cnt{opacity:.72;font-variant-numeric:tabular-nums}
+.bookmark-folder-toolbar{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 8px;border-radius:12px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.14)}
+[data-theme="dark"] .bookmark-folder-toolbar{background:rgba(255,255,255,.05)}
+.bookmark-folder-toolbar-name{font-size:10.5px;font-weight:740;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bookmark-folder-toolbar-actions{display:inline-flex;align-items:center;gap:4px;flex:none}
+.bookmark-folder-group{display:flex;flex-direction:column;gap:4px;padding:5px 6px;border-radius:14px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.10)}
+[data-theme="dark"] .bookmark-folder-group{background:rgba(255,255,255,.03)}
+.bookmark-folder-group-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.bookmark-folder-group-toggle{flex:1;min-width:0;border:none;background:transparent;color:var(--ink);padding:2px 3px;display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:750;text-align:left;cursor:pointer}
+.bookmark-folder-group-acts{display:inline-flex;align-items:center;gap:3px;flex:none}
+.bookmark-folder-group-body{display:flex;flex-direction:column;gap:4px}
+.toll-dialog .bookmark-modal-quickline{flex-direction:column;align-items:stretch;gap:8px}
+.toll-dialog .bookmark-modal-folder-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.toll-dialog .bookmark-modal-folder-pills{display:flex;align-items:center;flex-wrap:wrap;gap:5px;flex:1;min-width:0}
+.toll-dialog .bookmark-modal-folder-actions,.toll-dialog .bookmark-modal-folder-create,.toll-dialog .bookmark-modal-items-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.toll-dialog .bookmark-folder-chip{padding:5px 10px;font-size:10px}
+.toll-dialog .bookmark-modal-folder-tag{display:inline-block;margin-left:4px;padding:1px 6px;border-radius:999px;font-size:9px;font-weight:700;background:rgba(0,0,0,.06);color:var(--toll-ink-2)}
+[data-theme="dark"] .toll-dialog .bookmark-modal-folder-tag{background:rgba(255,255,255,.14);color:var(--toll-ink)}
+.toll-dialog .bookmark-modal-move{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;border:none;background:rgba(0,0,0,.06);font-size:9.5px;line-height:1;padding:0;cursor:pointer}
+.toll-dialog .bookmark-modal-move:hover,.toll-dialog .bookmark-modal-move.is-open{background:rgba(0,0,0,.16)}
+[data-theme="dark"] .toll-dialog .bookmark-modal-move{background:rgba(255,255,255,.10)}
+[data-theme="dark"] .toll-dialog .bookmark-modal-move:hover,[data-theme="dark"] .toll-dialog .bookmark-modal-move.is-open{background:rgba(255,255,255,.22)}
+.toll-dialog .bookmark-modal-folder-select{height:28px;border-radius:999px;padding:0 10px;font-size:10.5px;font-weight:650}
+.toll-dialog .bookmark-modal-move-bar{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding-top:6px;border-top:1px dashed var(--toll-line)}
 .preview-btn-wrap{position:relative;overflow:hidden}
 .preview-progress-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(255,255,255,.18);pointer-events:none;transition:width .1s linear}
 .rt-item-wrap{display:flex;flex-direction:column;gap:4px}
@@ -2540,36 +2866,40 @@ html:not(.app-ready) #rightTimetablePanel{
 [data-theme="light"] .bookmark-name-input{background:rgba(255,255,255,.24)}
 [data-theme="light"] .bookmark-save-btn{background:rgba(255,255,255,.28)}
 [data-theme="light"] .bookmark-pill-item{background:rgba(255,255,255,.11)}
-[data-theme="light"] .toll-dialog .dialog-header{background:rgba(255,255,255,.07)}
-[data-theme="light"] .toll-dialog .builder-stepper{background:rgba(255,255,255,.09)}
-[data-theme="light"] .toll-dialog .builder-step-tab{background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
-[data-theme="light"] .toll-dialog .builder-step-tab:hover{background:linear-gradient(145deg,rgba(255,255,255,.50),rgba(255,255,255,.20))}
-[data-theme="light"] .toll-dialog .builder-step-tab.is-active{background:linear-gradient(145deg,rgba(60,60,64,.15),rgba(255,255,255,.34))}
-[data-theme="light"] .toll-dialog .builder-step-body,[data-theme="light"] .toll-dialog .workspace{background:rgba(255,255,255,.02)}
-[data-theme="light"] .toll-dialog .quickbar{background:rgba(255,255,255,.04)}
+[data-theme="light"] .toll-dialog .dialog-header{background:transparent}
+[data-theme="light"] .toll-dialog .builder-stepper{background:transparent}
+[data-theme="light"] .toll-dialog .builder-step-tab{background-color:rgba(246,247,249,.72);background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(216,218,224,.10) 100%)}
+[data-theme="light"] .toll-dialog .builder-step-tab:hover{background-color:rgba(250,251,252,.84)}
+[data-theme="light"] .toll-dialog .builder-step-tab.is-active{background-color:#e2e4e8;background-image:none}
+[data-theme="light"] .toll-dialog .builder-step-tab.is-active:hover{background-color:#dcdfe4}
+[data-theme="light"] .toll-dialog .builder-step-body{background:transparent}
+[data-theme="light"] .toll-dialog .workspace{background:rgba(246,247,249,.34)}
+[data-theme="light"] .toll-dialog .quickbar{background:rgba(244,245,247,.56)}
 [data-theme="light"] .toll-dialog .quickbar.quickbar-step{background:transparent}
-[data-theme="light"] .toll-dialog .quickbar.quickbar-step .quick-line{background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(255,255,255,.08))}
-[data-theme="light"] .toll-dialog .step1-subject-preview-bar{background:rgba(255,255,255,.13)}
-[data-theme="light"] .toll-dialog .subj-auto-box{background:rgba(255,255,255,.24)}
-[data-theme="light"] .toll-dialog .builder-select-sm{background:rgba(255,255,255,.39)}
-[data-theme="light"] .toll-dialog .bookmark-modal-chip{background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
-[data-theme="light"] .toll-dialog .bookmark-modal-input{background:rgba(255,255,255,.36)}
-[data-theme="light"] .toll-dialog .left-tools-panel{background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(255,255,255,.08))}
-[data-theme="light"] .toll-dialog .builder-search-input{background:rgba(255,255,255,.43)}
-[data-theme="light"] .toll-dialog .stage-type-chip{background:rgba(255,255,255,.34)}
-[data-theme="light"] .toll-dialog .stage-type-chip:hover{background:rgba(255,255,255,.58)}
-[data-theme="light"] .toll-dialog .area-card{background:linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.06))}
-[data-theme="light"] .toll-dialog .stage-row{background:rgba(255,255,255,.04)}
-[data-theme="light"] .toll-dialog .stage-row:hover{background:rgba(255,255,255,.18)}
-[data-theme="light"] .toll-dialog .stage-row.selected{background:linear-gradient(125deg,rgba(75,75,78,.09),rgba(255,255,255,.10))}
-[data-theme="light"] .toll-dialog .batch-interval-bar{background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(255,255,255,.08))}
-[data-theme="light"] .toll-dialog .batch-num-input{background:rgba(255,255,255,.36)}
-[data-theme="light"] .toll-dialog .alarm-card{background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
-[data-theme="light"] .toll-dialog .number{background:linear-gradient(145deg,rgba(255,255,255,.40),rgba(90,90,92,.07))}
-[data-theme="light"] .toll-dialog .interval-row{background:linear-gradient(110deg,rgba(80,80,82,.055),rgba(255,255,255,.09))}
-[data-theme="light"] .toll-dialog .chip,[data-theme="light"] .toll-dialog .area-tag,[data-theme="light"] .toll-dialog .preview-btn,[data-theme="light"] .toll-dialog .nudge,[data-theme="light"] .toll-dialog .footer-btn,[data-theme="light"] .toll-dialog .icon-button,[data-theme="light"] .toll-dialog .time-input,[data-theme="light"] .toll-dialog .interval-input{background:linear-gradient(145deg,rgba(255,255,255,.34),rgba(255,255,255,.10))}
-[data-theme="light"] .toll-dialog .chip:hover,[data-theme="light"] .toll-dialog .area-tag:hover,[data-theme="light"] .toll-dialog .preview-btn:hover,[data-theme="light"] .toll-dialog .nudge:hover,[data-theme="light"] .toll-dialog .footer-btn:hover,[data-theme="light"] .toll-dialog .icon-button:hover:not(:disabled){background:linear-gradient(145deg,rgba(255,255,255,.48),rgba(255,255,255,.16))}
-[data-theme="light"] .toll-dialog .chip.active{background:linear-gradient(145deg,rgba(70,70,73,.16),rgba(70,70,73,.06))}
+[data-theme="light"] .toll-dialog .quickbar.quickbar-step .quick-line{background-color:rgba(255,255,255,.14);background-image:none}
+[data-theme="light"] .toll-dialog .dialog-footer{background:transparent}
+[data-theme="light"] .toll-dialog .step1-subject-preview-bar{background:rgba(244,245,247,.64)}
+[data-theme="light"] .toll-dialog .subj-auto-box{background:rgba(244,245,247,.74)}
+[data-theme="light"] .toll-dialog .builder-select-sm{background-color:rgba(247,248,250,.84)}
+[data-theme="light"] .toll-dialog .bookmark-modal-chip{background-color:rgba(244,245,247,.80)}
+[data-theme="light"] .toll-dialog .bookmark-modal-input{background-color:rgba(247,248,250,.84)}
+[data-theme="light"] .toll-dialog .left-tools-panel{background-color:rgba(244,245,247,.68);background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.08) 100%)}
+[data-theme="light"] .toll-dialog .builder-search-input{background-color:rgba(247,248,250,.84)}
+[data-theme="light"] .toll-dialog .stage-type-chip{background-color:rgba(244,245,247,.80)}
+[data-theme="light"] .toll-dialog .stage-type-chip:hover{background-color:rgba(248,249,251,.87)}
+[data-theme="light"] .toll-dialog .area-card{background-color:rgba(244,245,247,.66);background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.08) 100%)}
+[data-theme="light"] .toll-dialog .stage-row{background-color:rgba(244,245,247,.72);background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.09) 100%);border:none}
+[data-theme="light"] .toll-dialog .stage-row:hover{background-color:rgba(248,249,251,.86)}
+[data-theme="light"] .toll-dialog .stage-row.selected{background-color:rgba(228,230,235,.90);background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(228,230,235,.04) 56%,rgba(208,210,216,.12) 100%);border:none}
+[data-theme="light"] .toll-dialog .batch-interval-bar{background-color:rgba(244,245,247,.68);background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.08) 100%)}
+[data-theme="light"] .toll-dialog .batch-num-input{background-color:rgba(247,248,250,.84)}
+[data-theme="light"] .toll-dialog .alarm-card{background-color:rgba(244,245,247,.72);background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.08) 100%)}
+[data-theme="light"] .toll-dialog .number{background-color:rgba(232,234,238,.86);background-image:linear-gradient(180deg,rgba(255,255,255,.16),rgba(212,214,220,.10))}
+[data-theme="light"] .toll-dialog .interval-row{background-color:rgba(242,243,246,.62);background-image:linear-gradient(110deg,rgba(80,82,88,.05),rgba(255,255,255,.14))}
+[data-theme="light"] .toll-dialog .chip,[data-theme="light"] .toll-dialog .area-tag,[data-theme="light"] .toll-dialog .collapse-btn,[data-theme="light"] .toll-dialog .preview-btn,[data-theme="light"] .toll-dialog .nudge,[data-theme="light"] .toll-dialog .footer-btn,[data-theme="light"] .toll-dialog .icon-button,[data-theme="light"] .toll-dialog .custom-time-trigger{background-color:rgba(244,245,247,.80);background-image:linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(236,238,241,.04) 56%,rgba(218,220,225,.09) 100%)}
+[data-theme="light"] .toll-dialog .time-input,[data-theme="light"] .toll-dialog .interval-input{background-color:rgba(247,248,250,.84);background-image:linear-gradient(180deg,rgba(255,255,255,.14) 0%,rgba(232,234,238,.05) 100%)}
+[data-theme="light"] .toll-dialog .chip:hover,[data-theme="light"] .toll-dialog .area-tag:hover,[data-theme="light"] .toll-dialog .collapse-btn:hover,[data-theme="light"] .toll-dialog .preview-btn:hover,[data-theme="light"] .toll-dialog .nudge:hover,[data-theme="light"] .toll-dialog .footer-btn:hover,[data-theme="light"] .toll-dialog .icon-button:hover:not(:disabled),[data-theme="light"] .toll-dialog .custom-time-trigger:hover{background-color:rgba(248,249,251,.87)}
+[data-theme="light"] .toll-dialog .chip.active,[data-theme="light"] .toll-dialog .stage-type-chip.active,[data-theme="light"] .toll-dialog .custom-time-trigger.is-open{background-color:rgba(228,230,235,.89);background-image:linear-gradient(180deg,rgba(255,255,255,.15) 0%,rgba(228,230,235,.04) 56%,rgba(208,210,216,.12) 100%)}
 [data-theme="light"] .rt-head{background:rgba(255,255,255,.07)}
 [data-theme="light"] .rt-options-bar{background:rgba(255,255,255,.04)}
 [data-theme="light"] .rt-item-btn{background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.09))}
@@ -2598,21 +2928,24 @@ html:not(.app-ready) #rightTimetablePanel{
 .custom-time-digit-box{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px}
 .custom-time-digit-label{font-size:9.5px;font-weight:700;color:var(--toll-muted);letter-spacing:.02em}
 .custom-time-stepper{width:100%;display:flex;align-items:center;gap:3px}
-.custom-time-step-btn{appearance:none;width:26px;height:32px;flex:none;border-radius:8px;border:1px solid var(--toll-line);background:var(--toll-pill);color:var(--toll-ink);font-size:14px;font-weight:700;line-height:1;cursor:pointer;display:grid;place-items:center}
+.custom-time-step-btn{appearance:none;width:26px;height:32px;flex:none;border-radius:8px;border:1px solid var(--toll-line);background:var(--toll-pill);color:var(--toll-ink);font-size:14px;font-weight:700;line-height:1;cursor:pointer;touch-action:none;-webkit-touch-callout:none;display:grid;place-items:center;transition:background .12s ease,transform .12s ease}
 .custom-time-step-btn:hover{background:var(--toll-selected)}
+.custom-time-step-btn:active,.custom-time-step-btn.is-pressed{transform:scale(.94)}
 .custom-time-digit-input{width:100%;min-width:36px;height:32px;padding:0 4px;border-radius:9px;border:1px solid var(--toll-line);background:#ffffff;color:var(--toll-ink);font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;text-align:center;outline:none}
 .custom-time-digit-input:focus{border-color:var(--focus-ring);box-shadow:0 0 0 2px rgba(124,156,197,.24)}
 [data-theme="dark"] .custom-time-digit-input{background:rgba(255,255,255,.09)}
 [data-theme="sepia"] .custom-time-digit-input{background:rgba(255,250,240,.92)}
 .custom-time-colon{flex:none;font-size:18px;font-weight:800;color:var(--toll-muted);padding-top:13px;line-height:1}
 .custom-time-quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-.custom-time-nudge-btn{appearance:none;height:30px;padding:0 6px;border-radius:9px;border:1px solid var(--toll-line);background:rgba(120,120,128,.08);color:var(--toll-ink);font-size:11px;font-weight:720;font-variant-numeric:tabular-nums;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+.custom-time-nudge-btn{appearance:none;height:30px;padding:0 6px;border-radius:9px;border:1px solid var(--toll-line);background:rgba(120,120,128,.08);color:var(--toll-ink);font-size:11px;font-weight:720;font-variant-numeric:tabular-nums;cursor:pointer;touch-action:none;-webkit-touch-callout:none;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;transition:background .14s ease,border-color .14s ease,transform .12s ease}
 [data-theme="dark"] .custom-time-nudge-btn{background:rgba(255,255,255,.08)}
 .custom-time-nudge-btn:hover{background:var(--toll-selected);border-color:var(--toll-selected-edge)}
+.custom-time-nudge-btn:active,.custom-time-nudge-btn.is-pressed{transform:scale(.96)}
 .custom-time-footer-row{display:flex;align-items:center;gap:6px;padding-top:2px}
 .custom-time-reset-btn{appearance:none;flex:1;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--toll-line);background:transparent;color:var(--toll-ink-2);font-size:11.5px;font-weight:720;font-variant-numeric:tabular-nums;cursor:pointer;white-space:nowrap}
 .custom-time-reset-btn:hover{background:var(--toll-selected);border-color:var(--toll-selected-edge)}
-.custom-time-apply-btn{appearance:none;flex:1;height:34px;padding:0 14px;border-radius:10px;border:none;background:var(--toll-button);color:var(--toll-button-text);font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.14)}
+.custom-time-apply-btn{appearance:none;flex:1;height:34px;padding:0 14px;border-radius:10px;border:none;background:var(--toll-button);color:var(--toll-button-text);font-size:12px;font-weight:800;cursor:pointer;touch-action:none;-webkit-touch-callout:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.14);transition:opacity .14s ease,transform .12s ease}
+.custom-time-apply-btn:active,.custom-time-apply-btn.is-pressed{transform:scale(.97)}
 .custom-time-error{font-size:10.5px;font-weight:680;line-height:1.35;color:#cf3434;padding:5px 8px;border-radius:8px;background:rgba(217,56,56,.10)}
 [data-theme="dark"] .custom-time-error{color:#ff8b8b;background:rgba(255,92,92,.16)}
 </style>
@@ -2734,12 +3067,24 @@ html:not(.app-ready) #rightTimetablePanel{
         <div id="drawerBookmarkCard" class="bookmark-drawer-card" aria-label="자주 쓰는 타종 구성">
           <div class="bookmark-drawer-head">
             <span class="bookmark-drawer-title">자주 쓰는 타종 구성</span>
-            <button id="drawerBookmarkToggleBtn" type="button" class="bookmark-add-toggle">+ 현재 구성 저장</button>
+            <div class="bookmark-drawer-head-actions">
+              <button id="drawerFolderToggleBtn" type="button" class="bookmark-add-toggle">+ 새 폴더</button>
+              <button id="drawerBookmarkToggleBtn" type="button" class="bookmark-add-toggle">+ 구성 저장</button>
+            </div>
           </div>
-          <div id="drawerBookmarkSaveRow" class="bookmark-save-row">
-            <input id="drawerBookmarkInput" type="text" class="bookmark-name-input" maxlength="28" placeholder="구성 이름 (비우면 자동)">
-            <button id="drawerBookmarkConfirmBtn" type="button" class="bookmark-save-btn">저장</button>
+          <div id="drawerFolderCreateRow" class="bookmark-save-row">
+            <input id="drawerFolderInput" type="text" class="bookmark-name-input" maxlength="30" placeholder="새 폴더 이름">
+            <button id="drawerFolderConfirmBtn" type="button" class="bookmark-save-btn">생성</button>
           </div>
+          <div id="drawerBookmarkSaveBlock" class="bookmark-save-block">
+            <div id="drawerBookmarkSaveRow" class="bookmark-save-row open">
+              <input id="drawerBookmarkInput" type="text" class="bookmark-name-input" maxlength="60" placeholder="구성 이름 (비우면 자동)">
+              <button id="drawerBookmarkConfirmBtn" type="button" class="bookmark-save-btn">저장</button>
+            </div>
+            <div id="drawerSaveFolderRow" class="bookmark-folder-select-row" style="display:none"></div>
+          </div>
+          <div id="drawerFolderTabs" class="bookmark-folder-tabs" style="display:none"></div>
+          <div id="drawerFolderToolbar" class="bookmark-folder-toolbar" style="display:none"></div>
           <div id="drawerBookmarkUndoBar" class="bm-undo-bar" style="display:none">
             <span id="drawerBookmarkUndoText">구성이 삭제됨</span>
             <button id="drawerBookmarkUndoBtn" type="button">실행 취소</button>
@@ -2926,11 +3271,11 @@ html:not(.app-ready) #rightTimetablePanel{
       </button>
       <button type="button" class="builder-step-tab" data-step-tab="2">
         <span class="step-badge">2</span>
-        <span class="step-title">1. 진행할 영역 및 타종 단계 선택</span>
+        <span class="step-title">진행할 영역 및 타종 단계 선택</span>
       </button>
       <button type="button" class="builder-step-tab" data-step-tab="3">
         <span class="step-badge">3</span>
-        <span class="step-title">2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+        <span class="step-title">선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
       </button>
     </nav>
 
@@ -2976,13 +3321,25 @@ html:not(.app-ready) #rightTimetablePanel{
             <button id="subjAutoApplyBtn" type="button" class="chip">조합 간격 초기화</button>
           </div>
         </div>
-        <div class="quick-line">
-          <span class="quick-label">자주 쓰는 구성</span>
-          <div id="modalBookmarkList" style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap"></div>
-          <div class="bookmark-modal-save-group">
-            <input id="modalBookmarkInput" type="text" class="bookmark-modal-input" maxlength="28" placeholder="현재 구성을 저장할 이름">
-            <button id="modalBookmarkSaveBtn" type="button" class="chip">현재 구성 저장</button>
+        <div class="quick-line bookmark-modal-quickline">
+          <div class="bookmark-modal-folder-bar">
+            <span class="quick-label">자주 쓰는 구성</span>
+            <div id="modalBookmarkFolderTabs" class="bookmark-modal-folder-pills"></div>
+            <div id="modalBookmarkFolderActions" class="bookmark-modal-folder-actions" style="display:none"></div>
           </div>
+          <div id="modalFolderCreateRow" class="bookmark-modal-folder-create" style="display:none">
+            <input id="modalFolderInput" type="text" class="bookmark-modal-input" maxlength="30" placeholder="새 북마크 폴더 이름">
+            <button id="modalFolderConfirmBtn" type="button" class="chip">폴더 생성</button>
+          </div>
+          <div class="bookmark-modal-items-bar">
+            <div id="modalBookmarkList" style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap"></div>
+            <div class="bookmark-modal-save-group">
+              <select id="modalBookmarkFolderSelect" class="builder-select-sm bookmark-modal-folder-select" aria-label="저장할 북마크 폴더 선택" style="display:none"></select>
+              <input id="modalBookmarkInput" type="text" class="bookmark-modal-input" maxlength="28" placeholder="현재 구성을 저장할 이름">
+              <button id="modalBookmarkSaveBtn" type="button" class="chip">현재 구성 저장</button>
+            </div>
+          </div>
+          <div id="modalBookmarkMoveBar" class="bookmark-modal-move-bar" style="display:none"></div>
         </div>
         <div id="step1SubjectPreviewBar" class="step1-subject-preview-bar"></div>
       </section>
@@ -3352,7 +3709,15 @@ void main(){
   let draftSequenceConfig = JSON.parse(JSON.stringify(EMBEDDED.defaultCustomSeqConfig));
   let undoStack = [];
   let redoStack = [];
+  let bookmarkFolders = [];
   let bookmarks = JSON.parse(JSON.stringify(EMBEDDED.defaultBookmarks || []));
+  let activeBookmarkFolderFilter = 'all';
+  let saveTargetFolderId = '';
+  let isModalFolderInputOpen = false;
+  let editingFolderId = null;
+  let editingFolderDraft = '';
+  let movingBookmarkId = null;
+  let collapsedBookmarkFolders = {};
   let deletedBookmarkUndo = null;
   let deletedBookmarkTimer = null;
   let customBuiltPreset = null;
@@ -3498,16 +3863,40 @@ void main(){
       warnings
     };
   }
-  function validateBookmarks(rawList){
+  function validateBookmarkFolders(rawList){
+    if(!Array.isArray(rawList)) return [];
+    const out = [];
+    const seenIds = new Set();
+    const seenNames = new Set();
+    rawList.forEach((item, idx)=>{
+      if(!item || typeof item!=='object') return;
+      const name = typeof item.name==='string' ? item.name.trim().slice(0,30) : '';
+      if(!name || seenNames.has(name)) return;
+      const id = typeof item.id==='string' && item.id.trim() ? item.id.trim().slice(0,80) : ('bmf_'+Date.now()+'_'+idx);
+      if(seenIds.has(id)) return;
+      seenIds.add(id);
+      seenNames.add(name);
+      out.push({
+        id,
+        name,
+        createdAt: typeof item.createdAt==='string' ? item.createdAt : new Date().toISOString()
+      });
+    });
+    return out;
+  }
+  function validateBookmarks(rawList, validFolderIds){
     if(!Array.isArray(rawList)) return [];
     const out = [];
     rawList.forEach((item, idx)=>{
       if(!item || typeof item!=='object') return;
       const v = validateConfig(item.config);
       const name = typeof item.name==='string' && item.name.trim() ? item.name.trim().slice(0,40) : ('저장 구성 '+(idx+1));
+      let folderId = typeof item.folderId==='string' && item.folderId.trim() ? item.folderId.trim().slice(0,80) : null;
+      if(folderId && validFolderIds && !validFolderIds.has(folderId)) folderId = null;
       out.push({
         id: typeof item.id==='string' && item.id ? item.id : ('bm_'+Date.now()+'_'+idx),
         name,
+        folderId,
         config: v.config,
         clockSyncMode: 'custom_cascaded_time',
         createdAt: typeof item.createdAt==='string' ? item.createdAt : new Date().toISOString()
@@ -5460,7 +5849,7 @@ void main(){
     if(!enabledGroups.length){
       builderLeftPane.innerHTML = \`
         <div class="pane-title">
-          <span>1. 진행할 영역 및 타종 단계 선택</span>
+          <span>진행할 영역 및 타종 단계 선택</span>
           <span class="pane-note">응시 조합에서 체크한 과목만 표시됩니다 · 영역별 필요한 단계만 선택</span>
         </div>
         <div class="empty-state">
@@ -5478,7 +5867,7 @@ void main(){
 
       builderLeftPane.innerHTML = \`
         <div class="pane-title">
-          <span>1. 진행할 영역 및 타종 단계 선택</span>
+          <span>진행할 영역 및 타종 단계 선택</span>
           <span class="pane-note">응시 조합에서 체크한 과목만 표시됩니다 · 영역별 필요한 단계만 선택</span>
         </div>
         <div class="left-tools-panel">
@@ -5587,7 +5976,7 @@ void main(){
 
     builderRightPane.innerHTML = \`
       <div class="pane-title">
-        <span>2. 선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
+        <span>선택된 타종 진행 순서 및 시간 간격 · 시각 설정</span>
       </div>
       <div class="batch-interval-bar">
         <div class="batch-group">
@@ -6340,22 +6729,240 @@ void main(){
     });
   });
 
-  /* ---------- 자주 쓰는 타종 구성 (Bookmark) Management (A3 Escape & C4 Actions) ---------- */
+  /* ---------- 자주 쓰는 타종 구성 (Bookmark & Folder) Management (A3 Escape & C4 Actions) ---------- */
+  const drawerFolderToggleBtn = document.getElementById('drawerFolderToggleBtn');
+  const drawerFolderCreateRow = document.getElementById('drawerFolderCreateRow');
+  const drawerFolderInput = document.getElementById('drawerFolderInput');
+  const drawerFolderConfirmBtn = document.getElementById('drawerFolderConfirmBtn');
   const drawerBookmarkToggleBtn = document.getElementById('drawerBookmarkToggleBtn');
-  const drawerBookmarkSaveRow = document.getElementById('drawerBookmarkSaveRow');
+  const drawerBookmarkSaveBlock = document.getElementById('drawerBookmarkSaveBlock');
+  const drawerSaveFolderRow = document.getElementById('drawerSaveFolderRow');
+  const drawerFolderTabs = document.getElementById('drawerFolderTabs');
+  const drawerFolderToolbar = document.getElementById('drawerFolderToolbar');
   const drawerBookmarkInput = document.getElementById('drawerBookmarkInput');
   const drawerBookmarkConfirmBtn = document.getElementById('drawerBookmarkConfirmBtn');
   const drawerBookmarkList = document.getElementById('drawerBookmarkList');
   const drawerBookmarkUndoBar = document.getElementById('drawerBookmarkUndoBar');
   const drawerBookmarkUndoText = document.getElementById('drawerBookmarkUndoText');
   const drawerBookmarkUndoBtn = document.getElementById('drawerBookmarkUndoBtn');
+  const modalBookmarkFolderTabs = document.getElementById('modalBookmarkFolderTabs');
+  const modalBookmarkFolderActions = document.getElementById('modalBookmarkFolderActions');
+  const modalFolderCreateRow = document.getElementById('modalFolderCreateRow');
+  const modalFolderInput = document.getElementById('modalFolderInput');
+  const modalFolderConfirmBtn = document.getElementById('modalFolderConfirmBtn');
+  const modalBookmarkFolderSelect = document.getElementById('modalBookmarkFolderSelect');
+  const modalBookmarkMoveBar = document.getElementById('modalBookmarkMoveBar');
   const modalBookmarkList = document.getElementById('modalBookmarkList');
   const modalBookmarkInput = document.getElementById('modalBookmarkInput');
   const modalBookmarkSaveBtn = document.getElementById('modalBookmarkSaveBtn');
 
+  function getFolderNameById(fid){
+    const found = bookmarkFolders.find(f=>f.id===fid);
+    return found ? found.name : null;
+  }
+  function selectFolderFilter(folderKey){
+    activeBookmarkFolderFilter = folderKey;
+    saveTargetFolderId = (folderKey==='all' || folderKey==='uncategorized') ? '' : folderKey;
+    editingFolderId = null;
+    renderBookmarks();
+  }
+  function createBookmarkFolder(rawName, closeDrawerInput){
+    const trimmed = String(rawName || '').trim().slice(0,30);
+    if(!trimmed){
+      showToast('새 폴더 이름을 입력해 주세요.', 2400);
+      return;
+    }
+    if(bookmarkFolders.some(f=>f.name===trimmed)){
+      showToast("이미 '" + trimmed + "' 폴더가 있습니다.", 2400);
+      return;
+    }
+    const newFolder = {
+      id: 'bmf_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      name: trimmed,
+      createdAt: new Date().toISOString()
+    };
+    bookmarkFolders.push(newFolder);
+    if(drawerFolderInput) drawerFolderInput.value = '';
+    if(modalFolderInput) modalFolderInput.value = '';
+    if(closeDrawerInput && drawerFolderCreateRow){
+      drawerFolderCreateRow.classList.remove('open');
+      if(drawerFolderToggleBtn) drawerFolderToggleBtn.textContent = '+ 새 폴더';
+    }
+    isModalFolderInputOpen = false;
+    activeBookmarkFolderFilter = newFolder.id;
+    saveTargetFolderId = newFolder.id;
+    renderBookmarks();
+    saveCustomSettings();
+    showToast("'" + trimmed + "' 북마크 폴더가 생성되었습니다.", 2500);
+  }
+  function renameBookmarkFolder(folderId, rawName){
+    const trimmed = String(rawName || '').trim().slice(0,30);
+    if(!trimmed){
+      showToast('폴더 이름을 입력해 주세요.', 2200);
+      return;
+    }
+    if(bookmarkFolders.some(f=>f.id!==folderId && f.name===trimmed)){
+      showToast("이미 '" + trimmed + "' 폴더가 있습니다.", 2400);
+      return;
+    }
+    bookmarkFolders = bookmarkFolders.map(f=>f.id===folderId ? Object.assign({}, f, {name: trimmed}) : f);
+    editingFolderId = null;
+    renderBookmarks();
+    saveCustomSettings();
+    showToast("폴더 이름을 '" + trimmed + "'(으)로 변경했습니다.", 2200);
+  }
+  function deleteBookmarkFolder(folderId){
+    const target = bookmarkFolders.find(f=>f.id===folderId);
+    if(!target)return;
+    bookmarkFolders = bookmarkFolders.filter(f=>f.id!==folderId);
+    bookmarks = bookmarks.map(b=>b.folderId===folderId ? Object.assign({}, b, {folderId: null}) : b);
+    if(activeBookmarkFolderFilter===folderId) activeBookmarkFolderFilter = 'all';
+    if(saveTargetFolderId===folderId) saveTargetFolderId = '';
+    if(editingFolderId===folderId) editingFolderId = null;
+    renderBookmarks();
+    saveCustomSettings();
+    showToast("'" + target.name + "' 폴더를 삭제했습니다. 내부 구성은 미분류로 이동되었습니다.", 2800);
+  }
+  function moveBookmarkToFolder(bmId, targetFolderId){
+    const bm = bookmarks.find(b=>b.id===bmId);
+    if(!bm)return;
+    const normalized = (targetFolderId && bookmarkFolders.some(f=>f.id===targetFolderId)) ? targetFolderId : null;
+    bookmarks = bookmarks.map(b=>b.id===bmId ? Object.assign({}, b, {folderId: normalized}) : b);
+    movingBookmarkId = null;
+    renderBookmarks();
+    saveCustomSettings();
+    const destLabel = normalized ? (getFolderNameById(normalized) || '폴더') : '미분류';
+    showToast("'" + bm.name + "' 구성을 '" + destLabel + "'(으)로 이동했습니다.", 2400);
+  }
+
+  function buildDrawerBookmarkItemEl(bm){
+    const item = document.createElement('div');
+    item.className = 'bookmark-pill-item-col';
+    const count = (bm.config && Array.isArray(bm.config.selectedNodeIds)) ? bm.config.selectedNodeIds.length : 0;
+    const safeName = escapeHtml(bm.name);
+    const safeId = escapeHtml(bm.id);
+    if(renamingBookmarkId === bm.id){
+      item.innerHTML = \`
+        <div class="bookmark-save-row open">
+          <input type="text" class="bookmark-name-input" data-bm-rename-input="\${safeId}" maxlength="28" value="\${escapeHtml(renameBookmarkDraft)}">
+          <button type="button" class="bm-act-btn primary" data-bm-rename-ok="\${safeId}">확인</button>
+          <button type="button" class="bm-act-btn" data-bm-rename-cancel="1">취소</button>
+        </div>
+      \`;
+      return item;
+    }
+    let moveHtml = '';
+    if(movingBookmarkId === bm.id && bookmarkFolders.length > 0){
+      const folderPills = bookmarkFolders.map(f=>{
+        const act = bm.folderId === f.id ? ' is-active' : '';
+        return \`<button type="button" class="bm-folder-pill\${act}" data-bm-move-target="\${safeId}" data-bm-move-folder="\${escapeHtml(f.id)}">\${escapeHtml(f.name)}</button>\`;
+      }).join('');
+      const uncatAct = !bm.folderId ? ' is-active' : '';
+      moveHtml = \`
+        <div class="bookmark-move-row">
+          <span class="bookmark-move-label">이동:</span>
+          <button type="button" class="bm-folder-pill\${uncatAct}" data-bm-move-target="\${safeId}" data-bm-move-folder="">미분류</button>
+          \${folderPills}
+        </div>
+      \`;
+    }
+    const moveBtnHtml = bookmarkFolders.length > 0
+      ? \`<button type="button" class="bm-act-btn\${movingBookmarkId===bm.id ? ' is-active' : ''}" data-bm-move-toggle="\${safeId}">폴더 이동</button>\`
+      : '';
+    item.innerHTML = \`
+      <div class="bookmark-pill-top">
+        <span class="bookmark-pill-name-text" title="\${safeName}">\${safeName}</span>
+        <span class="bookmark-pill-count">\${count}개</span>
+      </div>
+      <div class="bookmark-pill-actions">
+        <button type="button" class="bm-act-btn primary" data-bm-apply="\${safeId}">적용</button>
+        <button type="button" class="bm-act-btn" data-bm-edit="\${safeId}">편집기</button>
+        <button type="button" class="bm-act-btn" data-bm-rename="\${safeId}">이름변경</button>
+        <button type="button" class="bm-act-btn" data-bm-overwrite="\${safeId}">덮어쓰기</button>
+        <button type="button" class="bm-act-btn" data-bm-dup="\${safeId}">복제</button>
+        \${moveBtnHtml}
+        <button type="button" class="bm-act-btn danger" data-bm-del="\${safeId}" aria-label="저장 구성 삭제">삭제</button>
+      </div>
+      \${moveHtml}
+    \`;
+    return item;
+  }
+
   function renderBookmarks(){
+    const validFolderSet = new Set(bookmarkFolders.map(f=>f.id));
+    if(activeBookmarkFolderFilter!=='all' && activeBookmarkFolderFilter!=='uncategorized' && !validFolderSet.has(activeBookmarkFolderFilter)){
+      activeBookmarkFolderFilter = 'all';
+    }
+    if(saveTargetFolderId && !validFolderSet.has(saveTargetFolderId)){
+      saveTargetFolderId = '';
+    }
+    const folderCounts = new Map();
+    let uncategorizedCount = 0;
+    bookmarks.forEach(b=>{
+      if(b.folderId && validFolderSet.has(b.folderId)){
+        folderCounts.set(b.folderId, (folderCounts.get(b.folderId) || 0) + 1);
+      }else{
+        uncategorizedCount++;
+      }
+    });
+    const filteredBookmarks = activeBookmarkFolderFilter==='all'
+      ? bookmarks
+      : activeBookmarkFolderFilter==='uncategorized'
+        ? bookmarks.filter(b=>!b.folderId || !validFolderSet.has(b.folderId))
+        : bookmarks.filter(b=>b.folderId===activeBookmarkFolderFilter);
+    const activeFolderObj = bookmarkFolders.find(f=>f.id===activeBookmarkFolderFilter) || null;
+
     if(drawerBookmarkOpenLabel){
       drawerBookmarkOpenLabel.textContent = bookmarks.length > 0 ? ('자주 쓰는 타종 구성 ('+bookmarks.length+')') : '자주 쓰는 타종 구성';
+    }
+    if(drawerSaveFolderRow){
+      if(bookmarkFolders.length > 0){
+        drawerSaveFolderRow.style.display = 'flex';
+        drawerSaveFolderRow.innerHTML = '<span class="bookmark-move-label">저장 폴더:</span>' +
+          \`<button type="button" class="bm-folder-pill\${saveTargetFolderId===''?' is-active':''}" data-save-folder="">미분류</button>\` +
+          bookmarkFolders.map(f=>\`<button type="button" class="bm-folder-pill\${saveTargetFolderId===f.id?' is-active':''}" data-save-folder="\${escapeHtml(f.id)}">\${escapeHtml(f.name)}</button>\`).join('');
+      }else{
+        drawerSaveFolderRow.style.display = 'none';
+        drawerSaveFolderRow.innerHTML = '';
+      }
+    }
+    if(drawerFolderTabs){
+      if(bookmarkFolders.length > 0){
+        drawerFolderTabs.style.display = 'flex';
+        drawerFolderTabs.innerHTML =
+          \`<button type="button" class="bm-folder-pill\${activeBookmarkFolderFilter==='all'?' is-active':''}" data-folder-filter="all">전체 (\${bookmarks.length})</button>\` +
+          \`<button type="button" class="bm-folder-pill\${activeBookmarkFolderFilter==='uncategorized'?' is-active':''}" data-folder-filter="uncategorized">미분류 (\${uncategorizedCount})</button>\` +
+          bookmarkFolders.map(f=>\`<button type="button" class="bm-folder-pill\${activeBookmarkFolderFilter===f.id?' is-active':''}" data-folder-filter="\${escapeHtml(f.id)}"><span class="bm-folder-icon">📁</span><span>\${escapeHtml(f.name)}</span><span class="bm-folder-cnt">(\${folderCounts.get(f.id)||0})</span></button>\`).join('');
+      }else{
+        drawerFolderTabs.style.display = 'none';
+        drawerFolderTabs.innerHTML = '';
+      }
+    }
+    if(drawerFolderToolbar){
+      if(activeFolderObj){
+        drawerFolderToolbar.style.display = 'flex';
+        const safeFid = escapeHtml(activeFolderObj.id);
+        if(editingFolderId === activeFolderObj.id){
+          drawerFolderToolbar.innerHTML = \`
+            <div class="bookmark-save-row open" style="width:100%">
+              <input type="text" class="bookmark-name-input" data-folder-rename-input="\${safeFid}" maxlength="30" value="\${escapeHtml(editingFolderDraft)}">
+              <button type="button" class="bm-act-btn primary" data-folder-rename-ok="\${safeFid}">확인</button>
+              <button type="button" class="bm-act-btn" data-folder-rename-cancel="1">취소</button>
+            </div>
+          \`;
+        }else{
+          drawerFolderToolbar.innerHTML = \`
+            <span class="bookmark-folder-toolbar-name">📁 \${escapeHtml(activeFolderObj.name)}</span>
+            <div class="bookmark-folder-toolbar-actions">
+              <button type="button" class="bm-act-btn" data-folder-rename="\${safeFid}">이름 변경</button>
+              <button type="button" class="bm-act-btn danger" data-folder-del="\${safeFid}">폴더 삭제</button>
+            </div>
+          \`;
+        }
+      }else{
+        drawerFolderToolbar.style.display = 'none';
+        drawerFolderToolbar.innerHTML = '';
+      }
     }
     if(drawerBookmarkUndoBar){
       drawerBookmarkUndoBar.style.display = deletedBookmarkUndo ? 'flex' : 'none';
@@ -6365,66 +6972,164 @@ void main(){
     }
     if(drawerBookmarkList){
       drawerBookmarkList.innerHTML = '';
-      if(!bookmarks.length){
+      if(!bookmarks.length && !bookmarkFolders.length){
         const empty = document.createElement('div');
         empty.className = 'bookmark-empty-hint';
         empty.textContent = '저장된 구성이 없습니다.';
         drawerBookmarkList.appendChild(empty);
-      }else{
-        bookmarks.forEach(bm=>{
-          const item = document.createElement('div');
-          item.className = 'bookmark-pill-item-col';
-          const count = (bm.config && Array.isArray(bm.config.selectedNodeIds)) ? bm.config.selectedNodeIds.length : 0;
-          const safeName = escapeHtml(bm.name);
-          const safeId = escapeHtml(bm.id);
-          if(renamingBookmarkId === bm.id){
-            item.innerHTML = \`
-              <div class="bookmark-save-row open">
-                <input type="text" class="bookmark-name-input" data-bm-rename-input="\${safeId}" maxlength="28" value="\${escapeHtml(renameBookmarkDraft)}">
-                <button type="button" class="bm-act-btn primary" data-bm-rename-ok="\${safeId}">확인</button>
-                <button type="button" class="bm-act-btn" data-bm-rename-cancel="1">취소</button>
-              </div>
-            \`;
-          }else{
-            item.innerHTML = \`
-              <div class="bookmark-pill-top">
-                <span class="bookmark-pill-name-text" title="\${safeName}">\${safeName}</span>
-                <span class="bookmark-pill-count">\${count}개</span>
-              </div>
-              <div class="bookmark-pill-actions">
-                <button type="button" class="bm-act-btn primary" data-bm-apply="\${safeId}">적용</button>
-                <button type="button" class="bm-act-btn" data-bm-edit="\${safeId}">편집기</button>
-                <button type="button" class="bm-act-btn" data-bm-rename="\${safeId}">이름변경</button>
-                <button type="button" class="bm-act-btn" data-bm-overwrite="\${safeId}">덮어쓰기</button>
-                <button type="button" class="bm-act-btn" data-bm-dup="\${safeId}">복제</button>
-                <button type="button" class="bm-act-btn danger" data-bm-del="\${safeId}" aria-label="저장 구성 삭제">삭제</button>
-              </div>
-            \`;
+      }else if(activeBookmarkFolderFilter==='all' && bookmarkFolders.length > 0){
+        bookmarkFolders.forEach(folder=>{
+          const folderBms = bookmarks.filter(b=>b.folderId===folder.id);
+          const isCol = !!collapsedBookmarkFolders[folder.id];
+          const grp = document.createElement('div');
+          grp.className = 'bookmark-folder-group';
+          const safeFid = escapeHtml(folder.id);
+          const head = document.createElement('div');
+          head.className = 'bookmark-folder-group-head';
+          head.innerHTML = \`
+            <button type="button" class="bookmark-folder-group-toggle" data-folder-collapse="\${safeFid}">
+              <span>\${isCol ? '▸' : '▾'}</span>
+              <span>📁 \${escapeHtml(folder.name)}</span>
+              <span class="bookmark-pill-count">\${folderBms.length}개</span>
+            </button>
+            <div class="bookmark-folder-group-acts">
+              <button type="button" class="bm-act-btn" data-folder-quick-save="\${safeFid}" title="이 폴더에 저장">+ 저장</button>
+              <button type="button" class="bm-act-btn" data-folder-filter="\${safeFid}">관리</button>
+            </div>
+          \`;
+          grp.appendChild(head);
+          if(!isCol){
+            const body = document.createElement('div');
+            body.className = 'bookmark-folder-group-body';
+            if(!folderBms.length){
+              const empty = document.createElement('div');
+              empty.className = 'bookmark-empty-hint';
+              empty.textContent = '이 폴더가 비어 있습니다.';
+              body.appendChild(empty);
+            }else{
+              folderBms.forEach(bm=>body.appendChild(buildDrawerBookmarkItemEl(bm)));
+            }
+            grp.appendChild(body);
           }
-          drawerBookmarkList.appendChild(item);
+          drawerBookmarkList.appendChild(grp);
         });
+        if(uncategorizedCount > 0){
+          const uncatBms = bookmarks.filter(b=>!b.folderId || !validFolderSet.has(b.folderId));
+          const isCol = !!collapsedBookmarkFolders['uncategorized'];
+          const grp = document.createElement('div');
+          grp.className = 'bookmark-folder-group';
+          const head = document.createElement('div');
+          head.className = 'bookmark-folder-group-head';
+          head.innerHTML = \`
+            <button type="button" class="bookmark-folder-group-toggle" data-folder-collapse="uncategorized">
+              <span>\${isCol ? '▸' : '▾'}</span>
+              <span>미분류</span>
+              <span class="bookmark-pill-count">\${uncategorizedCount}개</span>
+            </button>
+          \`;
+          grp.appendChild(head);
+          if(!isCol){
+            const body = document.createElement('div');
+            body.className = 'bookmark-folder-group-body';
+            uncatBms.forEach(bm=>body.appendChild(buildDrawerBookmarkItemEl(bm)));
+            grp.appendChild(body);
+          }
+          drawerBookmarkList.appendChild(grp);
+        }
+      }else if(!filteredBookmarks.length){
+        const empty = document.createElement('div');
+        empty.className = 'bookmark-empty-hint';
+        empty.textContent = '이 폴더에 저장된 구성이 없습니다.';
+        drawerBookmarkList.appendChild(empty);
+      }else{
+        filteredBookmarks.forEach(bm=>drawerBookmarkList.appendChild(buildDrawerBookmarkItemEl(bm)));
+      }
+    }
+
+    if(modalBookmarkFolderTabs){
+      modalBookmarkFolderTabs.innerHTML =
+        \`<button type="button" class="chip bookmark-folder-chip\${activeBookmarkFolderFilter==='all'?' active':''}" data-folder-filter="all">전체 (\${bookmarks.length})</button>\` +
+        (bookmarkFolders.length > 0 ? \`<button type="button" class="chip bookmark-folder-chip\${activeBookmarkFolderFilter==='uncategorized'?' active':''}" data-folder-filter="uncategorized">미분류 (\${uncategorizedCount})</button>\` : '') +
+        bookmarkFolders.map(f=>\`<button type="button" class="chip bookmark-folder-chip\${activeBookmarkFolderFilter===f.id?' active':''}" data-folder-filter="\${escapeHtml(f.id)}">📁 \${escapeHtml(f.name)} (\${folderCounts.get(f.id)||0})</button>\`).join('') +
+        \`<button type="button" class="chip bookmark-folder-chip\${isModalFolderInputOpen?' active':''}" data-modal-folder-toggle="1">\${isModalFolderInputOpen ? '닫기' : '+ 새 폴더'}</button>\`;
+    }
+    if(modalBookmarkFolderActions){
+      if(activeFolderObj){
+        modalBookmarkFolderActions.style.display = 'inline-flex';
+        const safeFid = escapeHtml(activeFolderObj.id);
+        if(editingFolderId === activeFolderObj.id){
+          modalBookmarkFolderActions.innerHTML = \`
+            <input type="text" class="bookmark-modal-input" data-folder-rename-input="\${safeFid}" maxlength="30" value="\${escapeHtml(editingFolderDraft)}">
+            <button type="button" class="chip" data-folder-rename-ok="\${safeFid}">확인</button>
+            <button type="button" class="chip" data-folder-rename-cancel="1">취소</button>
+          \`;
+        }else{
+          modalBookmarkFolderActions.innerHTML = \`
+            <button type="button" class="chip" data-folder-rename="\${safeFid}">폴더 이름 변경</button>
+            <button type="button" class="chip" data-folder-del="\${safeFid}">폴더 삭제</button>
+          \`;
+        }
+      }else{
+        modalBookmarkFolderActions.style.display = 'none';
+        modalBookmarkFolderActions.innerHTML = '';
+      }
+    }
+    if(modalFolderCreateRow){
+      modalFolderCreateRow.style.display = isModalFolderInputOpen ? 'flex' : 'none';
+    }
+    if(modalBookmarkFolderSelect){
+      if(bookmarkFolders.length > 0){
+        modalBookmarkFolderSelect.style.display = 'inline-block';
+        modalBookmarkFolderSelect.innerHTML = '<option value="">미분류</option>' +
+          bookmarkFolders.map(f=>\`<option value="\${escapeHtml(f.id)}">📁 \${escapeHtml(f.name)}</option>\`).join('');
+        modalBookmarkFolderSelect.value = saveTargetFolderId;
+      }else{
+        modalBookmarkFolderSelect.style.display = 'none';
       }
     }
     if(modalBookmarkList){
       modalBookmarkList.innerHTML = '';
-      if(!bookmarks.length){
+      if(!filteredBookmarks.length){
         const empty = document.createElement('span');
         empty.className = 'pane-note';
-        empty.textContent = '저장된 구성이 없습니다.';
+        empty.textContent = bookmarks.length === 0 ? '저장된 구성이 없습니다.' : '이 폴더에 저장된 구성이 없습니다.';
         modalBookmarkList.appendChild(empty);
       }else{
-        bookmarks.forEach(bm=>{
+        filteredBookmarks.forEach(bm=>{
           const chip = document.createElement('div');
           chip.className = 'bookmark-modal-chip';
           const count = (bm.config && Array.isArray(bm.config.selectedNodeIds)) ? bm.config.selectedNodeIds.length : 0;
           const safeName = escapeHtml(bm.name);
           const safeId = escapeHtml(bm.id);
+          const fName = bm.folderId ? getFolderNameById(bm.folderId) : null;
+          const folderBadge = (activeBookmarkFolderFilter==='all' && fName)
+            ? \`<span class="bookmark-modal-folder-tag">📁 \${escapeHtml(fName)}</span>\`
+            : '';
+          const moveBtn = bookmarkFolders.length > 0
+            ? \`<button type="button" class="bookmark-modal-move\${movingBookmarkId===bm.id?' is-open':''}" data-bm-move-toggle="\${safeId}" aria-label="폴더 이동" title="폴더 이동">📁</button>\`
+            : '';
           chip.innerHTML = \`
-            <button type="button" class="bookmark-modal-apply" data-bm-load-draft="\${safeId}" title="편집기에 불러오기">\${safeName} (\${count}개)</button>
+            <button type="button" class="bookmark-modal-apply" data-bm-load-draft="\${safeId}" title="편집기에 불러오기">\${safeName} (\${count}개)\${folderBadge}</button>
+            \${moveBtn}
             <button type="button" class="bookmark-modal-del" data-bm-del="\${safeId}" aria-label="저장 구성 삭제">×</button>
           \`;
           modalBookmarkList.appendChild(chip);
         });
+      }
+    }
+    if(modalBookmarkMoveBar){
+      const movingBm = movingBookmarkId ? bookmarks.find(b=>b.id===movingBookmarkId) : null;
+      if(movingBm && bookmarkFolders.length > 0){
+        modalBookmarkMoveBar.style.display = 'flex';
+        const safeBid = escapeHtml(movingBm.id);
+        modalBookmarkMoveBar.innerHTML =
+          \`<span class="pane-note">'\${escapeHtml(movingBm.name)}' 이동할 폴더:</span>\` +
+          \`<button type="button" class="chip bookmark-folder-chip\${!movingBm.folderId?' active':''}" data-bm-move-target="\${safeBid}" data-bm-move-folder="">미분류</button>\` +
+          bookmarkFolders.map(f=>\`<button type="button" class="chip bookmark-folder-chip\${movingBm.folderId===f.id?' active':''}" data-bm-move-target="\${safeBid}" data-bm-move-folder="\${escapeHtml(f.id)}">📁 \${escapeHtml(f.name)}</button>\`).join('') +
+          \`<button type="button" class="chip bookmark-folder-chip" data-bm-move-close="1">닫기</button>\`;
+      }else{
+        modalBookmarkMoveBar.style.display = 'none';
+        modalBookmarkMoveBar.innerHTML = '';
       }
     }
   }
@@ -6441,9 +7146,11 @@ void main(){
       ? (rows[0].node.subjectTitle + ' ' + rows[0].node.stageShortLabel)
       : (rows[0].node.subjectTitle + ' ' + rows[0].node.stageShortLabel + ' 외 ' + (rows.length - 1) + '개');
     const finalName = trimmed || defaultLabel;
+    const resolvedFolderId = (saveTargetFolderId && bookmarkFolders.some(f=>f.id===saveTargetFolderId)) ? saveTargetFolderId : null;
     const newBm = {
       id: 'bm_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
       name: finalName,
+      folderId: resolvedFolderId,
       config: cloneCfg(targetCfg),
       clockSyncMode,
       createdAt: new Date().toISOString()
@@ -6451,11 +7158,12 @@ void main(){
     bookmarks.unshift(newBm);
     if(drawerBookmarkInput) drawerBookmarkInput.value = '';
     if(modalBookmarkInput) modalBookmarkInput.value = '';
-    if(drawerBookmarkSaveRow) drawerBookmarkSaveRow.classList.remove('open');
-    if(drawerBookmarkToggleBtn) drawerBookmarkToggleBtn.textContent = '+ 현재 구성 저장';
+    if(drawerBookmarkSaveBlock) drawerBookmarkSaveBlock.classList.remove('open');
+    if(drawerBookmarkToggleBtn) drawerBookmarkToggleBtn.textContent = '+ 구성 저장';
     renderBookmarks();
     saveCustomSettings();
-    showToast("'" + finalName + "' 구성이 자주 쓰는 타종 구성에 저장되었습니다.");
+    const fLabel = resolvedFolderId ? getFolderNameById(resolvedFolderId) : null;
+    showToast(fLabel ? ("'" + finalName + "' 구성이 '" + fLabel + "' 폴더에 저장되었습니다.") : ("'" + finalName + "' 구성이 자주 쓰는 타종 구성에 저장되었습니다."));
   }
 
   function applyBookmarkById(id, applyTimer){
@@ -6489,7 +7197,7 @@ void main(){
         cfg.mutedNodeIds = cloned.mutedNodeIds;
       });
       if(bm.clockSyncMode) applyClockSyncMode(bm.clockSyncMode, true);
-      showToast("'" + bm.name + "' 구성을 편집기에 불러왔습니다. [적용]을 누르면 반영됩니다.");
+      showToast("'" + bm.name + "' 구성을 편집기에 불러왔습니다. [선택 구성 저장]을 누르면 반영됩니다.");
     }
   }
 
@@ -6525,10 +7233,71 @@ void main(){
       drawerBookmarkOpenBtn.classList.toggle('is-selected', isOpen);
     });
   }
-  if(drawerBookmarkToggleBtn && drawerBookmarkSaveRow){
+  if(drawerFolderToggleBtn && drawerFolderCreateRow){
+    drawerFolderToggleBtn.addEventListener('click', ()=>{
+      const isOpen = drawerFolderCreateRow.classList.toggle('open');
+      drawerFolderToggleBtn.textContent = isOpen ? '닫기' : '+ 새 폴더';
+      if(isOpen && drawerBookmarkSaveBlock){
+        drawerBookmarkSaveBlock.classList.remove('open');
+        if(drawerBookmarkToggleBtn) drawerBookmarkToggleBtn.textContent = '+ 구성 저장';
+      }
+    });
+  }
+  if(drawerFolderConfirmBtn){
+    drawerFolderConfirmBtn.addEventListener('click', ()=>{
+      createBookmarkFolder(drawerFolderInput ? drawerFolderInput.value : '', true);
+    });
+  }
+  if(drawerFolderInput){
+    drawerFolderInput.addEventListener('keydown', e=>{
+      if(e.key==='Enter') createBookmarkFolder(drawerFolderInput.value, true);
+    });
+  }
+  if(drawerBookmarkToggleBtn && drawerBookmarkSaveBlock){
     drawerBookmarkToggleBtn.addEventListener('click', ()=>{
-      const isOpen = drawerBookmarkSaveRow.classList.toggle('open');
-      drawerBookmarkToggleBtn.textContent = isOpen ? '닫기' : '+ 현재 구성 저장';
+      const isOpen = drawerBookmarkSaveBlock.classList.toggle('open');
+      drawerBookmarkToggleBtn.textContent = isOpen ? '닫기' : '+ 구성 저장';
+      if(isOpen && drawerFolderCreateRow){
+        drawerFolderCreateRow.classList.remove('open');
+        if(drawerFolderToggleBtn) drawerFolderToggleBtn.textContent = '+ 새 폴더';
+      }
+    });
+  }
+  if(drawerSaveFolderRow){
+    drawerSaveFolderRow.addEventListener('click', e=>{
+      const btn = e.target.closest('button[data-save-folder]');
+      if(btn){
+        saveTargetFolderId = btn.getAttribute('data-save-folder') || '';
+        renderBookmarks();
+      }
+    });
+  }
+  if(drawerFolderTabs){
+    drawerFolderTabs.addEventListener('click', e=>{
+      const btn = e.target.closest('button[data-folder-filter]');
+      if(btn){ selectFolderFilter(btn.getAttribute('data-folder-filter') || 'all'); }
+    });
+  }
+  if(drawerFolderToolbar){
+    drawerFolderToolbar.addEventListener('click', e=>{
+      const renBtn = e.target.closest('button[data-folder-rename]');
+      if(renBtn){
+        const fid = renBtn.getAttribute('data-folder-rename');
+        const folder = bookmarkFolders.find(f=>f.id===fid);
+        if(folder){ editingFolderId = folder.id; editingFolderDraft = folder.name; renderBookmarks(); }
+        return;
+      }
+      const renOkBtn = e.target.closest('button[data-folder-rename-ok]');
+      if(renOkBtn){
+        const fid = renOkBtn.getAttribute('data-folder-rename-ok');
+        const inp = drawerFolderToolbar.querySelector('input[data-folder-rename-input="'+fid+'"]');
+        renameBookmarkFolder(fid, inp ? inp.value : '');
+        return;
+      }
+      const renCancelBtn = e.target.closest('button[data-folder-rename-cancel]');
+      if(renCancelBtn){ editingFolderId = null; renderBookmarks(); return; }
+      const delBtn = e.target.closest('button[data-folder-del]');
+      if(delBtn){ deleteBookmarkFolder(delBtn.getAttribute('data-folder-del')); }
     });
   }
   if(drawerBookmarkConfirmBtn){
@@ -6539,6 +7308,51 @@ void main(){
   if(drawerBookmarkInput){
     drawerBookmarkInput.addEventListener('keydown', e=>{
       if(e.key==='Enter') saveCurrentAsBookmark(drawerBookmarkInput.value, false);
+    });
+  }
+  if(modalBookmarkFolderTabs){
+    modalBookmarkFolderTabs.addEventListener('click', e=>{
+      const toggleBtn = e.target.closest('button[data-modal-folder-toggle]');
+      if(toggleBtn){ isModalFolderInputOpen = !isModalFolderInputOpen; renderBookmarks(); return; }
+      const filterBtn = e.target.closest('button[data-folder-filter]');
+      if(filterBtn){ selectFolderFilter(filterBtn.getAttribute('data-folder-filter') || 'all'); }
+    });
+  }
+  if(modalBookmarkFolderActions){
+    modalBookmarkFolderActions.addEventListener('click', e=>{
+      const renBtn = e.target.closest('button[data-folder-rename]');
+      if(renBtn){
+        const fid = renBtn.getAttribute('data-folder-rename');
+        const folder = bookmarkFolders.find(f=>f.id===fid);
+        if(folder){ editingFolderId = folder.id; editingFolderDraft = folder.name; renderBookmarks(); }
+        return;
+      }
+      const renOkBtn = e.target.closest('button[data-folder-rename-ok]');
+      if(renOkBtn){
+        const fid = renOkBtn.getAttribute('data-folder-rename-ok');
+        const inp = modalBookmarkFolderActions.querySelector('input[data-folder-rename-input="'+fid+'"]');
+        renameBookmarkFolder(fid, inp ? inp.value : '');
+        return;
+      }
+      const renCancelBtn = e.target.closest('button[data-folder-rename-cancel]');
+      if(renCancelBtn){ editingFolderId = null; renderBookmarks(); return; }
+      const delBtn = e.target.closest('button[data-folder-del]');
+      if(delBtn){ deleteBookmarkFolder(delBtn.getAttribute('data-folder-del')); }
+    });
+  }
+  if(modalFolderConfirmBtn){
+    modalFolderConfirmBtn.addEventListener('click', ()=>{
+      createBookmarkFolder(modalFolderInput ? modalFolderInput.value : '', false);
+    });
+  }
+  if(modalFolderInput){
+    modalFolderInput.addEventListener('keydown', e=>{
+      if(e.key==='Enter') createBookmarkFolder(modalFolderInput.value, false);
+    });
+  }
+  if(modalBookmarkFolderSelect){
+    modalBookmarkFolderSelect.addEventListener('change', ()=>{
+      saveTargetFolderId = modalBookmarkFolderSelect.value || '';
     });
   }
   if(modalBookmarkSaveBtn){
@@ -6553,6 +7367,40 @@ void main(){
   }
   if(drawerBookmarkList){
     drawerBookmarkList.addEventListener('click', e=>{
+      const colBtn = e.target.closest('button[data-folder-collapse]');
+      if(colBtn){
+        const k = colBtn.getAttribute('data-folder-collapse');
+        collapsedBookmarkFolders[k] = !collapsedBookmarkFolders[k];
+        renderBookmarks();
+        return;
+      }
+      const quickSaveBtn = e.target.closest('button[data-folder-quick-save]');
+      if(quickSaveBtn){
+        saveTargetFolderId = quickSaveBtn.getAttribute('data-folder-quick-save') || '';
+        if(drawerBookmarkSaveBlock) drawerBookmarkSaveBlock.classList.add('open');
+        if(drawerBookmarkToggleBtn) drawerBookmarkToggleBtn.textContent = '닫기';
+        if(drawerFolderCreateRow) drawerFolderCreateRow.classList.remove('open');
+        if(drawerFolderToggleBtn) drawerFolderToggleBtn.textContent = '+ 새 폴더';
+        renderBookmarks();
+        return;
+      }
+      const filterBtn = e.target.closest('button[data-folder-filter]');
+      if(filterBtn){ selectFolderFilter(filterBtn.getAttribute('data-folder-filter') || 'all'); return; }
+      const moveToggleBtn = e.target.closest('button[data-bm-move-toggle]');
+      if(moveToggleBtn){
+        const bid = moveToggleBtn.getAttribute('data-bm-move-toggle');
+        movingBookmarkId = (movingBookmarkId === bid) ? null : bid;
+        renderBookmarks();
+        return;
+      }
+      const moveTargetBtn = e.target.closest('button[data-bm-move-target]');
+      if(moveTargetBtn){
+        moveBookmarkToFolder(
+          moveTargetBtn.getAttribute('data-bm-move-target'),
+          moveTargetBtn.getAttribute('data-bm-move-folder') || null
+        );
+        return;
+      }
       const applyBtn = e.target.closest('button[data-bm-apply]');
       if(applyBtn){ applyBookmarkById(applyBtn.getAttribute('data-bm-apply'), true); return; }
       const editBtn = e.target.closest('button[data-bm-edit]');
@@ -6614,6 +7462,7 @@ void main(){
           bookmarks.unshift({
             id: 'bm_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
             name: (bm.name + ' (복사본)').slice(0,28),
+            folderId: bm.folderId || null,
             config: cloneCfg(bm.config),
             clockSyncMode: bm.clockSyncMode,
             createdAt: new Date().toISOString()
@@ -6630,10 +7479,30 @@ void main(){
   }
   if(modalBookmarkList){
     modalBookmarkList.addEventListener('click', e=>{
+      const moveToggleBtn = e.target.closest('button[data-bm-move-toggle]');
+      if(moveToggleBtn){
+        const bid = moveToggleBtn.getAttribute('data-bm-move-toggle');
+        movingBookmarkId = (movingBookmarkId === bid) ? null : bid;
+        renderBookmarks();
+        return;
+      }
       const loadBtn = e.target.closest('button[data-bm-load-draft]');
       if(loadBtn){ applyBookmarkById(loadBtn.getAttribute('data-bm-load-draft'), false); return; }
       const delBtn = e.target.closest('button[data-bm-del]');
       if(delBtn){ deleteBookmarkById(delBtn.getAttribute('data-bm-del')); }
+    });
+  }
+  if(modalBookmarkMoveBar){
+    modalBookmarkMoveBar.addEventListener('click', e=>{
+      const closeBtn = e.target.closest('button[data-bm-move-close]');
+      if(closeBtn){ movingBookmarkId = null; renderBookmarks(); return; }
+      const moveTargetBtn = e.target.closest('button[data-bm-move-target]');
+      if(moveTargetBtn){
+        moveBookmarkToFolder(
+          moveTargetBtn.getAttribute('data-bm-move-target'),
+          moveTargetBtn.getAttribute('data-bm-move-folder') || null
+        );
+      }
     });
   }
 
@@ -6695,6 +7564,7 @@ void main(){
         mainBellGlowAnim,
         prelimBellGlowAnim,
         customSequenceConfig,
+        bookmarkFolders,
         bookmarks,
         updatedAt: new Date().toISOString()
       };
@@ -6759,10 +7629,14 @@ void main(){
         customSequenceConfig = v.config;
         draftSequenceConfig = cloneCfg(v.config);
       }
+      if(Array.isArray(parsed.bookmarkFolders)){
+        bookmarkFolders = validateBookmarkFolders(parsed.bookmarkFolders);
+      }
       if(Array.isArray(parsed.bookmarks)){
         const legacySeedIds = new Set(['bm_kor_math_inq1','bm_eng_listening','bm_kor_single']);
         const filtered = parsed.bookmarks.filter(b=>b && !legacySeedIds.has(b.id));
-        bookmarks = validateBookmarks(filtered);
+        const validFolderSet = new Set(bookmarkFolders.map(f=>f.id));
+        bookmarks = validateBookmarks(filtered, validFolderSet);
       }
       renderBookmarks();
       if(parsed.presetId){
@@ -6802,6 +7676,7 @@ void main(){
       mainBellGlowAnim,
       prelimBellGlowAnim,
       customSequenceConfig,
+      bookmarkFolders,
       bookmarks
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json;charset=utf-8'});
@@ -6873,8 +7748,14 @@ void main(){
           syncStep1SubjectsFromNodeIds(draftSequenceConfig.selectedNodeIds);
           renderBuilderModal();
         }
+        if(Array.isArray(data.bookmarkFolders)){
+          bookmarkFolders = validateBookmarkFolders(data.bookmarkFolders);
+        }
         if(Array.isArray(data.bookmarks)){
-          bookmarks = validateBookmarks(data.bookmarks);
+          const validFolderSet = new Set(bookmarkFolders.map(f=>f.id));
+          bookmarks = validateBookmarks(data.bookmarks, validFolderSet);
+          renderBookmarks();
+        }else if(Array.isArray(data.bookmarkFolders)){
           renderBookmarks();
         }
         if(data.presetId && phase==='idle'){
@@ -7561,6 +8442,39 @@ void main(){
       }
     });
   }
+
+  const activePressedMap = new Map();
+  const PRESSABLE_SELECTOR = 'button:not(:disabled), .lg-btn:not(:disabled), .lg-pill-cta-btn:not(:disabled)';
+  const handlePressStart = e=>{
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    const target = e.target && e.target.closest ? e.target.closest(PRESSABLE_SELECTOR) : null;
+    if(!target) return;
+    target.classList.add('is-pressed');
+    activePressedMap.set(e.pointerId, target);
+  };
+  const handlePressEnd = e=>{
+    const el = activePressedMap.get(e.pointerId);
+    if(!el) return;
+    activePressedMap.delete(e.pointerId);
+    let stillHeld = false;
+    activePressedMap.forEach(otherEl=>{ if(otherEl === el) stillHeld = true; });
+    if(!stillHeld) el.classList.remove('is-pressed');
+  };
+  const clearAllPressed = ()=>{
+    activePressedMap.forEach(el=>el.classList.remove('is-pressed'));
+    activePressedMap.clear();
+  };
+  const handleTouchEndClear = e=>{
+    if(e.touches.length === 0) clearAllPressed();
+  };
+
+  document.addEventListener('pointerdown', handlePressStart, {capture:true, passive:true});
+  window.addEventListener('pointerup', handlePressEnd, {capture:true, passive:true});
+  window.addEventListener('pointercancel', handlePressEnd, {capture:true, passive:true});
+  window.addEventListener('touchend', handleTouchEndClear, {capture:true, passive:true});
+  window.addEventListener('touchcancel', handleTouchEndClear, {capture:true, passive:true});
+  window.addEventListener('blur', clearAllPressed);
+  document.addEventListener('visibilitychange', clearAllPressed);
 
   document.addEventListener('pointermove', e=>{
     const target = e.target && e.target.closest ? e.target.closest('.lg-btn, .pill-group-row') : null;
