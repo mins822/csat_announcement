@@ -34,7 +34,6 @@ import {
   cloneSequenceConfig,
   format24hInputTime,
   format24hTime,
-  formatAmPmTime,
   formatBellDuration,
   formatIntervalInputDisplay,
   formatIntervalSecondsLabel,
@@ -263,6 +262,67 @@ const FADE_OUT_TOTAL = STAGE_OUT * 3;
 const DROP = 1200;
 const RISE = 1600;
 const APPEAR_T0 = 1250;
+
+function renderClockTimeLabel(el: HTMLElement | null, kicker: string, totalMinutes: number): void {
+  if (!el) return;
+  const dayOffset = Math.floor(totalMinutes / 1440);
+  const minsNormalized = ((Math.floor(totalMinutes) % 1440) + 1440) % 1440;
+  const h24 = Math.floor(minsNormalized / 60);
+  const m = minsNormalized % 60;
+  const isPm = h24 >= 12;
+  const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+  const digits = `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  const meridiem = isPm ? 'PM' : 'AM';
+  const dayText = dayOffset > 0 ? `(+${dayOffset}일)` : '';
+  const cacheKey = `${kicker}|${digits}|${meridiem}|${dayText}`;
+  if (el.dataset.lastKey === cacheKey) return;
+  el.dataset.lastKey = cacheKey;
+
+  const kickerEl = document.createElement('span');
+  kickerEl.className = 'lab-kicker';
+  kickerEl.textContent = kicker;
+
+  const timeEl = document.createElement('span');
+  timeEl.className = 'lab-time';
+
+  const digitsEl = document.createElement('span');
+  digitsEl.className = 'lab-digits';
+  digitsEl.textContent = digits;
+
+  const meridiemEl = document.createElement('span');
+  meridiemEl.className = 'lab-meridiem';
+  meridiemEl.textContent = meridiem;
+
+  timeEl.append(digitsEl, meridiemEl);
+  if (dayText) {
+    const dayEl = document.createElement('span');
+    dayEl.className = 'lab-day';
+    dayEl.textContent = dayText;
+    timeEl.append(dayEl);
+  }
+  el.replaceChildren(kickerEl, timeEl);
+}
+
+function renderStageBadgeText(el: HTMLElement | null, primaryText: string, nextText?: string): void {
+  if (!el) return;
+  const cleanNext = nextText ? nextText.trim() : '';
+  const cacheKey = `${primaryText}|${cleanNext}`;
+  if (el.dataset.lastKey === cacheKey) return;
+  el.dataset.lastKey = cacheKey;
+
+  const primaryEl = document.createElement('span');
+  primaryEl.className = 'stage-primary';
+  primaryEl.textContent = primaryText;
+
+  if (cleanNext) {
+    const nextEl = document.createElement('span');
+    nextEl.className = 'stage-next';
+    nextEl.textContent = `다음 방송 · ${cleanNext}`;
+    el.replaceChildren(primaryEl, nextEl);
+  } else {
+    el.replaceChildren(primaryEl);
+  }
+}
 const STAGE_IN = STAGE_OUT;
 const DUR_IN = STAGE_OUT;
 
@@ -581,6 +641,7 @@ export default function App() {
   const [isBuilderModalOpen, setIsBuilderModalOpen] = useState<boolean>(false);
   const [isRunningSaveConfirmOpen, setIsRunningSaveConfirmOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isPlaybackSettingsOpen, setIsPlaybackSettingsOpen] = useState<boolean>(false);
 
   const [devMode, setDevMode] = useState<boolean>(() =>
     initialStored ? initialStored.devMode : false
@@ -1138,7 +1199,7 @@ export default function App() {
       if (!menuEl) return;
       const target = e.target as Node | null;
       if (target && menuEl.contains(target)) return;
-      if ((e.target as HTMLElement | null)?.closest('.custom-select-popover, .custom-time-popover')) {
+      if ((e.target as HTMLElement | null)?.closest('.custom-select-popover, .custom-time-popover, #playbackSettingsPanel')) {
         return;
       }
 
@@ -1667,12 +1728,12 @@ export default function App() {
       }
       document.title = '2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림';
       if (startLabRef.current) {
-        startLabRef.current.innerHTML = `START - TIME<br>${formatAmPmTime(dispStartMin)}`;
+        renderClockTimeLabel(startLabRef.current, 'START TIME', dispStartMin);
         startLabRef.current.style.opacity = '1';
       }
       if (endLabRef.current) {
-        endLabRef.current.innerHTML = `END - TIME<br>${formatAmPmTime(dispEndMin)}`;
-        endLabRef.current.style.opacity = '0.38';
+        renderClockTimeLabel(endLabRef.current, 'END TIME', dispEndMin);
+        endLabRef.current.style.opacity = '0.48';
       }
       if (remainDigitsRef.current) {
         remainDigitsRef.current.textContent = formatDurationClock(idleRemainMs);
@@ -1683,12 +1744,20 @@ export default function App() {
           const mainStageTitle = firstCat.includes('듣기평가')
             ? '듣기평가 안내방송 및 본령'
             : '본령';
-          stageBadgeRef.current.textContent = `${pPrefix}${mainStageTitle} 대기\n다음 방송: ${nextWarnLabel}`;
+          renderStageBadgeText(
+            stageBadgeRef.current,
+            `${pPrefix}${mainStageTitle} 대기`,
+            nextWarnLabel
+          );
         } else if (firstCat.includes(' → ')) {
           const [curStage, nxtStage] = firstCat.split(' → ');
-          stageBadgeRef.current.textContent = `${pPrefix}${curStage} 대기\n다음 방송: ${nxtStage}`;
+          renderStageBadgeText(
+            stageBadgeRef.current,
+            `${pPrefix}${curStage} 대기`,
+            nxtStage
+          );
         } else {
-          stageBadgeRef.current.textContent = `${pPrefix}${firstCat} 대기`;
+          renderStageBadgeText(stageBadgeRef.current, `${pPrefix}${firstCat} 대기`);
         }
       }
       syncActiveStepHighlight(preset, firstStep, false);
@@ -1930,12 +1999,23 @@ export default function App() {
             const mainStageTitle = catText.includes('듣기평가')
               ? '듣기평가 안내방송 및 본령'
               : '본령';
-            stageBadgeRef.current.textContent = `${speedPrefix}${pPrefix}${mainStageTitle}${statusSuffix}\n다음 방송: ${nextWarnLabel}`;
+            renderStageBadgeText(
+              stageBadgeRef.current,
+              `${speedPrefix}${pPrefix}${mainStageTitle}${statusSuffix}`,
+              nextWarnLabel
+            );
           } else if (catText.includes(' → ')) {
             const [curStage, nxtStage] = catText.split(' → ');
-            stageBadgeRef.current.textContent = `${speedPrefix}${pPrefix}${curStage}${statusSuffix}\n다음 방송: ${nxtStage}`;
+            renderStageBadgeText(
+              stageBadgeRef.current,
+              `${speedPrefix}${pPrefix}${curStage}${statusSuffix}`,
+              nxtStage
+            );
           } else {
-            stageBadgeRef.current.textContent = `${speedPrefix}${pPrefix}${catText}${statusSuffix}`;
+            renderStageBadgeText(
+              stageBadgeRef.current,
+              `${speedPrefix}${pPrefix}${catText}${statusSuffix}`
+            );
           }
         }
 
@@ -1980,8 +2060,8 @@ export default function App() {
         );
 
         const emphasisShift = sm(0.35, 0.65, overallProgress);
-        const startOpacity = 1 - emphasisShift * (1 - 0.38);
-        const endOpacity = 0.38 + emphasisShift * (1 - 0.38);
+        const startOpacity = 1 - emphasisShift * (1 - 0.48);
+        const endOpacity = 0.48 + emphasisShift * (1 - 0.48);
 
         let dispStartMin = activeStep.startMinutes;
         let dispEndMin = examEndStep ? examEndStep.endMinutes : activeStep.endMinutes;
@@ -1994,11 +2074,11 @@ export default function App() {
         }
 
         if (startLabRef.current) {
-          startLabRef.current.innerHTML = `START - TIME<br>${formatAmPmTime(dispStartMin)}`;
+          renderClockTimeLabel(startLabRef.current, 'START TIME', dispStartMin);
           startLabRef.current.style.opacity = startOpacity.toFixed(3);
         }
         if (endLabRef.current) {
-          endLabRef.current.innerHTML = `END - TIME<br>${formatAmPmTime(dispEndMin)}`;
+          renderClockTimeLabel(endLabRef.current, 'END TIME', dispEndMin);
           endLabRef.current.style.opacity = endOpacity.toFixed(3);
         }
       }
@@ -2040,7 +2120,7 @@ export default function App() {
             releaseWakeLock();
           }
           if (stageBadgeRef.current) {
-            stageBadgeRef.current.textContent = `${preset.displayTitle} 종료`;
+            renderStageBadgeText(stageBadgeRef.current, `${preset.displayTitle} 종료`);
           }
         }
       }
@@ -2651,16 +2731,16 @@ export default function App() {
       titleRef.current.style.transform = `translate3d(${(cx - W / 2).toFixed(2)}px, -50%, 0)`;
     }
     if (labRef.current) {
-      const labW = Math.min(W - 24, Math.max(2.22 * R, 300));
-      const minLabFont = R < 130 ? 9.5 : 11;
+      const labW = Math.min(W - 24, Math.max(2.34 * R, 304));
+      const minLabFont = R < 130 ? 13 : R < 165 ? 16 : 18;
       labRef.current.style.left = `${cx - labW / 2}px`;
       labRef.current.style.top = `${cy + R * 1.18}px`;
       labRef.current.style.width = `${labW}px`;
-      labRef.current.style.fontSize = `${clamp(R * 0.085, minLabFont, 17)}px`;
+      labRef.current.style.fontSize = `${clamp(R * 0.105, minLabFont, 19.5)}px`;
     }
     if (remainDigitsRef.current) {
-      const minDigitFont = R < 130 ? 13 : 15;
-      remainDigitsRef.current.style.fontSize = `${clamp(R * 0.12, minDigitFont, 24)}px`;
+      const minDigitFont = R < 130 ? 21 : R < 165 ? 26 : 30;
+      remainDigitsRef.current.style.fontSize = `${clamp(R * 0.165, minDigitFont, 34)}px`;
     }
     if (dockRef.current) {
       dockRef.current.style.transform = `translate3d(calc(-50% + ${(cx - W / 2).toFixed(2)}px), ${dockY.toFixed(2)}px, 0)`;
@@ -3835,7 +3915,7 @@ export default function App() {
     }
 
     if (templateType === 'all_39') {
-      const nextIds = CSAT_SELECTABLE_CUE_NODES.map((n) => n.nodeId);
+      const nextIds = DEFAULT_CUSTOM_SEQUENCE_CONFIG.selectedNodeIds.slice();
       updateDraftConfig((prev) => ({
         ...prev,
         selectedNodeIds: nextIds,
@@ -3844,7 +3924,10 @@ export default function App() {
         firstNodeCustomMinutes: null,
       }));
       syncSubjectComboFromNodeIds(nextIds);
-      showToast('전체 타종 시간표(38개 항목)가 기본 상태로 설정되었습니다.', 2600);
+      showToast(
+        `기본 타종 시간표(제2외국어/한문 제외 · ${nextIds.length}개 항목)가 설정되었습니다.`,
+        2600
+      );
       return;
     }
 
@@ -4740,9 +4823,13 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!isBuilderModalOpen && !isModalOpen) return;
+    if (!isBuilderModalOpen && !isModalOpen && !isPlaybackSettingsOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (isPlaybackSettingsOpen) {
+          setIsPlaybackSettingsOpen(false);
+          return;
+        }
         if (isRunningSaveConfirmOpen) {
           setIsRunningSaveConfirmOpen(false);
           return;
@@ -4756,7 +4843,14 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [closeBuilderModalWithoutSaving, isBuilderModalOpen, isModalOpen, isRunningSaveConfirmOpen, stopPreviewBell]);
+  }, [
+    closeBuilderModalWithoutSaving,
+    isBuilderModalOpen,
+    isModalOpen,
+    isPlaybackSettingsOpen,
+    isRunningSaveConfirmOpen,
+    stopPreviewBell,
+  ]);
 
   const totalDraftSeconds = draftAnalysis.totalWaitSeconds;
   const totalDraftMinutes = Math.round(totalDraftSeconds / 60);
@@ -5042,22 +5136,26 @@ export default function App() {
 
         <div id="lab" ref={labRef} style={{ opacity: 0 }}>
           <div id="startLab" ref={startLabRef}>
-            START - TIME
-            <br />
-            08:35 A.M.
+            <span className="lab-kicker">START TIME</span>
+            <span className="lab-time">
+              <span className="lab-digits">08:35</span>
+              <span className="lab-meridiem">AM</span>
+            </span>
           </div>
           <div id="centerStat">
             <div id="remainDigits" ref={remainDigitsRef}>
               05:00
             </div>
             <div id="stageBadge" ref={stageBadgeRef}>
-              1교시 · 준비령 대기
+              <span className="stage-primary">1교시 · 준비령 대기</span>
             </div>
           </div>
           <div id="endLab" ref={endLabRef}>
-            END - TIME
-            <br />
-            08:40 A.M.
+            <span className="lab-kicker">END TIME</span>
+            <span className="lab-time">
+              <span className="lab-digits">08:40</span>
+              <span className="lab-meridiem">AM</span>
+            </span>
           </div>
         </div>
       </div>
@@ -6773,6 +6871,85 @@ export default function App() {
         </div>
       </div>
 
+      {/* 좌측 하단 재생 설정 원형 아이콘 버튼 */}
+      <div id="bottomLeftMenu">
+        <button
+          id="playbackSettingsBtn"
+          className={`lg-btn ${isPlaybackSettingsOpen ? 'is-selected' : ''}`}
+          type="button"
+          onClick={() => {
+            setIsMenuOpen(false);
+            setActiveMenuCategory(null);
+            setIsBookmarkCardOpen(false);
+            setOpenCustomPopup(null);
+            setIsPlaybackSettingsOpen((prev) => !prev);
+          }}
+          aria-expanded={isPlaybackSettingsOpen}
+          aria-controls="playbackSettingsPanel"
+          aria-label="재생 설정 열기/닫기"
+          title="재생 설정"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="21" y1="6" x2="14" y2="6" />
+            <line x1="8" y1="6" x2="3" y2="6" />
+            <circle cx="11" cy="6" r="2.5" />
+            <line x1="21" y1="12" x2="18" y2="12" />
+            <line x1="12" y1="12" x2="3" y2="12" />
+            <circle cx="15" cy="12" r="2.5" />
+            <line x1="21" y1="18" x2="11" y2="18" />
+            <line x1="5" y1="18" x2="3" y2="18" />
+            <circle cx="8" cy="18" r="2.5" />
+          </svg>
+        </button>
+      </div>
+
+      {/* 좌측 하단 비차단 플로팅 재생 설정 팝업 (수능 시간표 패널과 동일한 글래스 스타일) */}
+      <aside
+        id="playbackSettingsPanel"
+        className={isPlaybackSettingsOpen ? 'open' : ''}
+        aria-hidden={!isPlaybackSettingsOpen}
+        aria-labelledby="playbackSettingsTitle"
+      >
+        <div className="ps-head">
+          <h2 id="playbackSettingsTitle" className="ps-title">
+            재생 설정
+          </h2>
+          <button
+            type="button"
+            className="ps-close-btn"
+            onClick={() => setIsPlaybackSettingsOpen(false)}
+            aria-label="재생 설정 창 닫기"
+            title="닫기"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div className="ps-body" />
+      </aside>
+
       {/* 전용 창 1: 체크박스 기반 영역·타종 선택 및 시간 간격/시각 편집기 (C1 Draft 분리) */}
       <div
         className={`toll-scrim ${isBuilderModalOpen ? 'open' : ''}`}
@@ -6789,9 +6966,7 @@ export default function App() {
         >
           <header className="dialog-header">
             <div className="dialog-heading">
-              <h1 id="builderModalTitle">
-                영역별 타종 체크박스 선택 및 시간 간격 · 시각 설정
-              </h1>
+              <h1 id="builderModalTitle">타종 설정</h1>
               <p>
                 원하는 영역과 타종 단계를 선택하고, 각 타종 사이의 간격과 타종 시각을 조정하세요.
               </p>

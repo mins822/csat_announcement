@@ -22,18 +22,24 @@
   --tick-major: #5a5a5a;
   --tick-minor: #a9a9a9;
   --min-hand: #171717;
-  --sec-hand: #4d4d4d; /* 검은색 70% + 흰색 30% 진한 회색 */
+  --sec-hand: #616161; /* 검은색 62% + 흰색 38% 회색 */
   --glass-fill: rgba(255, 255, 255, 0.16);
-  --glass-rim: rgba(255, 255, 255, 0.68);
+  --glass-rim: rgba(255, 255, 255, 0.28);
+  --btn-rim: rgba(255, 255, 255, 0.22);
+  --btn-rim-hover: rgba(255, 255, 255, 0.32);
+  --btn-rim-active: rgba(255, 255, 255, 0.30);
+  --toll-btn-rim: rgba(255, 255, 255, 0.22);
+  --toll-btn-rim-hover: rgba(255, 255, 255, 0.32);
+  --toll-btn-inset-rim: rgba(255, 255, 255, 0.09);
   --glint: rgba(255, 255, 255, 0.72);
   --btn-shadow:
-    0 9px 24px rgba(35, 43, 58, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.50),
-    inset 0 -1px 0 rgba(40, 48, 62, 0.08);
+    0 9px 24px rgba(35, 43, 58, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(40, 48, 62, 0.03);
   --btn-shadow-hover:
-    0 13px 30px rgba(31, 39, 54, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.60),
-    inset 0 -1px 0 rgba(40, 48, 62, 0.07);
+    0 13px 30px rgba(31, 39, 54, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(40, 48, 62, 0.03);
   --btn-before:
     radial-gradient(
       ellipse 43% 72% at var(--px, 50%) var(--py, 12%),
@@ -47,11 +53,11 @@
       rgba(255, 255, 255, 0.01) 76%,
       rgba(255, 255, 255, 0.025)
     );
-  --btn-after-opacity: 0.18;
+  --btn-after-opacity: 0.06;
   --btn-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.24);
   --focus-ring: #7c9cc5;
   --modal-bg: linear-gradient(155deg, rgba(252, 252, 254, 0.93) 0%, rgba(244, 244, 242, 0.90) 100%);
-  --modal-border: rgba(255, 255, 255, 0.82);
+  --modal-border: rgba(255, 255, 255, 0.32);
   --modal-ink: #1a1a1a;
   --modal-muted: #52525b;
   --modal-surface: rgba(0, 0, 0, 0.055);
@@ -67,14 +73,14 @@
   --toll-glass-soft: rgba(255, 255, 255, 0.47);
   --toll-glass-inner: rgba(255, 255, 255, 0.59);
   --toll-glass-edge: var(--glass-rim);
-  --toll-glass-edge-low: rgba(24, 24, 25, 0.12);
+  --toll-glass-edge-low: rgba(24, 24, 25, 0.07);
   --toll-highlight: rgba(255, 255, 255, 0.90);
   --toll-glass-shadow:
     0 28px 80px rgba(0, 0, 0, 0.22),
     0 6px 24px rgba(0, 0, 0, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.90);
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
   --toll-selected: rgba(45, 45, 48, 0.12);
-  --toll-selected-edge: rgba(35, 35, 36, 0.22);
+  --toll-selected-edge: rgba(35, 35, 36, 0.11);
   --toll-pill: rgba(255, 255, 255, 0.54);
   --toll-pill-hover: rgba(255, 255, 255, 0.76);
   --toll-button: #242425;
@@ -96,18 +102,24 @@
   --tick-major: #d2d2d2;
   --tick-minor: #636366;
   --min-hand: #f1f1f1;
-  --sec-hand: #4d4d4d; /* 검은색 70% + 흰색 30% 진한 회색 */
+  --sec-hand: #616161; /* 검은색 62% + 흰색 38% 회색 */
   --glass-fill: rgba(28, 28, 32, 0.52);
-  --glass-rim: rgba(255, 255, 255, 0.24);
+  --glass-rim: rgba(255, 255, 255, 0.075);
+  --btn-rim: rgba(255, 255, 255, 0.06);
+  --btn-rim-hover: rgba(255, 255, 255, 0.095);
+  --btn-rim-active: rgba(255, 255, 255, 0.09);
+  --toll-btn-rim: rgba(255, 255, 255, 0.08);
+  --toll-btn-rim-hover: rgba(255, 255, 255, 0.12);
+  --toll-btn-inset-rim: rgba(255, 255, 255, 0.075);
   --glint: rgba(255, 255, 255, 0.26);
   --btn-shadow:
     0 8px 24px rgba(0, 0, 0, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.13),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.24);
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14);
   --btn-shadow-hover:
     0 12px 28px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14);
   --btn-before:
     linear-gradient(
       120deg,
@@ -115,11 +127,11 @@
       transparent 48%,
       rgba(255, 255, 255, 0.025)
     );
-  --btn-after-opacity: 0.15;
+  --btn-after-opacity: 0.04;
   --btn-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   --focus-ring: #e2e2e2;
   --modal-bg: rgba(24, 24, 26, 0.95);
-  --modal-border: rgba(255, 255, 255, 0.24);
+  --modal-border: rgba(255, 255, 255, 0.08);
   --modal-ink: #f1f1f1;
   --modal-muted: #a3a3a3;
   --modal-surface: rgba(42, 42, 46, 0.82);
@@ -135,14 +147,14 @@
   --toll-glass-soft: rgba(38, 38, 42, 0.82);
   --toll-glass-inner: rgba(46, 46, 50, 0.74);
   --toll-glass-edge: var(--glass-rim);
-  --toll-glass-edge-low: rgba(255, 255, 255, 0.15);
+  --toll-glass-edge-low: rgba(255, 255, 255, 0.06);
   --toll-highlight: rgba(255, 255, 255, 0.26);
   --toll-glass-shadow:
     0 28px 80px rgba(0, 0, 0, 0.56),
     0 6px 24px rgba(0, 0, 0, 0.36),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   --toll-selected: rgba(255, 255, 255, 0.11);
-  --toll-selected-edge: rgba(255, 255, 255, 0.24);
+  --toll-selected-edge: rgba(255, 255, 255, 0.09);
   --toll-pill: rgba(255, 255, 255, 0.10);
   --toll-pill-hover: rgba(255, 255, 255, 0.17);
   --toll-button: #e7e7e7;
@@ -160,9 +172,15 @@
   --tick-major: #5c4938;
   --tick-minor: #9c8873;
   --min-hand: #2b1f16;
-  --sec-hand: #4d4d4d; /* 검은색 70% + 흰색 30% 진한 회색 */
+  --sec-hand: #616161; /* 검은색 62% + 흰색 38% 회색 */
   --glass-fill: rgba(255, 248, 235, 0.28);
   --glass-rim: rgba(255, 248, 235, 0.70);
+  --btn-rim: var(--glass-rim);
+  --btn-rim-hover: var(--glass-rim);
+  --btn-rim-active: var(--glint);
+  --toll-btn-rim: rgba(255, 255, 255, 0.62);
+  --toll-btn-rim-hover: rgba(255, 255, 255, 0.84);
+  --toll-btn-inset-rim: rgba(255, 255, 255, 0.28);
   --glint: rgba(255, 248, 235, 0.70);
   --btn-shadow:
     0 9px 24px rgba(54, 41, 30, 0.10),
@@ -428,71 +446,184 @@ html:-webkit-full-screen::backdrop {
 
 #lab {
   position: absolute;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(10px, 2.8vw, 24px);
   color: var(--ink);
-  font-weight: 800;
-  font-style: italic;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1.2;
+  font-family: "Outfit", "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
   transition: color 0.35s ease;
+}
+
+#lab > div:first-child,
+#lab > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  white-space: nowrap;
+  will-change: opacity;
 }
 
 #lab > div:first-child {
   opacity: 1;
+  justify-self: start;
+  align-items: flex-start;
   text-align: left;
-  white-space: nowrap;
-  flex-shrink: 0;
-  will-change: opacity;
 }
 
 #lab > div:last-child {
-  opacity: 0.38;
+  opacity: 0.48;
+  justify-self: end;
+  align-items: flex-end;
   text-align: right;
-  white-space: nowrap;
-  flex-shrink: 0;
-  will-change: opacity;
+}
+
+.lab-kicker {
+  font-family: "Montserrat", "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: clamp(10px, 0.64em, 12px);
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  line-height: 1.12;
+  text-transform: uppercase;
+  opacity: 0.56;
+}
+
+.lab-time {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  font-family: "Outfit", "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 1.14em;
+  font-weight: 500;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+  line-height: 1.12;
+}
+
+.lab-meridiem {
+  font-family: "Montserrat", "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 0.64em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0.58;
+}
+
+.lab-day {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 0.62em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  opacity: 0.56;
+  margin-left: 1px;
 }
 
 #centerStat {
-  flex: 1 1 auto;
+  position: relative;
   min-width: 0;
-  padding: 0 8px;
+  padding: 2px clamp(14px, 3.2vw, 28px);
   font-style: normal;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  gap: 5px;
+  font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+#centerStat::before,
+#centerStat::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(180deg, transparent 0%, currentColor 50%, transparent 100%);
+  opacity: 0.11;
+  pointer-events: none;
+}
+
+[data-theme="dark"] #centerStat::before,
+[data-theme="dark"] #centerStat::after {
+  opacity: 0.13;
+}
+
+#centerStat::before {
+  left: 0;
+}
+
+#centerStat::after {
+  right: 0;
 }
 
 #remainDigits {
-  font-weight: 800;
+  font-family: "Outfit", "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 32px;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   color: var(--ink);
-  line-height: 1.05;
+  line-height: 1;
   white-space: nowrap;
   transition: color 0.35s ease;
 }
 
 #stageBadge {
-  font-weight: 600;
-  font-size: 0.74em;
-  letter-spacing: -0.01em;
-  line-height: 1.34;
-  opacity: 0.78;
-  white-space: pre-line;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(11px, 0.74em, 12.5px);
+  letter-spacing: -0.015em;
+  line-height: 1.32;
+  color: var(--ink);
   word-break: keep-all;
   overflow-wrap: break-word;
   max-width: 100%;
   overflow: visible;
-  text-overflow: clip;
   text-align: center;
+}
+
+.stage-primary {
+  opacity: 0.76;
+}
+
+.stage-next {
+  font-size: 0.88em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  opacity: 0.46;
+}
+
+@media (max-width: 400px) {
+  #lab {
+    column-gap: 6px;
+  }
+  #centerStat {
+    padding: 0 6px;
+    gap: 3px;
+  }
+  #centerStat::before,
+  #centerStat::after {
+    opacity: 0;
+  }
+  .lab-kicker {
+    letter-spacing: 0.11em;
+  }
+  .lab-time {
+    gap: 2px;
+  }
 }
 
 /* ---------- Top-Left Hamburger Menu & List-Detail Pill Tray ---------- */
@@ -567,10 +698,8 @@ html:-webkit-full-screen::backdrop {
 }
 
 #fullscreenBtn.is-selected {
-  border-color: var(--glint);
-  box-shadow:
-    var(--btn-shadow-hover),
-    0 0 0 1px var(--glass-rim);
+  border-color: var(--btn-rim-active);
+  box-shadow: var(--btn-shadow-hover);
 }
 
 #pillDrawer {
@@ -623,10 +752,8 @@ html:-webkit-full-screen::backdrop {
 }
 
 .ld-cat-btn.is-selected {
-  border-color: var(--glint);
-  box-shadow:
-    var(--btn-shadow-hover),
-    0 0 0 1px var(--glass-rim);
+  border-color: var(--btn-rim-active);
+  box-shadow: var(--btn-shadow-hover);
 }
 
 .ld-cat-arrow {
@@ -731,6 +858,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .lg-btn {
+  border-color: var(--btn-rim);
   font: 650 14px/1 -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Roboto", "Noto Sans KR", sans-serif;
   letter-spacing: 0.14em;
   cursor: pointer;
@@ -741,12 +869,13 @@ html:-webkit-full-screen::backdrop {
 
 .lg-btn:hover {
   transform: translateY(-1.5px) scale(1.025);
+  border-color: var(--btn-rim-hover);
   box-shadow: var(--btn-shadow-hover);
 }
 
 [data-theme="dark"] .lg-btn:hover {
   background: rgba(255, 255, 255, 0.13);
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: var(--btn-rim-hover);
 }
 
 .lg-btn:active,
@@ -788,20 +917,26 @@ html:-webkit-full-screen::backdrop {
 
 .theme-chip.active {
   background: rgba(255, 255, 255, 0.22);
-  border-color: var(--glass-rim);
+  border-color: var(--btn-rim-active);
   color: var(--ink);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    0 2px 8px rgba(0, 0, 0, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="sepia"] .theme-chip.active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    0 2px 8px rgba(0, 0, 0, 0.07);
 }
 
 [data-theme="dark"] .theme-chip.active {
   background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: var(--btn-rim-active);
   color: #f1f1f1;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 3px 10px rgba(0, 0, 0, 0.24);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 3px 10px rgba(0, 0, 0, 0.22);
 }
 
 /* ---------- Bottom Dock Controls ---------- */
@@ -869,6 +1004,10 @@ html:-webkit-full-screen::backdrop {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
   line-height: 1;
   display: inline-flex;
   align-items: center;
@@ -887,6 +1026,10 @@ html:-webkit-full-screen::backdrop {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
   line-height: 1;
   display: inline-flex;
   align-items: center;
@@ -1033,7 +1176,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .dialog-heading h1 {
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.38;
   margin: 0 0 5px;
   font-weight: 760;
@@ -1042,7 +1185,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .dialog-heading p {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
   color: var(--toll-muted);
   margin: 0;
@@ -1059,14 +1202,14 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .icon-button {
   flex: none;
   border-radius: 999px;
-  height: 34px;
-  min-width: 38px;
-  padding: 0 11px;
+  height: 38px;
+  min-width: 40px;
+  padding: 0 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 680;
   cursor: pointer;
   touch-action: none;
@@ -1111,7 +1254,7 @@ html:-webkit-full-screen::backdrop {
   align-items: center;
   gap: 8px;
   min-width: 0;
-  padding: 8px 11px;
+  padding: 9px 13px;
   border-radius: 14px;
   border: none;
   background-color: rgba(246, 247, 249, 0.72);
@@ -1130,7 +1273,7 @@ html:-webkit-full-screen::backdrop {
     0 5px 14px -2px rgba(0, 0, 0, 0.16);
   color: rgba(32, 33, 36, 0.90);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.30);
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 740;
   letter-spacing: -0.025em;
   text-align: left;
@@ -1204,12 +1347,12 @@ html:-webkit-full-screen::backdrop {
 
 .toll-dialog .builder-step-tab .step-badge {
   flex: none;
-  width: 22px;
-  height: 22px;
+  width: 25px;
+  height: 25px;
   border-radius: 999px;
   display: grid;
   place-items: center;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   background: rgba(60, 62, 68, 0.12);
   color: rgba(36, 37, 41, 0.88);
@@ -1429,10 +1572,10 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .quick-label {
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--toll-muted);
-  min-width: 58px;
+  min-width: 72px;
   letter-spacing: -0.03em;
 }
 
@@ -1441,8 +1584,8 @@ html:-webkit-full-screen::backdrop {
   isolation: isolate;
   overflow: hidden;
   border-radius: 999px;
-  padding: 6.5px 11px;
-  font-size: 10.5px;
+  padding: 8px 13px;
+  font-size: 12.5px;
   font-weight: 650;
   line-height: 1;
   white-space: nowrap;
@@ -1514,7 +1657,7 @@ html:-webkit-full-screen::backdrop {
   flex-wrap: wrap;
   gap: 6px 12px;
   margin: 0 0 11px;
-  font-size: 12px;
+  font-size: 14.5px;
   line-height: 1.45;
   font-weight: 760;
   letter-spacing: -0.03em;
@@ -1523,7 +1666,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .pane-note {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
   font-weight: 450;
   color: var(--toll-muted);
@@ -1580,7 +1723,7 @@ html:-webkit-full-screen::backdrop {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 760;
   letter-spacing: -0.03em;
   cursor: pointer;
@@ -1598,10 +1741,10 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .collapse-btn {
   position: relative;
   overflow: hidden;
-  font-size: 9.5px;
+  font-size: 11.5px;
   font-weight: 680;
   color: var(--toll-ink-2);
-  padding: 5px 9px;
+  padding: 6px 11px;
   border-radius: 999px;
   white-space: nowrap;
   cursor: pointer;
@@ -1609,13 +1752,13 @@ html:-webkit-full-screen::backdrop {
 
 .toll-dialog .stage-row {
   position: relative;
-  min-height: 36px;
+  min-height: 42px;
   height: auto;
-  padding: 6px 12px;
+  padding: 7px 13px;
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   border-radius: 999px;
   margin-top: 4px;
   cursor: pointer;
@@ -1796,16 +1939,16 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .stage-name {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 560;
   letter-spacing: -0.025em;
-  line-height: 1.3;
+  line-height: 1.32;
   word-break: keep-all;
   white-space: normal;
 }
 
 .toll-dialog .stage-meta {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--toll-muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1821,12 +1964,12 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .alarm-card {
-  min-height: 62px;
+  min-height: 70px;
   display: grid;
-  grid-template-columns: 28px minmax(150px, 1fr) auto auto;
+  grid-template-columns: 32px minmax(150px, 1fr) auto auto;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 10px 13px;
   border: 1px solid rgba(255, 255, 255, 0.68);
   border-radius: 18px;
   background-color: rgba(244, 245, 247, 0.72);
@@ -1855,12 +1998,12 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .number {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   color: var(--toll-ink);
   background-color: rgba(232, 234, 238, 0.86);
@@ -1882,7 +2025,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .alarm-name {
-  font-size: 12px;
+  font-size: 14.5px;
   font-weight: 760;
   letter-spacing: -0.03em;
   margin-bottom: 3px;
@@ -1892,7 +2035,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .alarm-sub {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--toll-muted);
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -1905,17 +2048,17 @@ html:-webkit-full-screen::backdrop {
   align-items: center;
   gap: 6px;
   color: var(--toll-muted);
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
 .toll-dialog .time-input {
-  width: 112px;
-  height: 31px;
+  width: 128px;
+  height: 36px;
   border-radius: 10px;
-  padding: 0 8px;
+  padding: 0 9px;
   color: var(--toll-ink);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.02em;
   outline: none;
@@ -1926,10 +2069,10 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .preview-btn {
-  height: 31px;
-  padding: 0 11px;
+  height: 36px;
+  padding: 0 13px;
   border-radius: 999px;
-  font-size: 9.5px;
+  font-size: 11.5px;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
@@ -1942,9 +2085,9 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .interval-row {
-  min-height: 52px;
+  min-height: 58px;
   margin: 6px 0 0 22px;
-  padding: 7px 10px 7px 12px;
+  padding: 8px 11px 8px 13px;
   border: 1px solid rgba(255, 255, 255, 0.64);
   border-left: 2px solid rgba(64, 66, 72, 0.38);
   border-radius: 0 16px 16px 0;
@@ -1975,14 +2118,14 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .interval-title {
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 750;
   letter-spacing: -0.025em;
   margin-bottom: 3px;
 }
 
 .toll-dialog .interval-sub {
-  font-size: 9.5px;
+  font-size: 11.5px;
   color: var(--toll-muted);
 }
 
@@ -1994,11 +2137,11 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .nudge {
-  height: 28px;
-  min-width: 39px;
-  padding: 0 8px;
+  height: 33px;
+  min-width: 44px;
+  padding: 0 10px;
   border-radius: 999px;
-  font-size: 9.5px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.15s, transform 0.15s;
@@ -2010,19 +2153,19 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .interval-input {
-  width: 58px;
-  height: 30px;
+  width: 66px;
+  height: 34px;
   border-radius: 9px;
   text-align: right;
   padding: 0 8px;
   color: var(--toll-ink);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 750;
   outline: none;
 }
 
 .toll-dialog .unit {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--toll-ink-2);
 }
@@ -2031,7 +2174,7 @@ html:-webkit-full-screen::backdrop {
   padding: 28px 14px;
   text-align: center;
   color: var(--toll-muted);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.7;
   border: 1px dashed var(--toll-line);
   border-radius: 18px;
@@ -2044,7 +2187,7 @@ html:-webkit-full-screen::backdrop {
   right: 0;
   bottom: 0;
   z-index: 25;
-  min-height: 68px;
+  min-height: 72px;
   padding: 10px 22px;
   display: flex;
   align-items: center;
@@ -2068,7 +2211,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .summary {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
   font-weight: 650;
   letter-spacing: -0.025em;
@@ -2089,10 +2232,10 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .footer-btn {
-  height: 38px;
-  padding: 0 18px;
+  height: 42px;
+  padding: 0 20px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 760;
   cursor: pointer;
   white-space: nowrap;
@@ -2120,7 +2263,7 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .custom-select-trigger,
 .toll-dialog .custom-time-trigger,
 .toll-dialog .bookmark-modal-chip {
-  border: 1px solid rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--toll-btn-rim);
   background-color: rgba(244, 245, 247, 0.80);
   background-image: linear-gradient(
     180deg,
@@ -2133,11 +2276,11 @@ html:-webkit-full-screen::backdrop {
   color: rgba(32, 33, 36, 0.94);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.26);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.42),
-    inset 0 0 10px 2px rgba(255, 255, 255, 0.10),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.05),
-    0 3px 10px -2px rgba(0, 0, 0, 0.10),
-    0 0 0 1px inset rgba(255, 255, 255, 0.28);
+    inset 0 1px 1px rgba(255, 255, 255, 0.24),
+    inset 0 0 10px 2px rgba(255, 255, 255, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.04),
+    0 3px 10px -2px rgba(0, 0, 0, 0.09),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 .toll-dialog .time-input,
@@ -2193,7 +2336,7 @@ html:-webkit-full-screen::backdrop {
 [data-theme="dark"] .toll-dialog .custom-time-trigger,
 [data-theme="dark"] .toll-dialog .bookmark-modal-chip {
   color: #1c1d21;
-  border: 1px solid rgba(255, 255, 255, 0.36);
+  border: 1px solid var(--toll-btn-rim);
   background-color: rgba(234, 236, 240, 0.80);
   background-image: linear-gradient(
     180deg,
@@ -2202,11 +2345,11 @@ html:-webkit-full-screen::backdrop {
     rgba(208, 210, 216, 0.11) 100%
   );
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.40),
-    inset 0 0 10px 2px rgba(255, 255, 255, 0.12),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.12),
-    0 4px 12px -2px rgba(0, 0, 0, 0.34),
-    0 0 0 1px inset rgba(255, 255, 255, 0.30);
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    inset 0 0 10px 2px rgba(255, 255, 255, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.10),
+    0 4px 12px -2px rgba(0, 0, 0, 0.32),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 [data-theme="dark"] .toll-dialog .time-input,
@@ -2238,13 +2381,13 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .custom-select-trigger:hover,
 .toll-dialog .custom-time-trigger:hover {
   background-color: rgba(248, 249, 251, 0.87);
-  border-color: rgba(255, 255, 255, 0.84);
+  border-color: var(--toll-btn-rim-hover);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.48),
-    inset 0 0 12px 3px rgba(255, 255, 255, 0.14),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
-    0 3px 8px -2px rgba(0, 0, 0, 0.13),
-    0 0 0 1px inset rgba(255, 255, 255, 0.36);
+    inset 0 1px 1px rgba(255, 255, 255, 0.28),
+    inset 0 0 12px 3px rgba(255, 255, 255, 0.10),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.05),
+    0 3px 8px -2px rgba(0, 0, 0, 0.12),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 [data-theme="dark"] .toll-dialog .chip:hover,
@@ -2260,7 +2403,7 @@ html:-webkit-full-screen::backdrop {
 [data-theme="dark"] .toll-dialog .custom-select-trigger:hover,
 [data-theme="dark"] .toll-dialog .custom-time-trigger:hover {
   background-color: rgba(242, 244, 247, 0.86);
-  border-color: rgba(255, 255, 255, 0.50);
+  border-color: var(--toll-btn-rim-hover);
 }
 
 .toll-dialog .chip.active,
@@ -2270,7 +2413,7 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .custom-time-trigger.is-open {
   color: rgba(24, 25, 28, 0.96);
   font-weight: 780;
-  border-color: rgba(45, 46, 50, 0.32);
+  border-color: rgba(45, 46, 50, 0.18);
   background-color: rgba(228, 230, 235, 0.89);
   background-image: linear-gradient(
     180deg,
@@ -2279,11 +2422,11 @@ html:-webkit-full-screen::backdrop {
     rgba(208, 210, 216, 0.12) 100%
   );
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.46),
-    inset 0 0 12px 2px rgba(255, 255, 255, 0.14),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.08),
-    0 4px 12px -2px rgba(0, 0, 0, 0.14),
-    0 0 0 1px inset rgba(255, 255, 255, 0.34);
+    inset 0 1px 1px rgba(255, 255, 255, 0.28),
+    inset 0 0 12px 2px rgba(255, 255, 255, 0.10),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    0 4px 12px -2px rgba(0, 0, 0, 0.13),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 [data-theme="dark"] .toll-dialog .chip.active,
@@ -2292,14 +2435,14 @@ html:-webkit-full-screen::backdrop {
 [data-theme="dark"] .toll-dialog .custom-select-trigger.is-open,
 [data-theme="dark"] .toll-dialog .custom-time-trigger.is-open {
   color: #141518;
-  border-color: rgba(255, 255, 255, 0.56);
+  border-color: rgba(255, 255, 255, 0.24);
   background-color: rgba(222, 224, 229, 0.90);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.46),
-    inset 0 0 12px 2px rgba(255, 255, 255, 0.14),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.14),
-    0 5px 14px -2px rgba(0, 0, 0, 0.42),
-    0 0 0 1px inset rgba(255, 255, 255, 0.36);
+    inset 0 1px 1px rgba(255, 255, 255, 0.26),
+    inset 0 0 12px 2px rgba(255, 255, 255, 0.10),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.12),
+    0 5px 14px -2px rgba(0, 0, 0, 0.40),
+    0 0 0 1px inset rgba(255, 255, 255, 0.16);
 }
 
 .toll-dialog .area-tag,
@@ -2376,7 +2519,7 @@ html:-webkit-full-screen::backdrop {
 
 /* Redesigned Liquid Glass CTA Buttons ('다음' & '선택 구성 저장') */
 .toll-dialog .lg-pill-cta-wrap {
-  --cta-size: 12px;
+  --cta-size: 14.5px;
   --anim--hover-time: 400ms;
   --anim--hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
@@ -2493,12 +2636,12 @@ html:-webkit-full-screen::backdrop {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  height: 38px;
-  padding-inline: 18px;
+  height: 42px;
+  padding-inline: 20px;
   user-select: none;
   letter-spacing: -0.025em;
   font-weight: 780;
-  font-size: 11.5px;
+  font-size: 14px;
   line-height: 1;
   white-space: nowrap;
   color: rgba(32, 33, 36, 0.94);
@@ -2573,13 +2716,13 @@ html:-webkit-full-screen::backdrop {
   background:
     conic-gradient(
       from var(--angle-1) at 50% 50%,
-      rgba(0, 0, 0, 0.14),
+      rgba(0, 0, 0, 0.06),
       rgba(0, 0, 0, 0) 8% 40%,
-      rgba(0, 0, 0, 0.14) 50%,
+      rgba(0, 0, 0, 0.06) 50%,
       rgba(0, 0, 0, 0) 60% 92%,
-      rgba(0, 0, 0, 0.14)
+      rgba(0, 0, 0, 0.06)
     ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(226, 228, 232, 0.28));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(226, 228, 232, 0.12));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -2587,7 +2730,7 @@ html:-webkit-full-screen::backdrop {
   transition:
     all var(--anim--hover-time) var(--anim--hover-ease),
     --angle-1 500ms ease;
-  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.32);
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) var(--toll-btn-inset-rim);
   pointer-events: none;
 }
 
@@ -2655,25 +2798,25 @@ html:-webkit-full-screen::backdrop {
   -webkit-backdrop-filter: blur(20px) saturate(0.92);
   backdrop-filter: blur(20px) saturate(0.92);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.42),
-    inset 0 0 12px 2px rgba(255, 255, 255, 0.14),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.08),
-    0 5px 14px -2px rgba(0, 0, 0, 0.16),
-    0 0 0 1px inset rgba(255, 255, 255, 0.32);
+    inset 0 1px 1px rgba(255, 255, 255, 0.24),
+    inset 0 0 12px 2px rgba(255, 255, 255, 0.09),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    0 5px 14px -2px rgba(0, 0, 0, 0.14),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn::after {
   background:
     conic-gradient(
       from var(--angle-1) at 50% 50%,
-      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.06),
       rgba(0, 0, 0, 0) 8% 40%,
-      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.06) 50%,
       rgba(0, 0, 0, 0) 60% 92%,
-      rgba(0, 0, 0, 0.15)
+      rgba(0, 0, 0, 0.06)
     ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(224, 226, 230, 0.30));
-  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.34);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(224, 226, 230, 0.12));
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) var(--toll-btn-inset-rim);
 }
 
 .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover {
@@ -2681,11 +2824,11 @@ html:-webkit-full-screen::backdrop {
   -webkit-backdrop-filter: blur(18px) saturate(0.95);
   backdrop-filter: blur(18px) saturate(0.95);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.48),
-    inset 0 0 14px 3px rgba(255, 255, 255, 0.17),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.08),
-    0 3px 9px -2px rgba(0, 0, 0, 0.18),
-    0 0 0 1px inset rgba(255, 255, 255, 0.38);
+    inset 0 1px 1px rgba(255, 255, 255, 0.28),
+    inset 0 0 14px 3px rgba(255, 255, 255, 0.11),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.06),
+    0 3px 9px -2px rgba(0, 0, 0, 0.16),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 .toll-dialog .lg-pill-cta-wrap.is-save:has(.lg-pill-cta-btn:not(:disabled):active) .lg-pill-cta-btn,
@@ -2748,11 +2891,11 @@ html:-webkit-full-screen::backdrop {
   -webkit-backdrop-filter: blur(18px) saturate(0.95);
   backdrop-filter: blur(18px) saturate(0.95);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.40),
-    inset 0 0 10px 2px rgba(255, 255, 255, 0.12),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.12),
-    0 6px 16px -2px rgba(0, 0, 0, 0.42),
-    0 0 0 1px inset rgba(255, 255, 255, 0.30);
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    inset 0 0 10px 2px rgba(255, 255, 255, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.10),
+    0 6px 16px -2px rgba(0, 0, 0, 0.40),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 [data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-btn:not(:disabled):hover {
@@ -2760,11 +2903,11 @@ html:-webkit-full-screen::backdrop {
   -webkit-backdrop-filter: blur(16px) saturate(0.98);
   backdrop-filter: blur(16px) saturate(0.98);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.46),
-    inset 0 0 12px 3px rgba(255, 255, 255, 0.15),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.12),
-    0 4px 12px -2px rgba(0, 0, 0, 0.46),
-    0 0 0 1px inset rgba(255, 255, 255, 0.36);
+    inset 0 1px 1px rgba(255, 255, 255, 0.26),
+    inset 0 0 12px 3px rgba(255, 255, 255, 0.10),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.10),
+    0 4px 12px -2px rgba(0, 0, 0, 0.44),
+    0 0 0 1px inset rgba(255, 255, 255, 0.16);
 }
 
 [data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-next .lg-pill-cta-label {
@@ -2776,14 +2919,14 @@ html:-webkit-full-screen::backdrop {
   background:
     conic-gradient(
       from var(--angle-1) at 50% 50%,
-      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.06),
       rgba(0, 0, 0, 0) 8% 40%,
-      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.06) 50%,
       rgba(0, 0, 0, 0) 60% 92%,
-      rgba(0, 0, 0, 0.15)
+      rgba(0, 0, 0, 0.06)
     ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(226, 228, 232, 0.30));
-  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.34);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.20), rgba(226, 228, 232, 0.12));
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) var(--toll-btn-inset-rim);
 }
 
 [data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn {
@@ -2797,11 +2940,11 @@ html:-webkit-full-screen::backdrop {
   -webkit-backdrop-filter: blur(20px) saturate(0.92);
   backdrop-filter: blur(20px) saturate(0.92);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.42),
-    inset 0 0 12px 2px rgba(255, 255, 255, 0.14),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.14),
-    0 6px 16px -2px rgba(0, 0, 0, 0.46),
-    0 0 0 1px inset rgba(255, 255, 255, 0.32);
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    inset 0 0 12px 2px rgba(255, 255, 255, 0.09),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.12),
+    0 6px 16px -2px rgba(0, 0, 0, 0.44),
+    0 0 0 1px inset var(--toll-btn-inset-rim);
 }
 
 [data-theme="dark"] .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-btn:not(:disabled):hover {
@@ -2817,14 +2960,14 @@ html:-webkit-full-screen::backdrop {
   background:
     conic-gradient(
       from var(--angle-1) at 50% 50%,
-      rgba(0, 0, 0, 0.16),
+      rgba(0, 0, 0, 0.07),
       rgba(0, 0, 0, 0) 8% 40%,
-      rgba(0, 0, 0, 0.16) 50%,
+      rgba(0, 0, 0, 0.07) 50%,
       rgba(0, 0, 0, 0) 60% 92%,
-      rgba(0, 0, 0, 0.16)
+      rgba(0, 0, 0, 0.07)
     ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(224, 226, 230, 0.30));
-  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.36);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.20), rgba(224, 226, 230, 0.12));
+  box-shadow: inset 0 0 0 calc(var(--border-width) / 2) var(--toll-btn-inset-rim);
 }
 
 @media (hover: none) and (pointer: coarse) {
@@ -2867,7 +3010,7 @@ html:-webkit-full-screen::backdrop {
     grid-template-columns: minmax(260px, 40%) minmax(0, 1fr);
   }
   .toll-dialog .alarm-card {
-    grid-template-columns: 26px minmax(110px, 1fr) auto;
+    grid-template-columns: 30px minmax(110px, 1fr) auto;
     gap: 8px;
   }
   .toll-dialog .clock-control {
@@ -2914,10 +3057,10 @@ html:-webkit-full-screen::backdrop {
     padding: 12px 14px 10px;
   }
   .toll-dialog .dialog-heading h1 {
-    font-size: 13px;
+    font-size: 15.5px;
   }
   .toll-dialog .dialog-heading p {
-    font-size: 10px;
+    font-size: 12px;
   }
   .toll-dialog .builder-stepper {
     padding: 8px 10px;
@@ -2927,14 +3070,14 @@ html:-webkit-full-screen::backdrop {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
-    padding: 6px 8px;
-    font-size: 9.5px;
+    padding: 7px 9px;
+    font-size: 11.5px;
     border-radius: 12px;
   }
   .toll-dialog .builder-step-tab .step-badge {
-    width: 19px;
-    height: 19px;
-    font-size: 9px;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
   }
   .toll-dialog .builder-step-body {
     padding: 12px 12px 96px;
@@ -2952,12 +3095,12 @@ html:-webkit-full-screen::backdrop {
     border-radius: 15px;
   }
   .toll-dialog .quick-label {
-    min-width: 48px;
-    font-size: 9.5px;
+    min-width: 58px;
+    font-size: 11.5px;
   }
   .toll-dialog .chip {
-    font-size: 9.5px;
-    padding: 6px 9px;
+    font-size: 11.5px;
+    padding: 7px 11px;
   }
   .toll-dialog .workspace {
     display: flex;
@@ -2981,12 +3124,12 @@ html:-webkit-full-screen::backdrop {
     padding: 0;
   }
   .toll-dialog .dialog-footer {
-    min-height: 60px;
+    min-height: 64px;
     padding: 8px 12px;
     flex-wrap: wrap;
   }
   .toll-dialog .summary {
-    font-size: 9.5px;
+    font-size: 11.5px;
     flex: 1 1 180px;
   }
   .toll-dialog .footer-actions {
@@ -2996,24 +3139,24 @@ html:-webkit-full-screen::backdrop {
     gap: 6px;
   }
   .toll-dialog .footer-btn {
-    height: 34px;
-    padding: 0 13px;
-    font-size: 10px;
+    height: 38px;
+    padding: 0 15px;
+    font-size: 12px;
   }
   .toll-dialog .lg-pill-cta-label {
-    height: 34px;
-    padding-inline: 14px;
-    font-size: 10.5px;
+    height: 38px;
+    padding-inline: 16px;
+    font-size: 12.5px;
   }
   .toll-dialog .lg-pill-cta-wrap.is-save .lg-pill-cta-label {
-    padding-inline: 16px;
+    padding-inline: 18px;
   }
 }
 
 /* ---------- 자주 쓰는 타종 구성 (Bookmarks in Drawer & Modal Quickbar) ---------- */
 .lg-sub-btn.is-selected {
-  border-color: var(--glint);
-  box-shadow: var(--btn-shadow-hover), 0 0 0 1px var(--glass-rim);
+  border-color: var(--btn-rim-active);
+  box-shadow: var(--btn-shadow-hover);
 }
 
 .bookmark-drawer-card {
@@ -3049,7 +3192,7 @@ html:-webkit-full-screen::backdrop {
 }
 
 .bookmark-add-toggle {
-  border: 1px solid var(--glass-rim);
+  border: 1px solid var(--btn-rim);
   background: rgba(255, 255, 255, 0.22);
   color: var(--btn);
   border-radius: 999px;
@@ -3109,7 +3252,7 @@ html:-webkit-full-screen::backdrop {
   height: 30px;
   padding: 0 12px;
   border-radius: 999px;
-  border: 1px solid var(--glass-rim);
+  border: 1px solid var(--btn-rim);
   background: rgba(255, 255, 255, 0.36);
   color: var(--ink);
   font-size: 11px;
@@ -3261,7 +3404,7 @@ html:-webkit-full-screen::backdrop {
   border: none;
   background: transparent;
   padding: 0;
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 650;
   line-height: 1;
   cursor: pointer;
@@ -3271,13 +3414,13 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .bookmark-modal-del {
   display: inline-grid;
   place-items: center;
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: none;
   background: rgba(0, 0, 0, 0.08);
   color: var(--toll-ink-2);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1;
   padding: 0;
   cursor: pointer;
@@ -3306,11 +3449,11 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .bookmark-modal-input {
-  width: 132px;
-  height: 28px;
+  width: 160px;
+  height: 33px;
   border-radius: 999px;
-  padding: 0 11px;
-  font-size: 10.5px;
+  padding: 0 12px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--toll-ink);
   outline: none;
@@ -3361,16 +3504,16 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .bookmark-folder-chip {
-  padding: 5px 10px;
-  font-size: 10px;
+  padding: 6px 12px;
+  font-size: 12px;
 }
 
 .toll-dialog .bookmark-modal-folder-tag {
   display: inline-block;
   margin-left: 4px;
-  padding: 1px 6px;
+  padding: 1px 7px;
   border-radius: 999px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   background: rgba(0, 0, 0, 0.06);
   color: var(--toll-ink-2);
@@ -3384,12 +3527,12 @@ html:-webkit-full-screen::backdrop {
 .toll-dialog .bookmark-modal-move {
   display: inline-grid;
   place-items: center;
-  width: 17px;
-  height: 17px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: none;
   background: rgba(0, 0, 0, 0.06);
-  font-size: 9.5px;
+  font-size: 11.5px;
   line-height: 1;
   padding: 0;
   cursor: pointer;
@@ -3411,10 +3554,10 @@ html:-webkit-full-screen::backdrop {
 }
 
 .toll-dialog .bookmark-modal-folder-select {
-  height: 28px;
+  height: 33px;
   border-radius: 999px;
-  padding: 0 10px;
-  font-size: 10.5px;
+  padding: 0 11px;
+  font-size: 12.5px;
   font-weight: 650;
 }
 
@@ -3464,6 +3607,7 @@ html:-webkit-full-screen::backdrop {
 #ui,
 #topLeftMenu,
 #topRightMenu,
+#bottomLeftMenu,
 #dock {
   transition: opacity 0.24s ease;
 }
@@ -3472,8 +3616,10 @@ html:not(.app-ready) #c,
 html:not(.app-ready) #ui,
 html:not(.app-ready) #topLeftMenu,
 html:not(.app-ready) #topRightMenu,
+html:not(.app-ready) #bottomLeftMenu,
 html:not(.app-ready) #dock,
-html:not(.app-ready) #rightTimetablePanel {
+html:not(.app-ready) #rightTimetablePanel,
+html:not(.app-ready) #playbackSettingsPanel {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -3501,10 +3647,8 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 #timetableToggleBtn.is-selected {
-  border-color: var(--glint);
-  box-shadow:
-    var(--btn-shadow-hover),
-    0 0 0 1px var(--glass-rim);
+  border-color: var(--btn-rim-active);
+  box-shadow: var(--btn-shadow-hover);
 }
 
 #rightTimetablePanel {
@@ -3631,7 +3775,7 @@ html:not(.app-ready) #rightTimetablePanel {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 1px solid var(--toll-glass-edge);
+  border: 1px solid var(--btn-rim);
   background: var(--toll-pill);
   color: var(--toll-ink);
   display: inline-flex;
@@ -3793,7 +3937,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .rt-edit-seq-btn {
   flex: none;
-  border: 1px solid var(--toll-glass-edge);
+  border: 1px solid var(--btn-rim);
   background: var(--toll-pill);
   color: var(--toll-ink);
   border-radius: 999px;
@@ -3870,10 +4014,10 @@ html:not(.app-ready) #rightTimetablePanel {
   overflow: hidden;
   width: 100%;
   text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.50);
+  border: 1px solid var(--btn-rim);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.09));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
     0 2px 8px rgba(0, 0, 0, 0.02);
   border-radius: 15px;
   padding: 9px 12px;
@@ -3921,7 +4065,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .rt-item-btn:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.24));
-  border-color: rgba(255, 255, 255, 0.88);
+  border-color: var(--btn-rim-hover);
 }
 
 .rt-item-btn:active,
@@ -3953,9 +4097,9 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 [data-theme="dark"] .rt-item-btn {
-  border-color: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.06);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 3px 10px rgba(0, 0, 0, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 3px 10px rgba(0, 0, 0, 0.14);
 }
 
 [data-theme="dark"] .rt-item-btn::before {
@@ -3972,7 +4116,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 [data-theme="dark"] .rt-item-btn:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.125), rgba(255, 255, 255, 0.045));
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.11);
 }
 
 [data-theme="dark"] .rt-item-btn.is-current {
@@ -4241,7 +4385,7 @@ html:not(.app-ready) #rightTimetablePanel {
   height: 40px;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid var(--glass-rim);
+  border: 1px solid var(--btn-rim);
   background: var(--glass-fill);
   box-shadow: var(--btn-shadow);
   -webkit-backdrop-filter: blur(14px) saturate(150%);
@@ -4341,6 +4485,46 @@ html:not(.app-ready) #rightTimetablePanel {
 #runTouchZone.is-revealed .run-aux-btn:disabled {
   opacity: 0.36;
   cursor: not-allowed;
+}
+
+@media (max-width: 358px), (max-width: 420px) and (max-aspect-ratio: 44/100) {
+  #runTouchZone {
+    padding: 58px 20px 20px;
+    margin: -58px -20px -20px;
+  }
+
+  .run-aux-btn.pos-left {
+    left: 0;
+    right: auto;
+    top: auto;
+    bottom: calc(100% + 10px);
+    transform: scale(0.9);
+  }
+
+  .run-aux-btn.pos-right {
+    right: 0;
+    left: auto;
+    top: auto;
+    bottom: calc(100% + 10px);
+    transform: scale(0.9);
+  }
+
+  #runTouchZone.is-revealed .run-aux-btn.pos-left,
+  #runTouchZone.is-revealed .run-aux-btn.pos-right {
+    transform: scale(1);
+  }
+
+  #runTouchZone.is-revealed .run-aux-btn.pos-left:hover:not(:disabled),
+  #runTouchZone.is-revealed .run-aux-btn.pos-right:hover:not(:disabled) {
+    transform: scale(1.06);
+  }
+
+  #runTouchZone.is-revealed .run-aux-btn.pos-left:active:not(:disabled),
+  #runTouchZone.is-revealed .run-aux-btn.pos-left.is-pressed:not(:disabled),
+  #runTouchZone.is-revealed .run-aux-btn.pos-right:active:not(:disabled),
+  #runTouchZone.is-revealed .run-aux-btn.pos-right.is-pressed:not(:disabled) {
+    transform: scale(0.94);
+  }
 }
 
 /* ---------- Drawer Sub-Cards: Audio Volume (B5), Scheduled Start (B8), Wake Lock (B9) ---------- */
@@ -4563,7 +4747,7 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 .bm-mini-act {
-  border: 1px solid var(--glass-rim);
+  border: 1px solid var(--btn-rim);
   background: rgba(255, 255, 255, 0.26);
   color: var(--ink);
   border-radius: 999px;
@@ -4587,7 +4771,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .bm-mini-act.is-active {
   background: rgba(255, 255, 255, 0.56);
-  border-color: var(--glint);
+  border-color: var(--btn-rim-active);
 }
 
 .bm-mini-act.is-danger:hover {
@@ -4640,7 +4824,7 @@ html:not(.app-ready) #rightTimetablePanel {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  border: 1px solid var(--glass-rim);
+  border: 1px solid var(--btn-rim);
   background: rgba(255, 255, 255, 0.18);
   color: var(--ink);
   border-radius: 999px;
@@ -4657,7 +4841,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .bm-folder-pill.is-active {
   background: rgba(255, 255, 255, 0.56);
-  border-color: var(--glint);
+  border-color: var(--btn-rim-active);
   font-weight: 780;
 }
 
@@ -4671,7 +4855,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 [data-theme="dark"] .bm-folder-pill.is-active {
   background: rgba(255, 255, 255, 0.24);
-  border-color: rgba(255, 255, 255, 0.52);
+  border-color: var(--btn-rim-active);
 }
 
 .bm-folder-icon {
@@ -4786,10 +4970,10 @@ html:not(.app-ready) #rightTimetablePanel {
 .toll-dialog .subj-check-label {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 6px;
+  gap: 6px;
+  padding: 4px 7px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 650;
   color: var(--toll-ink-2);
   cursor: pointer;
@@ -4916,11 +5100,11 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 .toll-dialog .builder-select-sm {
-  height: 26px;
+  height: 31px;
   border-radius: 999px;
   color: var(--toll-ink);
-  padding: 0 9px;
-  font-size: 10px;
+  padding: 0 10px;
+  font-size: 12px;
   font-weight: 680;
   outline: none;
   cursor: pointer;
@@ -4971,20 +5155,20 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .toll-dialog .search-icon {
   position: absolute;
-  left: 11px;
-  width: 14px;
-  height: 14px;
+  left: 12px;
+  width: 15px;
+  height: 15px;
   color: var(--toll-muted);
   pointer-events: none;
 }
 
 .toll-dialog .builder-search-input {
   width: 100%;
-  height: 36px;
+  height: 40px;
   border-radius: 999px;
   color: var(--toll-ink);
-  padding: 0 12px 0 34px;
-  font-size: 11px;
+  padding: 0 14px 0 36px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.02em;
   outline: none;
@@ -4999,8 +5183,8 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .toll-dialog .stage-type-chip {
   border-radius: 999px;
-  padding: 5px 9px;
-  font-size: 10px;
+  padding: 6px 11px;
+  font-size: 12px;
   font-weight: 650;
   color: var(--toll-ink-2);
   cursor: pointer;
@@ -5019,7 +5203,7 @@ html:not(.app-ready) #rightTimetablePanel {
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 10px;
-  padding: 8px 11px;
+  padding: 9px 12px;
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.66);
   background-color: rgba(244, 245, 247, 0.68);
@@ -5034,7 +5218,7 @@ html:not(.app-ready) #rightTimetablePanel {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.48),
     0 3px 10px -2px rgba(0, 0, 0, 0.05);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 [data-theme="dark"] .toll-dialog .batch-interval-bar {
@@ -5050,18 +5234,18 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 .toll-dialog .tools-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--toll-muted);
 }
 
 .toll-dialog .batch-num-input {
-  width: 46px;
-  height: 26px;
+  width: 54px;
+  height: 31px;
   border-radius: 8px;
-  padding: 0 6px;
+  padding: 0 7px;
   text-align: right;
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--toll-ink);
   outline: none;
@@ -5079,12 +5263,12 @@ html:not(.app-ready) #rightTimetablePanel {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 11px;
+  padding: 9px 12px;
   border-radius: 14px;
   border: 1px solid rgba(170, 120, 55, 0.25);
   background: var(--toll-warn-bg);
   color: var(--toll-warn);
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 620;
   line-height: 1.4;
 }
@@ -5098,8 +5282,8 @@ html:not(.app-ready) #rightTimetablePanel {
 .toll-dialog .fix-btn {
   flex: none;
   border-radius: 999px;
-  padding: 4px 9px;
-  font-size: 10px;
+  padding: 5px 11px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--toll-ink);
   cursor: pointer;
@@ -5107,11 +5291,11 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .toll-dialog .omitted-steps-box {
   margin: 6px 0 6px 22px;
-  padding: 6px 10px;
+  padding: 7px 11px;
   border-radius: 12px;
   border: 1px dashed var(--toll-line);
   background: rgba(255, 255, 255, 0.22);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--toll-muted);
 }
 
@@ -5128,7 +5312,7 @@ html:not(.app-ready) #rightTimetablePanel {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
   color: var(--toll-muted);
   cursor: pointer;
@@ -5145,9 +5329,9 @@ html:not(.app-ready) #rightTimetablePanel {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 8px;
+  padding: 5px 9px;
   border-radius: 999px;
-  font-size: 9.5px;
+  font-size: 11.5px;
   border: 1px solid var(--toll-line);
   background: rgba(255, 255, 255, 0.45);
   color: var(--toll-ink-2);
@@ -5162,8 +5346,8 @@ html:not(.app-ready) #rightTimetablePanel {
   background: rgba(0, 0, 0, 0.09);
   color: var(--toll-ink);
   border-radius: 999px;
-  padding: 2px 6px;
-  font-size: 9px;
+  padding: 2px 7px;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -5195,8 +5379,8 @@ html:not(.app-ready) #rightTimetablePanel {
 }
 
 .toll-dialog .mute-toggle-btn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   border-radius: 50%;
   display: inline-grid;
@@ -5219,9 +5403,9 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .toll-dialog .row-inline-alert {
   margin: 5px 0 0 22px;
-  padding: 6px 10px;
+  padding: 7px 11px;
   border-radius: 11px;
-  font-size: 9.5px;
+  font-size: 11.5px;
   font-weight: 650;
   display: flex;
   align-items: center;
@@ -5255,6 +5439,10 @@ html:not(.app-ready) #rightTimetablePanel {
   margin-top: 3px;
 }
 
+.toll-dialog .field-error-msg {
+  font-size: 11px;
+}
+
 [data-theme="dark"] .field-error-msg {
   color: #f87171;
 }
@@ -5270,6 +5458,11 @@ html:not(.app-ready) #rightTimetablePanel {
   font-weight: 800;
   color: var(--toll-ink);
   margin-left: 4px;
+}
+
+.toll-dialog .next-day-badge {
+  padding: 1.5px 6px;
+  font-size: 10.5px;
 }
 
 /* ---------- Right Timetable Inline Action Bar (C5) ---------- */
@@ -6249,12 +6442,12 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .toll-dialog .running-save-confirm-badge {
   flex: none;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
   display: grid;
   place-items: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 840;
   color: rgba(32, 33, 36, 0.94);
   background: rgba(60, 62, 68, 0.12);
@@ -6269,7 +6462,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .toll-dialog .running-save-confirm-head h2 {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 780;
   letter-spacing: -0.03em;
   line-height: 1.35;
@@ -6278,7 +6471,7 @@ html:not(.app-ready) #rightTimetablePanel {
 
 .toll-dialog .running-save-confirm-desc {
   margin: 0;
-  font-size: 11.5px;
+  font-size: 14px;
   font-weight: 560;
   line-height: 1.56;
   letter-spacing: -0.02em;
@@ -6293,3 +6486,281 @@ html:not(.app-ready) #rightTimetablePanel {
   gap: 8px;
   margin-top: 4px;
 }
+
+/* Scoped +20% Typography Scaling for Custom Select & Time Popovers inside .toll-dialog */
+.toll-dialog .custom-select-trigger {
+  height: 33px;
+  padding: 0 11px 0 12px;
+  font-size: 12.5px;
+}
+
+.toll-dialog .custom-select-option {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.toll-dialog .custom-select-option .opt-sub-badge {
+  font-size: 11.5px;
+}
+
+.toll-dialog .custom-time-trigger {
+  height: 36px;
+  padding: 0 13px;
+  font-size: 13.5px;
+}
+
+.toll-dialog .custom-time-title {
+  font-size: 14px;
+}
+
+.toll-dialog .custom-time-badge {
+  height: 24px;
+  padding: 0 8px;
+  font-size: 12.5px;
+}
+
+.toll-dialog .custom-time-close {
+  height: 30px;
+  padding: 0 11px;
+  font-size: 13px;
+}
+
+.toll-dialog .custom-time-ampm-btn {
+  height: 34px;
+  font-size: 13.5px;
+}
+
+.toll-dialog .custom-time-digit-label {
+  font-size: 11.5px;
+}
+
+.toll-dialog .custom-time-step-btn {
+  width: 28px;
+  height: 36px;
+  font-size: 16.5px;
+}
+
+.toll-dialog .custom-time-digit-input {
+  height: 36px;
+  font-size: 19px;
+}
+
+.toll-dialog .custom-time-colon {
+  font-size: 21px;
+}
+
+.toll-dialog .custom-time-nudge-btn {
+  height: 34px;
+  font-size: 13px;
+}
+
+.toll-dialog .custom-time-direct-input {
+  height: 38px;
+  font-size: 15.5px;
+}
+
+.toll-dialog .custom-time-reset-btn {
+  height: 38px;
+  font-size: 13.5px;
+}
+
+.toll-dialog .custom-time-apply-btn {
+  height: 38px;
+  font-size: 14px;
+}
+
+.toll-dialog .custom-time-error {
+  font-size: 12.5px;
+}
+
+/* ---------- Bottom-Left Playback Settings Circular Button & Floating Popup ---------- */
+#bottomLeftMenu {
+  position: fixed;
+  left: 18px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 25px);
+  z-index: 33;
+  display: flex;
+  align-items: center;
+}
+
+#playbackSettingsBtn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+}
+
+#playbackSettingsBtn.is-selected {
+  border-color: var(--btn-rim-active);
+  box-shadow: var(--btn-shadow-hover);
+}
+
+#playbackSettingsPanel {
+  position: fixed;
+  left: 18px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 79px);
+  width: min(320px, calc(100vw - 36px));
+  min-height: 220px;
+  max-height: min(360px, 48dvh);
+  z-index: 32;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid var(--toll-glass-edge);
+  background: var(--tt-panel-bg, var(--toll-glass));
+  box-shadow: var(--toll-glass-shadow);
+  -webkit-backdrop-filter: blur(36px) saturate(155%);
+  backdrop-filter: blur(36px) saturate(155%);
+  will-change: transform, opacity, backdrop-filter;
+  color: var(--toll-ink);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  transform-origin: bottom left;
+  transform: translate3d(0, 12px, 0) scale(0.95);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.22s ease,
+    visibility 0.28s,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+[data-theme="dark"] #playbackSettingsPanel {
+  -webkit-backdrop-filter: blur(44px) saturate(155%);
+  backdrop-filter: blur(44px) saturate(155%);
+}
+
+#playbackSettingsPanel.open {
+  transform: translate3d(0, 0, 0) scale(1);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#playbackSettingsPanel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.30),
+    transparent 32%,
+    rgba(255, 255, 255, 0.06)
+  );
+  opacity: 0.72;
+}
+
+[data-theme="dark"] #playbackSettingsPanel::before {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.08),
+    transparent 34%,
+    rgba(255, 255, 255, 0.02)
+  );
+}
+
+#playbackSettingsPanel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ps-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 16px 11px;
+  border-bottom: 1px solid var(--toll-line);
+}
+
+.ps-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 780;
+  letter-spacing: -0.02em;
+  color: var(--toll-ink);
+}
+
+.ps-close-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--toll-glass-edge);
+  background: var(--toll-pill);
+  color: var(--toll-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.14s ease;
+}
+
+.ps-close-btn:hover {
+  background: var(--toll-pill-hover);
+  border-color: var(--btn-rim-hover);
+}
+
+.ps-close-btn:active {
+  transform: scale(0.92);
+}
+
+.ps-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 16px;
+}
+
+@media (max-width: 719px) {
+  #bottomLeftMenu {
+    left: 12px;
+  }
+  #playbackSettingsBtn {
+    width: 40px;
+    height: 40px;
+  }
+  #playbackSettingsPanel {
+    left: 12px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 75px);
+    width: min(320px, calc(100vw - 24px));
+  }
+}
+
+@media (max-width: 519px) {
+  #bottomLeftMenu {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
+  }
+  #playbackSettingsPanel {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 134px);
+    max-height: min(300px, 42dvh);
+  }
+}
+
+@media (max-width: 358px), (max-width: 420px) and (max-aspect-ratio: 44/100) {
+  #bottomLeftMenu {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 132px);
+  }
+  #playbackSettingsPanel {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 182px);
+    max-height: min(280px, 38dvh);
+  }
+}
+
+

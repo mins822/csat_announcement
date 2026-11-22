@@ -401,7 +401,9 @@ export function getIntervalMapKey(fromNodeId: string, toNodeId: string): string 
 }
 
 export const DEFAULT_CUSTOM_SEQUENCE_CONFIG: CustomSequenceConfig = {
-  selectedNodeIds: CSAT_SELECTABLE_CUE_NODES.map((n) => n.nodeId),
+  selectedNodeIds: CSAT_SELECTABLE_CUE_NODES.filter((n) => n.subjectGroupId !== 'lang2').map(
+    (n) => n.nodeId
+  ),
   intervalMap: {},
   intervalSecondsMap: {},
   firstNodeCustomMinutes: null,
