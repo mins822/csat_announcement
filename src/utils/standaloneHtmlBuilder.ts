@@ -54,15 +54,12 @@ export function buildStandaloneCsatHtml(
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="google-site-verification" content="n2IeGBSKyEv1Cnc7odBy2FlFMqShS7C6F4DuHcBBZC0">
 <meta name="application-name" content="2027학년도 대학수학능력시험 시험장 안내방송">
 <meta name="description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 · 수능 타종 · 수능 방송 · 수능 알림 · 37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 과목별 시간표 구성을 지원하는 수능 시계 및 모의고사 타이머">
 <meta name="keywords" content="2027학년도 대학수학능력시험 시험장 안내방송 구현, 수능 타종, 수능 방송, 수능 알림, 수능 시계, 수능 타이머, 모의고사 타이머, 수능 안내방송, 수능 시간표, 수능 영어 듣기평가">
-<link rel="canonical" href="https://mins822.github.io/csat_announcement/">
 <meta property="og:title" content="2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림">
 <meta property="og:description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 · 수능 타종 · 수능 방송 · 수능 알림 · 37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 과목별 시간표 구성을 지원하는 수능 시계 및 모의고사 타이머">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://mins822.github.io/csat_announcement/">
 <meta name="version" content="${fullVersionString}">
 <meta id="theme-color-meta" name="theme-color" content="#ecebe9">
 <link id="app-favicon" rel="icon" type="image/svg+xml" href="${LIGHT_FAVICON_DATA_URI}">

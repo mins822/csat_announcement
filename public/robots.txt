@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /assets/aistudio/
-
-Sitemap: https://mins822.github.io/csat_announcement/sitemap.xml

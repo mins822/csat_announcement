@@ -42,11 +42,11 @@ export default defineConfig(() => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-          globIgnores: ['**/csat-timer-standalone.html', 'assets/aistudio/**', 'audio/**', 'google*.html', 'robots.txt', 'sitemap.xml'],
+          globIgnores: ['**/csat-timer-standalone.html', 'assets/aistudio/**', 'audio/**'],
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
           cleanupOutdatedCaches: true,
           navigateFallback: `${base}index.html`,
-          navigateFallbackDenylist: [/\/csat-timer-standalone\.html$/, /\/google[a-z0-9]+\.html$/, /\/robots\.txt$/, /\/sitemap\.xml$/, /^\/api\//],
+          navigateFallbackDenylist: [/\/csat-timer-standalone\.html$/, /^\/api\//],
           runtimeCaching: [{
             urlPattern: ({ url }) => url.pathname.includes('/audio/bells/'),
             handler: 'CacheFirst',
