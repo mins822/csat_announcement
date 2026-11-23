@@ -290,7 +290,7 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage
 :fullscreen,:-webkit-full-screen,html:fullscreen,html:-webkit-full-screen{background:var(--stage);background-color:var(--stage)}
 ::backdrop,:fullscreen::backdrop,:-webkit-full-screen::backdrop,html::backdrop,html:fullscreen::backdrop,html:-webkit-full-screen::backdrop{background:var(--stage);background-color:var(--stage)}
 .svg-filters{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background-color:var(--stage)}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background-color:var(--stage)}
 #wakeLockVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.015;pointer-events:none;z-index:1;display:none}
 #wakeLockVideo.is-active{display:block}
 #ui{position:fixed;inset:0;z-index:2;pointer-events:none;font-family:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif}
@@ -3163,7 +3163,7 @@ html:not(.app-ready) #playbackSettingsPanel{
 .eh-sub-btn:hover{background:var(--toll-pill-hover);border-color:var(--btn-rim-hover)}
 .eh-sub-btn:active{transform:scale(.97)}
 .eh-density-wrap{display:flex;flex-direction:column;gap:5px;padding-top:2px}
-.eh-density-canvas{width:100%;height:74px;display:block}
+.eh-density-canvas{position:relative;inset:auto;z-index:auto;background:transparent;width:100%;height:74px;display:block}
 .eh-density-foot{font-size:10.5px;color:var(--toll-ink-2);font-variant-numeric:tabular-nums;line-height:1.38}
 @media (max-width:719px){#bottomLeftMenu{left:12px}#playbackSettingsBtn{width:40px;height:40px}#playbackSettingsPanel{left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 75px);width:min(344px,calc(100vw - 24px));max-height:min(490px,calc(100dvh - 128px))}}
 @media (max-width:519px){#bottomLeftMenu{bottom:calc(env(safe-area-inset-bottom,0px) + 84px)}#playbackSettingsPanel{bottom:calc(env(safe-area-inset-bottom,0px) + 134px);max-height:min(420px,56dvh)}}
