@@ -61,6 +61,23 @@ import {
   isAndroidBrowser,
 } from './utils/keepAwakeVideo';
 import { usePWAInstall } from './hooks/usePWAInstall';
+import {
+  ActiveSeatPulseMap,
+  ExamHallPanelContent,
+} from './components/ExamHallPanelContent';
+import {
+  BuiltExamHallSchedule,
+  ExamHallAudioEngine,
+  ExamHallSettings,
+  ExamHallSubjectKey,
+  SeatSoundFeedback,
+  TimerExamHallSyncPhase,
+  buildMainExamSchedule,
+  computeTimerExamHallSyncState,
+  readStoredExamHallSettings,
+  resolveExamHallSubjectKey,
+  saveExamHallSettingsToStorage,
+} from './utils/examHallNoiseEngine';
 
 export type ThemePreference = 'auto' | 'light' | 'dark' | 'sepia';
 export type ResolvedTheme = 'light' | 'dark' | 'sepia';
@@ -643,6 +660,24 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isPlaybackSettingsOpen, setIsPlaybackSettingsOpen] = useState<boolean>(false);
 
+  // 수능 시험장 백색소음 모드 상태
+  const [examHallSettings, setExamHallSettings] = useState<ExamHallSettings>(() =>
+    readStoredExamHallSettings()
+  );
+  const [examHallStandaloneRunning, setExamHallStandaloneRunning] = useState<boolean>(false);
+  const [examHallStandaloneElapsedSec, setExamHallStandaloneElapsedSec] = useState<number>(0);
+  const [examHallSyncUi, setExamHallSyncUi] = useState<{
+    phase: TimerExamHallSyncPhase;
+    subjectKey: ExamHallSubjectKey;
+    elapsedSec: number;
+  }>({
+    phase: 'idle',
+    subjectKey: 'kor',
+    elapsedSec: 0,
+  });
+  const [activeSeatPulses, setActiveSeatPulses] = useState<ActiveSeatPulseMap>({});
+  const [lastSeatFeedback, setLastSeatFeedback] = useState<SeatSoundFeedback | null>(null);
+
   const [devMode, setDevMode] = useState<boolean>(() =>
     initialStored ? initialStored.devMode : false
   );
@@ -698,6 +733,19 @@ export default function App() {
 
   const activeCustomNodeIdRef = useRef<string | null>(activeCustomNodeId);
   activeCustomNodeIdRef.current = activeCustomNodeId;
+
+  const isPlaybackSettingsOpenRef = useRef<boolean>(isPlaybackSettingsOpen);
+  isPlaybackSettingsOpenRef.current = isPlaybackSettingsOpen;
+
+  const examHallSettingsRef = useRef<ExamHallSettings>(examHallSettings);
+  examHallSettingsRef.current = examHallSettings;
+
+  const examHallAudioRef = useRef<ExamHallAudioEngine | null>(null);
+  if (!examHallAudioRef.current && typeof window !== 'undefined') {
+    examHallAudioRef.current = new ExamHallAudioEngine();
+  }
+  const examHallUiThrottleRef = useRef<number>(0);
+  const seatPulseTimersRef = useRef<Record<number, number>>({});
 
   const wakeLockSentinelRef = useRef<{
     released?: boolean;
@@ -797,6 +845,86 @@ export default function App() {
   });
 
   const toastTimerRef = useRef<number | null>(null);
+
+  const currentIdleOrActivePreset = useMemo<CsatSessionPreset>(() => {
+    if (selectedPresetId === 'custom_checkbox_sequence' && customPreset) {
+      return customPreset;
+    }
+    return CSAT_SESSION_PRESETS.find((p) => p.id === selectedPresetId) || CSAT_SESSION_PRESETS[0];
+  }, [customPreset, selectedPresetId]);
+
+  const effectiveExamHallSubjectKey = useMemo<ExamHallSubjectKey>(() => {
+    if (isRunningUi) {
+      return examHallSyncUi.subjectKey;
+    }
+    return resolveExamHallSubjectKey(
+      currentIdleOrActivePreset.steps[0],
+      currentIdleOrActivePreset,
+      CSAT_SELECTABLE_CUE_NODES
+    );
+  }, [currentIdleOrActivePreset, examHallSyncUi.subjectKey, isRunningUi]);
+
+  const examHallSchedule = useMemo<BuiltExamHallSchedule>(
+    () =>
+      buildMainExamSchedule(
+        effectiveExamHallSubjectKey,
+        examHallSettings.skillMean,
+        examHallSettings.skillStd,
+        examHallSettings.studentCount,
+        examHallSettings.mySeat,
+        examHallSettings.seed
+      ),
+    [
+      effectiveExamHallSubjectKey,
+      examHallSettings.mySeat,
+      examHallSettings.seed,
+      examHallSettings.skillMean,
+      examHallSettings.skillStd,
+      examHallSettings.studentCount,
+    ]
+  );
+
+  const examHallScheduleRef = useRef<BuiltExamHallSchedule>(examHallSchedule);
+  examHallScheduleRef.current = examHallSchedule;
+
+  useEffect(() => {
+    examHallAudioRef.current?.updateLiveScheduleIfStandalone(examHallSchedule);
+  }, [examHallSchedule]);
+
+  useEffect(() => {
+    const engine = examHallAudioRef.current;
+    if (!engine) return;
+    engine.setStandaloneTickListener((elapsedSec, running) => {
+      setExamHallStandaloneRunning(running);
+      setExamHallStandaloneElapsedSec(elapsedSec);
+    });
+    engine.setSeatSoundListener((feedback) => {
+      if (!isPlaybackSettingsOpenRef.current) return;
+      setLastSeatFeedback(feedback);
+      setActiveSeatPulses((prev) => ({
+        ...prev,
+        [feedback.seatIndex]: feedback.category,
+      }));
+      const existing = seatPulseTimersRef.current[feedback.seatIndex];
+      if (existing) window.clearTimeout(existing);
+      seatPulseTimersRef.current[feedback.seatIndex] = window.setTimeout(() => {
+        delete seatPulseTimersRef.current[feedback.seatIndex];
+        setActiveSeatPulses((prev) => {
+          if (!prev[feedback.seatIndex]) return prev;
+          const next = { ...prev };
+          delete next[feedback.seatIndex];
+          return next;
+        });
+      }, 420);
+    });
+    return () => {
+      for (const tid of Object.values(seatPulseTimersRef.current)) {
+        window.clearTimeout(tid);
+      }
+      seatPulseTimersRef.current = {};
+      engine.dispose();
+    };
+  }, []);
 
   const showToast = useCallback((msg: string, durationMs = 3200) => {
     setToastMsg(msg);
@@ -2116,6 +2244,7 @@ export default function App() {
           }
           st.isPaused = true;
           setPauseLabel('DONE');
+          examHallAudioRef.current?.stopTimerSync();
           if (!keepScreenAwakeRef.current) {
             releaseWakeLock();
           }
@@ -2123,6 +2252,56 @@ export default function App() {
             renderStageBadgeText(stageBadgeRef.current, `${preset.displayTitle} 종료`);
           }
         }
+      }
+
+      // 수능 시험장 백색소음 모드 실시간 동기화 (준비령 파본검사 · 본령 1배속 자동 진행 · 일시정지/드래그 연동)
+      const isFinished = clampedElapsedMs >= totalDurMs;
+      const syncState = computeTimerExamHallSyncState({
+        isRunning: true,
+        isPaused: st.isPaused,
+        isDone: isFinished,
+        isHandDragging,
+        preset,
+        simMinutes,
+        cueNodes: CSAT_SELECTABLE_CUE_NODES,
+      });
+
+      let scheduleForSync = examHallScheduleRef.current;
+      if (scheduleForSync.subjectKey !== syncState.subjectKey) {
+        const ehCfg = examHallSettingsRef.current;
+        scheduleForSync = buildMainExamSchedule(
+          syncState.subjectKey,
+          ehCfg.skillMean,
+          ehCfg.skillStd,
+          ehCfg.studentCount,
+          ehCfg.mySeat,
+          ehCfg.seed
+        );
+        examHallScheduleRef.current = scheduleForSync;
+      }
+
+      examHallAudioRef.current?.syncWithMainTimer(
+        syncState,
+        examHallSettingsRef.current,
+        scheduleForSync
+      );
+
+      if (now - examHallUiThrottleRef.current > 240) {
+        examHallUiThrottleRef.current = now;
+        setExamHallSyncUi((prev) => {
+          if (
+            prev.phase === syncState.phase &&
+            prev.subjectKey === syncState.subjectKey &&
+            Math.floor(prev.elapsedSec) === Math.floor(syncState.elapsedSec)
+          ) {
+            return prev;
+          }
+          return {
+            phase: syncState.phase,
+            subjectKey: syncState.subjectKey,
+            elapsedSec: syncState.elapsedSec,
+          };
+        });
       }
 
       // Compute final clock glow boost (including post-bell natural softening animation)
@@ -3064,6 +3243,9 @@ export default function App() {
         eng.muted = false;
       }
     }
+    if (examHallSettingsRef.current.enabled) {
+      examHallAudioRef.current?.unlockOnUserGesture();
+    }
   }, []);
 
   // Handlers: START, PAUSE/RESUME, CANCEL
@@ -3179,8 +3361,26 @@ export default function App() {
     if (st.isPaused) {
       pauseBell();
       pauseEnglishAudio();
+      const simMin = st.preset.startMinutes + st.accumulatedElapsedMs / 60000;
+      const pausedSync = computeTimerExamHallSyncState({
+        isRunning: true,
+        isPaused: true,
+        isDone: false,
+        isHandDragging: false,
+        preset: st.preset,
+        simMinutes: simMin,
+        cueNodes: CSAT_SELECTABLE_CUE_NODES,
+      });
+      examHallAudioRef.current?.syncWithMainTimer(
+        pausedSync,
+        examHallSettingsRef.current,
+        examHallScheduleRef.current
+      );
     } else {
       requestWakeLock();
+      if (examHallSettingsRef.current.enabled) {
+        examHallAudioRef.current?.unlockOnUserGesture();
+      }
       resumeBell();
       resumeEnglishAudio();
     }
@@ -3199,6 +3399,8 @@ export default function App() {
 
     stopBell();
     stopEnglishAudio();
+    examHallAudioRef.current?.stopTimerSync();
+    setExamHallSyncUi((prev) => ({ ...prev, phase: 'idle', elapsedSec: 0 }));
     exitFullscreenSilently();
     if (!keepScreenAwakeRef.current) {
       releaseWakeLock();
@@ -3222,6 +3424,84 @@ export default function App() {
 
     st.rafId = requestAnimationFrame(stepAnimationFrame);
   };
+
+  const handleUpdateExamHallSettings = useCallback(
+    (patch: Partial<ExamHallSettings>) => {
+      setExamHallSettings((prev) => {
+        const next: ExamHallSettings = {
+          ...prev,
+          ...patch,
+          mySeat: patch.mySeat ? [patch.mySeat[0], patch.mySeat[1]] : [prev.mySeat[0], prev.mySeat[1]],
+        };
+        examHallSettingsRef.current = next;
+        saveExamHallSettingsToStorage(next);
+
+        const engine = examHallAudioRef.current;
+        if (engine) {
+          if (patch.volume !== undefined) {
+            engine.updateVolume(next.volume);
+          }
+          if (patch.mySeat !== undefined) {
+            engine.updateMySeat(next.mySeat);
+          }
+          if (patch.standaloneSpeed !== undefined) {
+            engine.updateStandaloneSpeed(next.standaloneSpeed);
+          }
+          if (patch.ambientAir !== undefined) {
+            const st = engineRef.current;
+            const isSyncActiveNow =
+              next.enabled &&
+              (st.phase === 'rise' || st.phase === 'hold') &&
+              !st.isPaused &&
+              (examHallSyncUi.phase === 'prepare' || examHallSyncUi.phase === 'main');
+            engine.updateAmbientAir(
+              next.ambientAir,
+              engine.isStandalonePlaying() || isSyncActiveNow
+            );
+          }
+          if (patch.enabled !== undefined) {
+            if (next.enabled) {
+              engine.unlockOnUserGesture();
+            } else {
+              engine.stopTimerSync();
+            }
+          }
+        }
+        return next;
+      });
+    },
+    [examHallSyncUi.phase]
+  );
+
+  const handleToggleExamHallStandalone = useCallback(async () => {
+    const engine = examHallAudioRef.current;
+    if (!engine) return;
+    if (engine.isStandalonePlaying()) {
+      engine.stopStandalone();
+      return;
+    }
+    const ok = await engine.startStandalone(examHallScheduleRef.current, examHallSettingsRef.current);
+    if (!ok) {
+      showToast('브라우저 오디오 장치를 시작할 수 없습니다.', 2400);
+    }
+  }, [showToast]);
+
+  const handleReseedExamHallSchedule = useCallback(() => {
+    const nextSeed = 1000 + Math.floor(Math.random() * 899999);
+    handleUpdateExamHallSettings({ seed: nextSeed });
+    showToast('새로운 시험실 수험생 풀이 스케줄을 생성했습니다.', 2000);
+  }, [handleUpdateExamHallSettings, showToast]);
+
+  const handlePlayExamHallSoundTest = useCallback(async () => {
+    const engine = examHallAudioRef.current;
+    if (!engine) return;
+    const ok = await engine.playSoundTest(examHallSettingsRef.current);
+    if (ok) {
+      showToast('시험지 넘김 · 샤프 필기 · 마킹 · 지우개 순으로 샘플을 재생합니다.', 2600);
+    } else {
+      showToast('오디오 장치를 초기화할 수 없습니다.', 2400);
+    }
+  }, [showToast]);
 
   const handleThemeChange = (nextPref: ThemePreference) => {
     setThemePref(nextPref);
@@ -6875,7 +7155,15 @@ export default function App() {
       <div id="bottomLeftMenu">
         <button
           id="playbackSettingsBtn"
-          className={`lg-btn ${isPlaybackSettingsOpen ? 'is-selected' : ''}`}
+          className={`lg-btn ${isPlaybackSettingsOpen ? 'is-selected' : ''} ${
+            examHallStandaloneRunning ||
+            (isRunningUi &&
+              pauseLabel === 'PAUSE' &&
+              examHallSettings.enabled &&
+              (examHallSyncUi.phase === 'prepare' || examHallSyncUi.phase === 'main'))
+              ? 'is-noise-playing'
+              : ''
+          }`}
           type="button"
           onClick={() => {
             setIsMenuOpen(false);
@@ -6947,7 +7235,27 @@ export default function App() {
             </svg>
           </button>
         </div>
-        <div className="ps-body" />
+        <div className="ps-body">
+          <ExamHallPanelContent
+            settings={examHallSettings}
+            schedule={examHallSchedule}
+            isMainTimerRunning={isRunningUi}
+            isMainTimerPaused={pauseLabel !== 'PAUSE'}
+            syncPhase={examHallSyncUi.phase}
+            syncElapsedSec={examHallSyncUi.elapsedSec}
+            prepareWindowInfo={examHallAudioRef.current?.getPrepareWindowInfo() ?? null}
+            standaloneRunning={examHallStandaloneRunning}
+            standaloneElapsedSec={examHallStandaloneElapsedSec}
+            activeSeatPulses={activeSeatPulses}
+            lastSeatFeedback={lastSeatFeedback}
+            resolvedTheme={engineRef.current.resolvedTheme}
+            isPanelOpen={isPlaybackSettingsOpen}
+            onUpdateSettings={handleUpdateExamHallSettings}
+            onToggleStandalonePlay={handleToggleExamHallStandalone}
+            onReseedSchedule={handleReseedExamHallSchedule}
+            onPlaySoundTest={handlePlayExamHallSoundTest}
+          />
+        </div>
       </aside>
 
       {/* 전용 창 1: 체크박스 기반 영역·타종 선택 및 시간 간격/시각 편집기 (C1 Draft 분리) */}

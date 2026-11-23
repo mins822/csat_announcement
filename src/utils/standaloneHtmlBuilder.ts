@@ -17,6 +17,13 @@ import {
 import { APP_VERSION } from '../data/versionInfo';
 import { DARK_FAVICON_DATA_URI, LIGHT_FAVICON_DATA_URI } from '../data/faviconAssets';
 import { KEEP_AWAKE_MP4_DATA_URI } from './keepAwakeVideo';
+import {
+  EXAM_HALL_PAPER_CLIPS,
+  EXAM_HALL_PAPER_SPRITE,
+  EXAM_HALL_PENCIL_CLIPS,
+  EXAM_HALL_PENCIL_SPRITE,
+} from '../data/examHallSprites';
+import { EXAM_HALL_SUBJECTS, OPTIMAL_ACOUSTIC_PRESET } from './examHallNoiseEngine';
 
 /**
  * 외부 리소스 의존성이 전혀 없는 단일 독립 실행형 HTML 파일 문자열을 생성합니다.
@@ -47,6 +54,12 @@ export function buildStandaloneCsatHtml(
     faviconLight: LIGHT_FAVICON_DATA_URI,
     faviconDark: DARK_FAVICON_DATA_URI,
     keepAwakeMp4: KEEP_AWAKE_MP4_DATA_URI,
+    examHallPaperSprite: EXAM_HALL_PAPER_SPRITE,
+    examHallPaperClips: EXAM_HALL_PAPER_CLIPS,
+    examHallPencilSprite: EXAM_HALL_PENCIL_SPRITE,
+    examHallPencilClips: EXAM_HALL_PENCIL_CLIPS,
+    examHallSubjects: EXAM_HALL_SUBJECTS,
+    examHallOptimalPreset: OPTIMAL_ACOUSTIC_PRESET,
   });
 
   return `<!DOCTYPE html>
@@ -2881,8 +2894,20 @@ html:not(.app-ready) #playbackSettingsPanel{
 .ui-option-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 2px;font-size:12px;font-weight:600;letter-spacing:-.015em;color:var(--toll-ink);cursor:pointer}
 .ui-option-toggle-row .ui-opt-text{display:flex;flex-direction:column;gap:2px;min-width:0}
 .ui-option-toggle-row .ui-opt-sub{font-size:10.5px;font-weight:400;opacity:.72;line-height:1.42;white-space:normal}
-.ui-option-toggle-row input[type="checkbox"]{width:16px;height:16px;accent-color:#0066cc;cursor:pointer;flex-shrink:0}
-[data-theme="dark"] .ui-option-toggle-row input[type="checkbox"]{accent-color:#2997ff}
+.ui-option-toggle-row input[type="checkbox"],#playbackSettingsPanel input[type="checkbox"],#devModeToggle{appearance:none;-webkit-appearance:none;flex:none;width:18px;height:18px;margin:0;border:1px solid rgba(68,68,72,.36);border-radius:6px;background-color:rgba(244,245,247,.84);background-image:linear-gradient(180deg,rgba(255,255,255,.18),rgba(218,220,225,.10));box-shadow:inset 0 1px 0 rgba(255,255,255,.72),inset 0 -1px 0 rgba(0,0,0,.04);display:grid;place-content:center;cursor:pointer;flex-shrink:0;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+.ui-option-toggle-row input[type="checkbox"]:hover,#playbackSettingsPanel input[type="checkbox"]:hover,#devModeToggle:hover{border-color:rgba(50,50,54,.58)}
+.ui-option-toggle-row input[type="checkbox"]:active,#playbackSettingsPanel input[type="checkbox"]:active,#devModeToggle:active{transform:scale(.95)}
+.ui-option-toggle-row input[type="checkbox"]:focus-visible,#playbackSettingsPanel input[type="checkbox"]:focus-visible,#devModeToggle:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.ui-option-toggle-row input[type="checkbox"]:checked,#playbackSettingsPanel input[type="checkbox"]:checked,#devModeToggle:checked{border-color:rgba(45,45,48,.54);background:linear-gradient(145deg,rgba(56,56,59,.90),rgba(43,43,46,.76));box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 2px 6px rgba(0,0,0,.12)}
+.ui-option-toggle-row input[type="checkbox"]:checked::after,#playbackSettingsPanel input[type="checkbox"]:checked::after,#devModeToggle:checked::after{content:"";width:8px;height:4px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+[data-theme="sepia"] .ui-option-toggle-row input[type="checkbox"],[data-theme="sepia"] #playbackSettingsPanel input[type="checkbox"],[data-theme="sepia"] #devModeToggle{border-color:rgba(92,78,64,.36);background-color:rgba(244,238,226,.84);background-image:linear-gradient(180deg,rgba(255,252,245,.24),rgba(226,216,200,.14));box-shadow:inset 0 1px 0 rgba(255,255,255,.70),inset 0 -1px 0 rgba(54,41,30,.05)}
+[data-theme="sepia"] .ui-option-toggle-row input[type="checkbox"]:hover,[data-theme="sepia"] #playbackSettingsPanel input[type="checkbox"]:hover,[data-theme="sepia"] #devModeToggle:hover{border-color:rgba(74,60,48,.58)}
+[data-theme="sepia"] .ui-option-toggle-row input[type="checkbox"]:checked,[data-theme="sepia"] #playbackSettingsPanel input[type="checkbox"]:checked,[data-theme="sepia"] #devModeToggle:checked{border-color:rgba(62,50,40,.56);background:linear-gradient(145deg,rgba(68,56,46,.90),rgba(52,42,34,.78));box-shadow:inset 0 1px 0 rgba(255,250,242,.30),0 2px 6px rgba(36,26,18,.14)}
+[data-theme="sepia"] .ui-option-toggle-row input[type="checkbox"]:checked::after,[data-theme="sepia"] #playbackSettingsPanel input[type="checkbox"]:checked::after,[data-theme="sepia"] #devModeToggle:checked::after{border-color:#fffdf9}
+[data-theme="dark"] .ui-option-toggle-row input[type="checkbox"],[data-theme="dark"] #playbackSettingsPanel input[type="checkbox"],[data-theme="dark"] #devModeToggle{border-color:rgba(255,255,255,.27);background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.03));box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.22)}
+[data-theme="dark"] .ui-option-toggle-row input[type="checkbox"]:hover,[data-theme="dark"] #playbackSettingsPanel input[type="checkbox"]:hover,[data-theme="dark"] #devModeToggle:hover{border-color:rgba(255,255,255,.45)}
+[data-theme="dark"] .ui-option-toggle-row input[type="checkbox"]:checked,[data-theme="dark"] #playbackSettingsPanel input[type="checkbox"]:checked,[data-theme="dark"] #devModeToggle:checked{border-color:rgba(255,255,255,.62);background:linear-gradient(145deg,rgba(242,242,242,.94),rgba(202,202,202,.80));box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 2px 6px rgba(0,0,0,.25)}
+[data-theme="dark"] .ui-option-toggle-row input[type="checkbox"]:checked::after,[data-theme="dark"] #playbackSettingsPanel input[type="checkbox"]:checked::after,[data-theme="dark"] #devModeToggle:checked::after{border-color:#1c1c1c}
 .vol-control-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;font-weight:700;color:var(--toll-ink)}
 .vol-slider-wrap{display:flex;align-items:center;gap:6px;flex:1;justify-content:flex-end}
 .vol-slider-wrap input[type="range"]{--slider-fill:rgba(28,28,30,.78);--slider-track:rgba(28,28,30,.16);-webkit-appearance:none;appearance:none;width:108px;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--slider-fill) 0%,var(--slider-fill) var(--slider-pct,100%),var(--slider-track) var(--slider-pct,100%),var(--slider-track) 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,.12),0 1px 0 rgba(255,255,255,.55);cursor:pointer;outline:none;margin:0;padding:0}
@@ -3072,23 +3097,77 @@ html:not(.app-ready) #playbackSettingsPanel{
 .toll-dialog .custom-time-error{font-size:12.5px}
 #bottomLeftMenu{position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom,0px) + 25px);z-index:33;display:flex;align-items:center}
 #playbackSettingsBtn{width:44px;height:44px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;letter-spacing:0}
-#playbackSettingsBtn.is-selected{border-color:var(--btn-rim-active);box-shadow:var(--btn-shadow-hover)}
-#playbackSettingsPanel{position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom,0px) + 79px);width:min(320px,calc(100vw - 36px));min-height:220px;max-height:min(360px,48dvh);z-index:32;display:flex;flex-direction:column;overflow:hidden;border-radius:22px;border:1px solid var(--toll-line);background:var(--tt-panel-bg,var(--toll-glass));box-shadow:var(--toll-glass-shadow);-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);will-change:transform,opacity,backdrop-filter;color:var(--toll-ink);word-break:keep-all;overflow-wrap:break-word;font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Noto Sans KR",sans-serif;transform-origin:bottom left;transform:translate3d(0,12px,0) scale(.95);opacity:0;visibility:hidden;pointer-events:none;transition:transform .28s cubic-bezier(.22,1,.36,1),opacity .22s ease,visibility .28s,background .25s ease,border-color .25s ease}
+#playbackSettingsBtn.is-selected,#playbackSettingsBtn.is-noise-playing{border-color:var(--btn-rim-active);box-shadow:var(--btn-shadow-hover)}
+#playbackSettingsPanel{position:fixed;left:18px;bottom:calc(env(safe-area-inset-bottom,0px) + 79px);width:min(352px,calc(100vw - 36px));min-height:220px;max-height:min(548px,calc(100dvh - 136px));z-index:32;display:flex;flex-direction:column;overflow:hidden;border-radius:22px;border:1px solid var(--toll-line);background:var(--tt-panel-bg,var(--toll-glass));box-shadow:var(--toll-glass-shadow);-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);will-change:transform,opacity,backdrop-filter;color:var(--toll-ink);word-break:keep-all;overflow-wrap:break-word;font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Noto Sans KR",sans-serif;transform-origin:bottom left;transform:translate3d(0,12px,0) scale(.95);opacity:0;visibility:hidden;pointer-events:none;transition:transform .28s cubic-bezier(.22,1,.36,1),opacity .22s ease,visibility .28s,background .25s ease,border-color .25s ease}
 [data-theme="dark"] #playbackSettingsPanel{-webkit-backdrop-filter:blur(36px) saturate(180%);backdrop-filter:blur(36px) saturate(180%)}
 #playbackSettingsPanel.open{transform:translate3d(0,0,0) scale(1);opacity:1;visibility:visible;pointer-events:auto}
 #playbackSettingsPanel::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.16),transparent 24%);opacity:.72}
 [data-theme="dark"] #playbackSettingsPanel::before{background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 24%)}
 #playbackSettingsPanel > *{position:relative;z-index:1}
-.ps-head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 12px;border-bottom:1px solid var(--toll-line)}
+.ps-head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px 11px;border-bottom:1px solid var(--toll-line)}
 .ps-title{margin:0;font-family:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Noto Sans KR",sans-serif;font-size:15px;font-weight:600;letter-spacing:-.025em;color:var(--toll-ink)}
 .ps-close-btn{width:28px;height:28px;padding:0;border-radius:50%;border:1px solid var(--toll-line);background:var(--toll-pill);color:var(--toll-ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .14s ease}
 .ps-close-btn:hover{background:var(--toll-pill-hover);border-color:var(--btn-rim-hover)}
 .ps-close-btn:active{transform:scale(.95)}
 .ps-close-btn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
-.ps-body{flex:1;min-height:0;overflow-y:auto;padding:14px 16px}
-@media (max-width:719px){#bottomLeftMenu{left:12px}#playbackSettingsBtn{width:40px;height:40px}#playbackSettingsPanel{left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 75px);width:min(320px,calc(100vw - 24px))}}
-@media (max-width:519px){#bottomLeftMenu{bottom:calc(env(safe-area-inset-bottom,0px) + 84px)}#playbackSettingsPanel{bottom:calc(env(safe-area-inset-bottom,0px) + 134px);max-height:min(300px,42dvh)}}
-@media (max-width:358px),(max-width:420px) and (max-aspect-ratio:44/100){#bottomLeftMenu{bottom:calc(env(safe-area-inset-bottom,0px) + 132px)}#playbackSettingsPanel{bottom:calc(env(safe-area-inset-bottom,0px) + 182px);max-height:min(280px,38dvh)}}
+.ps-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--toll-scroll) transparent;padding:12px 16px 15px}
+.ps-body::-webkit-scrollbar{width:5px}
+.ps-body::-webkit-scrollbar-thumb{background:var(--toll-scroll);border-radius:999px}
+.vol-slider{--slider-fill:rgba(28,28,30,.78);--slider-track:rgba(28,28,30,.16);-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--slider-fill) 0%,var(--slider-fill) var(--slider-pct,100%),var(--slider-track) var(--slider-pct,100%),var(--slider-track) 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,.12),0 1px 0 rgba(255,255,255,.55);cursor:pointer;outline:none;margin:0;padding:0}
+[data-theme="dark"] .vol-slider{--slider-fill:rgba(255,255,255,.88);--slider-track:rgba(255,255,255,.18);box-shadow:inset 0 1px 2px rgba(0,0,0,.38),0 1px 0 rgba(255,255,255,.08)}
+[data-theme="sepia"] .vol-slider{--slider-fill:rgba(54,41,30,.78);--slider-track:rgba(54,41,30,.16)}
+.vol-slider::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:transparent}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:14px;margin-top:-4px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(242,243,247,.92) 100%);border:1px solid rgba(255,255,255,.96);box-shadow:0 2px 6px rgba(0,0,0,.22),0 1px 2px rgba(0,0,0,.12),inset 0 1px 0 #fff;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease}
+.vol-slider:hover::-webkit-slider-thumb{transform:scale(1.06)}
+.vol-slider:active::-webkit-slider-thumb{transform:scale(1.12,1.06)}
+.vol-slider::-moz-range-track{height:6px;border-radius:999px;background:transparent}
+.vol-slider::-moz-range-thumb{width:22px;height:14px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(242,243,247,.92) 100%);border:1px solid rgba(255,255,255,.96);box-shadow:0 2px 6px rgba(0,0,0,.22),0 1px 2px rgba(0,0,0,.12),inset 0 1px 0 #fff;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease}
+.vol-val{text-align:right;font-variant-numeric:tabular-nums;font-size:10.5px}
+.eh-root{display:flex;flex-direction:column;gap:12px}
+.eh-section{display:flex;flex-direction:column;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--toll-line)}
+.eh-section-bottom{padding-bottom:0;border-bottom:none}
+.eh-master-toggle,.eh-air-toggle{padding:2px 0;color:var(--toll-ink)}
+.eh-quick-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:2px}
+.eh-subj-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.eh-subj-kicker{font-size:10.5px;font-weight:500;color:var(--toll-ink-2);letter-spacing:-.01em}
+.eh-subj-line{display:flex;align-items:baseline;gap:6px;font-size:13px;font-weight:600;color:var(--toll-ink);font-variant-numeric:tabular-nums}
+.eh-sep{opacity:.45}
+.eh-elapsed-clock{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--toll-ink-2)}
+.eh-play-btn{flex-shrink:0;height:32px;padding:0 14px;border-radius:10px;border:1px solid var(--toll-line);background:var(--toll-pill);color:var(--toll-ink);font-size:12px;font-weight:600;letter-spacing:-.015em;white-space:nowrap;cursor:pointer;transition:background .16s ease,color .16s ease,border-color .16s ease,transform .14s ease}
+.eh-play-btn:hover{background:var(--toll-pill-hover);border-color:var(--btn-rim-hover)}
+.eh-play-btn:active{transform:scale(.97)}
+.eh-play-btn.is-active{background:var(--toll-button);color:var(--toll-button-text);border-color:transparent}
+.eh-play-btn:focus-visible,.eh-sub-btn:focus-visible,.eh-seat-btn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.eh-sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.eh-sec-title{font-size:11.5px;font-weight:600;letter-spacing:-.015em;color:var(--toll-ink)}
+.eh-sec-meta{font-size:10.5px;font-weight:500;color:var(--toll-ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eh-front-label{font-size:10px;font-weight:600;letter-spacing:.02em;color:var(--toll-ink-2);text-align:center;margin-bottom:-2px}
+.eh-seat-grid{display:flex;flex-direction:column;gap:4px}
+.eh-seat-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.eh-seat-btn{height:25px;padding:0 4px;border-radius:7px;border:1px solid var(--toll-line);background:var(--toll-pill);color:var(--toll-ink);font-size:11px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;cursor:pointer;transition:transform .16s cubic-bezier(.16,1,.3,1),opacity .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease}
+.eh-seat-btn:hover{background:var(--toll-pill-hover);border-color:var(--btn-rim-hover)}
+.eh-seat-btn.is-vacant{opacity:.42}
+.eh-seat-btn.is-me{opacity:1;font-weight:600;background:var(--toll-button);color:var(--toll-button-text);border-color:transparent}
+.eh-seat-btn.is-sound-turn{border-color:rgba(47,93,138,.75);box-shadow:0 0 0 2px rgba(47,93,138,.20);transform:scale(1.025)}
+[data-theme="dark"] .eh-seat-btn.is-sound-turn{border-color:rgba(122,178,238,.85);box-shadow:0 0 0 2px rgba(122,178,238,.24)}
+.eh-seat-btn.is-sound-write{border-color:rgba(154,112,48,.72);box-shadow:0 0 0 2px rgba(154,112,48,.18);transform:scale(1.018)}
+[data-theme="dark"] .eh-seat-btn.is-sound-write{border-color:rgba(236,190,106,.80);box-shadow:0 0 0 2px rgba(236,190,106,.22)}
+.eh-sliders-group{gap:9px}
+.eh-slider-row{display:grid;grid-template-columns:68px minmax(0,1fr) 72px;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--toll-ink);cursor:pointer}
+.eh-slider-row.is-locked{opacity:.56;cursor:default}
+.eh-slider-row.is-locked .vol-slider{cursor:not-allowed}
+.eh-slider-label{white-space:nowrap;letter-spacing:-.015em}
+.eh-slider-val{white-space:nowrap;font-size:11px;color:var(--toll-ink-2)}
+.eh-action-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.eh-sub-btn{height:30px;padding:0 10px;border-radius:9px;border:1px solid var(--toll-line);background:var(--toll-pill);color:var(--toll-ink);font-size:11.5px;font-weight:600;letter-spacing:-.015em;white-space:nowrap;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .14s ease}
+.eh-sub-btn:hover{background:var(--toll-pill-hover);border-color:var(--btn-rim-hover)}
+.eh-sub-btn:active{transform:scale(.97)}
+.eh-density-wrap{display:flex;flex-direction:column;gap:5px;padding-top:2px}
+.eh-density-canvas{width:100%;height:74px;display:block}
+.eh-density-foot{font-size:10.5px;color:var(--toll-ink-2);font-variant-numeric:tabular-nums;line-height:1.38}
+@media (max-width:719px){#bottomLeftMenu{left:12px}#playbackSettingsBtn{width:40px;height:40px}#playbackSettingsPanel{left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 75px);width:min(344px,calc(100vw - 24px));max-height:min(490px,calc(100dvh - 128px))}}
+@media (max-width:519px){#bottomLeftMenu{bottom:calc(env(safe-area-inset-bottom,0px) + 84px)}#playbackSettingsPanel{bottom:calc(env(safe-area-inset-bottom,0px) + 134px);max-height:min(420px,56dvh)}}
+@media (max-width:358px),(max-width:420px) and (max-aspect-ratio:44/100){#bottomLeftMenu{bottom:calc(env(safe-area-inset-bottom,0px) + 132px)}#playbackSettingsPanel{bottom:calc(env(safe-area-inset-bottom,0px) + 182px);max-height:min(360px,50dvh)}}
 </style>
 </head>
 <body>
@@ -3403,7 +3482,86 @@ html:not(.app-ready) #playbackSettingsPanel{
       </svg>
     </button>
   </div>
-  <div class="ps-body"></div>
+  <div class="ps-body">
+    <div class="eh-root">
+      <div class="eh-section eh-section-top">
+        <label class="ui-option-toggle-row eh-master-toggle">
+          <span class="ui-opt-text">
+            <span>시험장 모드 (타이머 연동)</span>
+            <span id="ehModeSub" class="ui-opt-sub">준비령 파본검사 · 본령 풀이 입체음향 자동 연동</span>
+          </span>
+          <input id="ehEnabledToggle" type="checkbox">
+        </label>
+        <div class="eh-quick-bar">
+          <div class="eh-subj-info">
+            <span class="eh-subj-kicker">현재 타이머 과목 자동 적용</span>
+            <div class="eh-subj-line">
+              <span id="ehSubjName" class="eh-subj-name">국어 · 80분</span>
+              <span id="ehSep" class="eh-sep" aria-hidden="true" style="display:none">·</span>
+              <span id="ehElapsedClock" class="eh-elapsed-clock" style="display:none">00:00</span>
+            </div>
+          </div>
+          <button id="ehPlayBtn" type="button" class="eh-play-btn">단독 재생</button>
+        </div>
+      </div>
+
+      <div class="eh-section">
+        <div class="eh-sec-head">
+          <span class="eh-sec-title">자리 선택 (4열×7행)</span>
+          <span id="ehSeatMeta" class="eh-sec-meta">내 자리 2-4</span>
+        </div>
+        <div class="eh-front-label" aria-hidden="true">▲ 앞 (교탁)</div>
+        <div id="ehSeatGrid" class="eh-seat-grid" role="group" aria-label="시험실 4열 7행 좌석 배치"></div>
+      </div>
+
+      <div class="eh-section eh-sliders-group">
+        <label class="eh-slider-row">
+          <span class="eh-slider-label">소음 음량</span>
+          <input id="ehVolSlider" type="range" min="0" max="100" step="1" value="70" class="vol-slider" style="--slider-pct:70%">
+          <span id="ehVolVal" class="vol-val eh-slider-val">70%</span>
+        </label>
+        <label class="eh-slider-row">
+          <span class="eh-slider-label">시험실 인원</span>
+          <input id="ehCountSlider" type="range" min="1" max="28" step="1" value="28" class="vol-slider" style="--slider-pct:100%">
+          <span id="ehCountVal" class="vol-val eh-slider-val">28명</span>
+        </label>
+        <label class="eh-slider-row">
+          <span class="eh-slider-label">평균 실력 L</span>
+          <input id="ehMeanSlider" type="range" min="0" max="1" step="0.01" value="0.5" class="vol-slider" style="--slider-pct:50%">
+          <span id="ehMeanVal" class="vol-val eh-slider-val">0.50 (중)</span>
+        </label>
+        <label class="eh-slider-row">
+          <span class="eh-slider-label">집단 편차 σ</span>
+          <input id="ehStdSlider" type="range" min="0" max="0.35" step="0.01" value="0.15" class="vol-slider" style="--slider-pct:42.9%">
+          <span id="ehStdVal" class="vol-val eh-slider-val">±0.15</span>
+        </label>
+        <label id="ehSpeedRow" class="eh-slider-row" title="단독 재생 시 시뮬레이션 진행 배속을 조절합니다">
+          <span class="eh-slider-label">단독 배속</span>
+          <input id="ehSpeedSlider" type="range" min="1" max="30" step="1" value="1" class="vol-slider" style="--slider-pct:0%">
+          <span id="ehSpeedVal" class="vol-val eh-slider-val">×1</span>
+        </label>
+      </div>
+
+      <div class="eh-section eh-section-bottom">
+        <label class="ui-option-toggle-row eh-air-toggle">
+          <span class="ui-opt-text"><span>실내 공기 · 에어컨 소음</span></span>
+          <input id="ehAirToggle" type="checkbox" checked>
+        </label>
+        <div class="eh-action-row">
+          <button id="ehReseedBtn" type="button" class="eh-sub-btn">스케줄 다시 뽑기</button>
+          <button id="ehTestBtn" type="button" class="eh-sub-btn">소리 테스트</button>
+        </div>
+        <div class="eh-density-wrap">
+          <div class="eh-sec-head">
+            <span class="eh-sec-title">분당 소리 밀도</span>
+            <span class="eh-sec-meta">파랑 넘김 · 회색 필기</span>
+          </div>
+          <canvas id="ehDensityCanvas" class="eh-density-canvas" aria-label="분당 시험장 소리 밀도 그래프"></canvas>
+          <div id="ehDensityFoot" class="eh-density-foot">타 수험생 27명 · 넘김 0회 · 1인당 0.0회</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </aside>
 
 <!-- 전용 창 1: 체크박스 기반 영역·타종 선택 및 시간 간격/시각 편집기 (Liquid Glass Modal) -->
@@ -4381,6 +4539,7 @@ void main(){
       };
       themeRafId=requestAnimationFrame(stepTheme);
     }
+    if(typeof refreshExamHallTheme==='function') refreshExamHallTheme();
     if(!skipSave) saveCustomSettings();
   }
 
@@ -4995,6 +5154,7 @@ void main(){
     }
     updateMuteStatusMeta();
     updateDockAndAuxUI();
+    if(typeof refreshExamHallFromTimerIdle==='function') refreshExamHallFromTimerIdle();
   }
 
   function syncActiveStepHighlight(step, isCustomSeq){
@@ -5305,6 +5465,10 @@ void main(){
         if(!keepScreenAwake) releaseWakeLock();
         renderStageBadgeText(stageBadge, currentPreset.displayTitle+' 종료');
       }
+    }
+    if(typeof syncExamHallFromRunningTimer==='function'){
+      const isDoneNow = pauseBtn.textContent==='DONE' || clampedElapsedMs>=totalDurMs;
+      syncExamHallFromRunningTimer(simMinutes, isPaused || isDoneNow, isDoneNow, isHandDragging);
     }
 
     let finalGlowBoost = targetStageGlowBoost;
@@ -5890,6 +6054,7 @@ void main(){
       }
     }
 
+    if(typeof unlockExamHallAudio==='function') unlockExamHallAudio();
     checkAndTriggerCues(0,0);
     revealRunAuxControls();
     requestAnimationFrame(frame);
@@ -5899,6 +6064,7 @@ void main(){
     if(phase!=='rise'&&phase!=='hold')return;
     stopBell();
     stopEnglishAudio();
+    if(typeof stopExamHallTimerSync==='function') stopExamHallTimerSync();
     exitFullscreenSilently();
     if(!keepScreenAwake) releaseWakeLock();
     isPaused=false;
@@ -5926,6 +6092,7 @@ void main(){
       resumeEnglishAudio();
       requestWakeLock();
     }
+    if(typeof notifyExamHallPauseChanged==='function') notifyExamHallPauseChanged(isPaused);
   });
   cancelBtn.addEventListener('pointerdown',e=>{
     e.stopPropagation();
@@ -7764,12 +7931,1123 @@ void main(){
   const playbackSettingsBtn = document.getElementById('playbackSettingsBtn');
   const playbackSettingsPanel = document.getElementById('playbackSettingsPanel');
   const playbackSettingsCloseBtn = document.getElementById('playbackSettingsCloseBtn');
+
+  /* ---------- Exam Hall White Noise Simulation & HRTF 3D Audio Engine ---------- */
+  const EH_STORAGE_KEY = 'csat_exam_hall_noise_settings_v1';
+  const EH_SUBJECTS = EMBEDDED.examHallSubjects || {};
+  const EH_PRESET = EMBEDDED.examHallOptimalPreset || {
+    paperGsm: 70, paperBody: 0, lowBoost: 0, distAtten: 0.6, pencilGain: 0.075, turnLength: 1, eraserGain: 0.08
+  };
+  const ehEnabledToggle = document.getElementById('ehEnabledToggle');
+  const ehModeSub = document.getElementById('ehModeSub');
+  const ehSubjName = document.getElementById('ehSubjName');
+  const ehSep = document.getElementById('ehSep');
+  const ehElapsedClock = document.getElementById('ehElapsedClock');
+  const ehPlayBtn = document.getElementById('ehPlayBtn');
+  const ehSeatMeta = document.getElementById('ehSeatMeta');
+  const ehSeatGrid = document.getElementById('ehSeatGrid');
+  const ehVolSlider = document.getElementById('ehVolSlider');
+  const ehVolVal = document.getElementById('ehVolVal');
+  const ehCountSlider = document.getElementById('ehCountSlider');
+  const ehCountVal = document.getElementById('ehCountVal');
+  const ehMeanSlider = document.getElementById('ehMeanSlider');
+  const ehMeanVal = document.getElementById('ehMeanVal');
+  const ehStdSlider = document.getElementById('ehStdSlider');
+  const ehStdVal = document.getElementById('ehStdVal');
+  const ehSpeedRow = document.getElementById('ehSpeedRow');
+  const ehSpeedSlider = document.getElementById('ehSpeedSlider');
+  const ehSpeedVal = document.getElementById('ehSpeedVal');
+  const ehAirToggle = document.getElementById('ehAirToggle');
+  const ehReseedBtn = document.getElementById('ehReseedBtn');
+  const ehTestBtn = document.getElementById('ehTestBtn');
+  const ehDensityCanvas = document.getElementById('ehDensityCanvas');
+  const ehDensityFoot = document.getElementById('ehDensityFoot');
+
+  function ehFormatSkillLabel(v){
+    if(v < 0.2) return '하';
+    if(v < 0.45) return '중하';
+    if(v < 0.65) return '중';
+    if(v < 0.85) return '상';
+    return '최상위';
+  }
+  function ehFormatSecClock(sec){
+    const s = Math.max(0, Math.floor(sec));
+    const mm = Math.floor(s / 60);
+    const ss = s % 60;
+    return String(mm).padStart(2, '0') + ':' + String(ss).padStart(2, '0');
+  }
+  function ehLoadSettings(){
+    const def = {
+      enabled: false, mySeat: [1, 3], skillMean: 0.5, skillStd: 0.15,
+      studentCount: 28, volume: 70, standaloneSpeed: 1, ambientAir: true, seed: 2027
+    };
+    try{
+      const raw = localStorage.getItem(EH_STORAGE_KEY);
+      if(!raw) return def;
+      const p = JSON.parse(raw) || {};
+      const seat = Array.isArray(p.mySeat) ? p.mySeat : def.mySeat;
+      return {
+        enabled: typeof p.enabled === 'boolean' ? p.enabled : def.enabled,
+        mySeat: [clamp(Math.round(Number(seat[0])||0), 0, 3), clamp(Math.round(Number(seat[1])||0), 0, 6)],
+        skillMean: Number.isFinite(Number(p.skillMean)) ? Number(clamp(Number(p.skillMean), 0, 1).toFixed(2)) : def.skillMean,
+        skillStd: Number.isFinite(Number(p.skillStd)) ? Number(clamp(Number(p.skillStd), 0, 0.35).toFixed(2)) : def.skillStd,
+        studentCount: Number.isFinite(Number(p.studentCount)) ? clamp(Math.round(Number(p.studentCount)), 1, 28) : def.studentCount,
+        volume: Number.isFinite(Number(p.volume)) ? clamp(Math.round(Number(p.volume)), 0, 100) : def.volume,
+        standaloneSpeed: Number.isFinite(Number(p.standaloneSpeed)) ? clamp(Math.round(Number(p.standaloneSpeed)), 1, 30) : def.standaloneSpeed,
+        ambientAir: typeof p.ambientAir === 'boolean' ? p.ambientAir : def.ambientAir,
+        seed: Number.isFinite(Number(p.seed)) ? clamp(Math.round(Math.abs(Number(p.seed))), 1, 9999999) : def.seed
+      };
+    }catch(err){
+      return def;
+    }
+  }
+  function ehSaveSettings(){
+    try{ localStorage.setItem(EH_STORAGE_KEY, JSON.stringify(ehSettings)); }catch(err){}
+  }
+
+  let ehSettings = ehLoadSettings();
+  let ehSubjectKey = 'kor';
+  let ehSchedule = null;
+  let ehSyncPhase = 'idle';
+  let ehSyncElapsedSec = 0;
+  let ehSyncBlockKey = '';
+  let ehSyncEvents = [];
+  let ehSyncIdx = 0;
+  let ehSyncLastElapsedSec = 0;
+  let ehSyncPrepareInfo = null;
+
+  let ehStandaloneRunning = false;
+  let ehStandaloneTimerId = null;
+  let ehStandaloneT0 = 0;
+  let ehStandaloneIdx = 0;
+  let ehStandaloneElapsedSec = 0;
+
+  let ehLastSeatFeedback = null;
+  const ehSeatPulseTimers = {};
+  const ehSeatBtnEls = [];
+
+  function ehMulberry(a){
+    let st = a | 0;
+    return function(){
+      st = (st + 0x6d2b79f5) | 0;
+      let t = Math.imul(st ^ (st >>> 15), 1 | st);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function ehRandn(r){ return Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r()); }
+  function ehLognorm(r, med, s){ return med * Math.exp(s * ehRandn(r)); }
+  function ehExpo(r, rate){ return -Math.log(1 - r()) / rate; }
+
+  function ehGetOtherSeats(count, mySeat, seed){
+    const myIdx = mySeat[1] * 4 + mySeat[0];
+    const all = [];
+    for(let s = 0; s < 28; s++) if(s !== myIdx) all.push(s);
+    const r = ehMulberry(seed + 99);
+    for(let i = all.length - 1; i > 0; i--){
+      const j = Math.floor(r() * (i + 1));
+      const tmp = all[i]; all[i] = all[j]; all[j] = tmp;
+    }
+    return all.slice(0, Math.max(0, clamp(Math.round(count), 1, 28) - 1));
+  }
+
+  function ehSimulateOne(S, L, r, aid, E, ul){
+    const hab = ehLognorm(r, 1, 0.15);
+    const wh = ehLognorm(r, 1, 0.3);
+    const Tend = S.T - 2.2;
+    const leafOf = n => S.bounds.findIndex(b => n <= b) + 1;
+    const add = (tMin, k, n, v) => { E.push({ t: tMin * 60, a: aid, k: k, n: n === undefined ? 1 : n, v: v === undefined ? 1 : v }); };
+    if(S.wr > 0 && r() < (1 / 56)){
+      const x = S.T * 0.12 + r() * (S.T - 2.2 - S.T * 0.12);
+      add(x, 'erase', 1 + Math.floor(r() * 2), 0.8 + 0.4 * r());
+      if(r() < 0.7) add(x + (2.5 + r() * 1.5) / 60, 'crumb', 1, 0.8 + 0.4 * r());
+    }
+    let cur = 0, t = (0.3 + 3.7 * r()) / 60, first = true;
+    if(S.skim && r() < S.skim * (0.4 + 0.6 * L)){
+      const n = 2 + Math.floor(r() * 3), d = 0.15 + r() * 0.3;
+      add(t, 'turn'); cur = 1; first = false;
+      add(t + 0.04 + r() * 0.06, 'flip', n);
+      add(t + d * 0.6, 'flip', n);
+      t += d;
+    }
+    const f = Math.exp(-S.k * (L - 0.5)), sd = 0.28 + 0.22 * (1 - L);
+    const items = [];
+    const ord = S.orders[r() < S.ow[0] ? 0 : 1] || S.orders[0];
+    for(let oi = 0; oi < ord.length; oi++){
+      const a = ord[oi][0], b = ord[oi][1];
+      for(let si = 0; si < S.seg.length; si++){
+        const sg = S.seg[si];
+        if(sg[0] >= a && sg[1] <= b) items.push(sg);
+      }
+    }
+    if(S.fixed) items.unshift([S.fixed[0], S.fixed[1], 0, S.fixed[2], 0, 1]);
+    let rush = false;
+    for(let ii = 0; ii < items.length; ii++){
+      const sg = items[ii];
+      for(let n = sg[0]; n <= sg[1]; n++){
+        let d;
+        const lf = leafOf(n);
+        if(sg[5]) d = ehLognorm(r, sg[3], 0.04);
+        else{
+          d = ehLognorm(r, sg[3] * hab * Math.exp(-S.k * (L - 0.5) * (sg[4] ? 0.5 : 1)), sd);
+          if(sg[4] && r() < Math.max(0, (0.5 - L) * 1.6)) d = 0.15 + 0.3 * r();
+          if(n === sg[0] && sg[2]) d += sg[2] * f * ehLognorm(r, 1, 0.2);
+        }
+        if(!sg[5] && (rush || t + d > Tend)){ rush = true; d = 0.1 + 0.25 * r(); }
+        if(lf !== cur){
+          const dl = Math.abs(lf - cur);
+          add(first ? t : Math.max(0, t - 0.02), dl > 1 ? 'flip' : 'turn', dl);
+          cur = lf;
+        }
+        first = false;
+        const e = t + d;
+        const rw = sg[5] ? 0 : (n === sg[0] && sg[2]) ? Math.min(d * 0.8, sg[2] * f + 0.3) : Math.min(d * (S.fixed ? 0.5 : 0.4), 0.5);
+        if(ul && S.ul > 0){
+          for(let x = t + 0.03 + ehExpo(r, S.ul * wh); x < t + rw; x += ehExpo(r, S.ul * wh)){
+            add(x, 'line', 1 + Math.floor(r() * 3), 0.7 + 0.6 * r());
+          }
+        }
+        const rate = (S.wr * wh * (sg[4] ? 1.4 : 1)) / (S.fixed && sg[5] ? 3 : 1);
+        if(rate > 0){
+          for(let x = t + 0.05 + ehExpo(r, rate); x < e - 0.05; x += ehExpo(r, rate)){
+            add(x, 'scratch', 0, 0.6 + 0.8 * r());
+          }
+        }
+        for(let x = t + ehExpo(r, 0.5); x < e; x += ehExpo(r, 0.5)) add(x, 'click');
+        for(let x = t + ehExpo(r, 0.12); x < e; x += ehExpo(r, 0.12)) add(x, 'sniff');
+        if(r() < S.mk) add(Math.max(0, e - 0.03), 'mark');
+        t = e;
+      }
+    }
+    if(S.ahead && r() < 0.15 + 0.3 * L){
+      const x = 3 + r() * 17, n = 2 + Math.floor(r() * 2);
+      add(x, 'flip', n); add(x + 0.3 + r() * 1.2, 'flip', n);
+    }
+    if(t < Tend && r() < clamp(0.1 + 0.4 * L, 0, 0.5)){
+      const q = Math.max(1, Math.round(0.6 + 1.4 * L + 0.5 * ehRandn(r)));
+      for(let i = 0; i < q; i++){
+        const x = t + r() * (Tend - t);
+        add(x, 'flip', 1 + Math.floor(r() * 3));
+        if(S.wr > 0) add(x + 0.1 + r() * 0.4, 'scratch', 0, 1);
+      }
+    }
+    const q = Math.floor(4 + r() * 7);
+    for(let i = 0; i < q; i++) add(Tend + 0.05 + r() * (S.T - Tend - 0.3), 'mark');
+  }
+
+  function ehBuildMainSchedule(subjKey){
+    const S = EH_SUBJECTS[subjKey] || EH_SUBJECTS.kor;
+    const otherSeats = ehGetOtherSeats(ehSettings.studentCount, ehSettings.mySeat, ehSettings.seed);
+    const M = otherSeats.length;
+    const r = ehMulberry(ehSettings.seed);
+    const evs = [];
+    if(M > 0){
+      const nu = Math.round((2 / 3 + r() / 12) * M);
+      const ids = [];
+      for(let i = 0; i < M; i++) ids.push(i);
+      for(let i = M - 1; i > 0; i--){
+        const j = Math.floor(r() * (i + 1));
+        const tmp = ids[i]; ids[i] = ids[j]; ids[j] = tmp;
+      }
+      const ulSet = new Set(ids.slice(0, nu));
+      for(let i = 0; i < M; i++){
+        const L = clamp(ehSettings.skillMean + ehSettings.skillStd * ehRandn(r), 0, 1);
+        ehSimulateOne(S, L, r, otherSeats[i], evs, ulSet.has(i));
+      }
+    }
+    evs.sort((a, b) => a.t - b.t);
+    const T = S.T;
+    const turnD = new Array(T).fill(0);
+    const writeD = new Array(T).fill(0);
+    let totalTurns = 0;
+    for(let i = 0; i < evs.length; i++){
+      const e = evs[i];
+      const isTurn = e.k === 'turn' || e.k === 'flip';
+      if(isTurn) totalTurns++;
+      const m = Math.floor(e.t / 60);
+      if(m >= 0 && m < T){
+        if(isTurn) turnD[m]++; else writeD[m]++;
+      }
+    }
+    return {
+      subjectKey: subjKey, durationMin: T, otherSeats: otherSeats, events: evs,
+      turnDensityPerMin: turnD, writeDensityPerMin: writeD, totalTurns: totalTurns,
+      turnsPerStudent: M > 0 ? totalTurns / M : 0
+    };
+  }
+
+  function ehBuildPrepareSchedule(prepareDurationSec){
+    const otherSeats = ehGetOtherSeats(ehSettings.studentCount, ehSettings.mySeat, ehSettings.seed);
+    const r = ehMulberry(ehSettings.seed + 7717 + Math.round(prepareDurationSec));
+    const events = [];
+    let burstDur = 10 + r() * 5;
+    let burstStart = 120;
+    if(prepareDurationSec >= 195){
+      const maxStart = Math.min(180, prepareDurationSec - 15) - burstDur;
+      burstStart = 120 + r() * Math.max(0.5, maxStart - 120);
+    }else if(prepareDurationSec >= 45){
+      burstDur = clamp(prepareDurationSec * (0.09 + 0.03 * r()), 8, 15);
+      const minStart = Math.min(prepareDurationSec * 0.56, prepareDurationSec - burstDur - 14);
+      const maxStart = Math.max(minStart + 1, prepareDurationSec * 0.74 - burstDur);
+      burstStart = Math.max(6, minStart + r() * Math.max(0.5, maxStart - minStart));
+    }else{
+      burstDur = clamp(prepareDurationSec * 0.28, 3, 8);
+      burstStart = Math.max(1.5, prepareDurationSec * 0.3);
+    }
+    const windowStartSec = burstStart;
+    const windowEndSec = Math.min(prepareDurationSec - 2, burstStart + burstDur);
+    if(otherSeats.length > 0 && windowEndSec > windowStartSec + 1){
+      const activeCount = Math.min(otherSeats.length, Math.max(1, Math.round(otherSeats.length * (0.38 + 0.22 * r()))));
+      const span = windowEndSec - windowStartSec;
+      for(let i = 0; i < activeCount; i++){
+        const seatIdx = otherSeats[i];
+        const checks = 1 + (r() < 0.55 ? 1 : 0);
+        let tCur = windowStartSec + r() * Math.max(0.4, span * 0.65);
+        for(let c = 0; c < checks; c++){
+          if(tCur > windowEndSec - 0.3) break;
+          const isFlip = r() < 0.22;
+          events.push({ t: tCur, a: seatIdx, k: isFlip ? 'flip' : 'turn', n: isFlip ? 2 : 1, v: 0.55 + 0.28 * r() });
+          tCur += 1.8 + r() * 3.2;
+        }
+      }
+    }
+    events.sort((a, b) => a.t - b.t);
+    return { events: events, windowStartSec: windowStartSec, windowEndSec: windowEndSec };
+  }
+
+  function ehResolveSubjectKey(step, preset){
+    const cueNodes = EMBEDDED.selectableCueNodes || [];
+    const targetStep = step || (preset && preset.steps && preset.steps[0]) || null;
+    if(targetStep && targetStep.startNodeId){
+      const node = cueNodes.find(n => n.nodeId === targetStep.startNodeId);
+      const gid = node && node.subjectGroupId;
+      if(gid === 'kor') return 'kor';
+      if(gid === 'math') return 'math';
+      if(gid === 'eng') return 'eng';
+      if(gid === 'hist') return 'his';
+      if(gid === 'inq1' || gid === 'inq2') return 'inq';
+      if(gid === 'lang2') return 'lang2';
+    }
+    const txt = ((targetStep && targetStep.displayTitle) || '') + ' ' + ((targetStep && targetStep.periodLabel) || '') + ' ' + ((preset && preset.displayTitle) || '') + ' ' + ((preset && preset.label) || '');
+    if(txt.indexOf('한국사') !== -1) return 'his';
+    if(txt.indexOf('탐구') !== -1) return 'inq';
+    if(txt.indexOf('제2외국어') !== -1 || txt.indexOf('한문') !== -1 || txt.indexOf('5교시') !== -1) return 'lang2';
+    if(txt.indexOf('수학') !== -1 || txt.indexOf('2교시') !== -1) return 'math';
+    if(txt.indexOf('영어') !== -1 || txt.indexOf('듣기') !== -1 || txt.indexOf('3교시') !== -1) return 'eng';
+    if(txt.indexOf('4교시') !== -1) return 'inq';
+    return 'kor';
+  }
+
+  /* WebAudio state */
+  let ehAudioCtx = null, ehInitPromise = null, ehMasterGain = null, ehWetGain = null;
+  let ehPaperBuf = null, ehPencilBuf = null, ehNoiseBuf = null;
+  let ehPaperClips = [], ehPencilClips = [], ehSeatInputs = [], ehSeatChains = [];
+  let ehAmbientSrc = null;
+  const ehActiveSources = new Set();
+  const ehUiTimers = new Set();
+
+  function ehB64ToBuf(b64){
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  function ehRebuildSeatChains(){
+    if(!ehAudioCtx || !ehMasterGain || !ehWetGain) return;
+    const s0 = EH_PRESET.distAtten;
+    ehSeatChains.forEach(ch => ch.forEach(nd => { try{ nd.disconnect(); }catch(e){} }));
+    ehSeatChains = []; ehSeatInputs = [];
+    for(let s = 0; s < 28; s++){
+      const dc = (s % 4) - ehSettings.mySeat[0];
+      const dr = Math.floor(s / 4) - ehSettings.mySeat[1];
+      const d = Math.hypot(dc, dr);
+      const p = ehAudioCtx.createPanner();
+      p.panningModel = 'HRTF'; p.distanceModel = 'linear'; p.rolloffFactor = 0; p.refDistance = 1; p.maxDistance = 10000;
+      const px = dc, pz = (dr === 0 && dc === 0) ? -0.3 : dr;
+      if(p.positionX){ p.positionX.value = px; p.positionY.value = 0; p.positionZ.value = pz; }
+      else p.setPosition(px, 0, pz);
+      const g = ehAudioCtx.createGain();
+      g.gain.value = (1.5 / (1 + (0.9 + 2.2 * s0) * Math.pow(d, 1.5 + 0.2 * s0))) * (dr > 0 ? 0.9 : 1);
+      const w = ehAudioCtx.createGain();
+      w.gain.value = 0.8 / (1 + 0.5 * d);
+      const lp = ehAudioCtx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = Math.max(2500, 16000 - (2500 + 2500 * s0) * d) * (dr > 0 ? 0.7 : 1);
+      lp.connect(g); g.connect(p); p.connect(ehMasterGain);
+      lp.connect(w); w.connect(ehWetGain);
+      ehSeatInputs.push(lp);
+      ehSeatChains.push([lp, g, p, w]);
+    }
+  }
+
+  async function ehEnsureAudio(){
+    if(ehAudioCtx && ehPaperBuf && ehPencilBuf && ehNoiseBuf){
+      if(ehAudioCtx.state === 'suspended'){ try{ await ehAudioCtx.resume(); }catch(e){} }
+      return ehAudioCtx.state === 'running';
+    }
+    if(ehInitPromise){
+      await ehInitPromise;
+      if(ehAudioCtx && ehAudioCtx.state === 'suspended'){ try{ await ehAudioCtx.resume(); }catch(e){} }
+      return Boolean(ehAudioCtx && ehAudioCtx.state === 'running');
+    }
+    ehInitPromise = (async function(){
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      const ctx = new Ctx();
+      try{ await ctx.resume(); }catch(e){}
+      ehPaperBuf = await new Promise((res, rej) => ctx.decodeAudioData(ehB64ToBuf(EMBEDDED.examHallPaperSprite), res, rej));
+      ehPencilBuf = await new Promise((res, rej) => ctx.decodeAudioData(ehB64ToBuf(EMBEDDED.examHallPencilSprite), res, rej));
+      ehPaperClips = (EMBEDDED.examHallPaperClips || []).map(x => ({ c: x[0], s: x[1], l: x[2] }));
+      ehPencilClips = (EMBEDDED.examHallPencilClips || []).map(x => ({ c: x[0], s: x[1], l: x[2] }));
+      const nBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 3), ctx.sampleRate);
+      const ch0 = nBuf.getChannelData(0);
+      for(let i = 0; i < ch0.length; i++) ch0[i] = Math.random() * 2 - 1;
+      ehNoiseBuf = nBuf;
+      const imp = ctx.createBuffer(2, Math.floor(ctx.sampleRate * 1.2), ctx.sampleRate);
+      for(let c = 0; c < 2; c++){
+        const y = imp.getChannelData(c);
+        for(let i = 0; i < y.length; i++) y[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / y.length, 3.5);
+      }
+      const master = ctx.createGain();
+      master.gain.value = Math.pow(ehSettings.volume / 100, 2) * 2;
+      const comp = ctx.createDynamicsCompressor();
+      master.connect(comp); comp.connect(ctx.destination);
+      const conv = ctx.createConvolver(); conv.buffer = imp;
+      const wet = ctx.createGain(); wet.gain.value = 0.35;
+      wet.connect(conv); conv.connect(master);
+      ehAudioCtx = ctx; ehMasterGain = master; ehWetGain = wet;
+      ehRebuildSeatChains();
+    })();
+    try{
+      await ehInitPromise;
+      return Boolean(ehAudioCtx && ehAudioCtx.state === 'running');
+    }catch(e){
+      ehInitPromise = null; ehAudioCtx = null;
+      return false;
+    }
+  }
+
+  function ehSetAmbient(on){
+    if(!on){
+      if(ehAmbientSrc){ try{ ehAmbientSrc.stop(); }catch(e){} ehAmbientSrc = null; }
+      return;
+    }
+    if(ehAmbientSrc || !ehAudioCtx || !ehNoiseBuf || !ehMasterGain) return;
+    const s = ehAudioCtx.createBufferSource();
+    s.buffer = ehNoiseBuf; s.loop = true;
+    const f = ehAudioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 650;
+    const g = ehAudioCtx.createGain(); g.gain.value = 0.025;
+    s.connect(f); f.connect(g); g.connect(ehMasterGain);
+    s.start(); ehAmbientSrc = s;
+  }
+
+  function ehCancelScheduledDiscrete(){
+    ehActiveSources.forEach(s => { try{ s.stop(); }catch(e){} });
+    ehActiveSources.clear();
+    ehUiTimers.forEach(tid => clearTimeout(tid));
+    ehUiTimers.clear();
+  }
+
+  function ehSpawnSrc(buf, when, off, dur, rate, gainVal, out, filt, extra){
+    if(!ehAudioCtx) return null;
+    const s = ehAudioCtx.createBufferSource();
+    s.buffer = buf; s.playbackRate.value = rate;
+    const g = ehAudioCtx.createGain(); g.gain.value = gainVal;
+    let tail = s;
+    if(filt){
+      const f = ehAudioCtx.createBiquadFilter();
+      f.type = filt[0]; f.frequency.value = filt[1];
+      if(filt[2] !== undefined) f.Q.value = filt[2];
+      tail.connect(f); tail = f;
+    }
+    if(extra){
+      for(let i = 0; i < extra.length; i++){
+        const q = extra[i];
+        const h = ehAudioCtx.createBiquadFilter();
+        h.type = q[0]; h.frequency.value = q[1]; h.gain.value = q[2];
+        tail.connect(h); tail = h;
+      }
+    }
+    tail.connect(g); g.connect(out);
+    const safeOff = clamp(off, 0, Math.max(0, buf.duration - 0.02));
+    const safeDur = Math.max(0.01, Math.min(dur, buf.duration - safeOff));
+    ehActiveSources.add(s);
+    s.onended = () => ehActiveSources.delete(s);
+    s.start(when, safeOff, safeDur);
+    return g;
+  }
+
+  function ehPlayPaperClip(clipItem, when, out, gain, rate, shortMode){
+    if(!ehPaperBuf) return 0.5;
+    const gP = EH_PRESET.paperGsm, bP = EH_PRESET.paperBody, oP = EH_PRESET.lowBoost;
+    const fxRate = Math.pow(70 / gP, 0.35) * (1 - 0.12 * bP) * (1 - 0.08 * oP);
+    const fxGain = Math.pow(gP / 70, 0.5) * (1 + 0.3 * bP);
+    const fxHp = 80 * Math.pow(70 / gP, 1.2) * (1 - 0.5 * bP) * (1 - 0.3 * oP);
+    const fxSh = 6 * bP + 4 * oP, fxHc = 8 * oP, fxLo = 0.9 * oP;
+    const k = clipItem || ehPaperClips[Math.floor(Math.random() * ehPaperClips.length)];
+    const tl = shortMode ? clamp(EH_PRESET.turnLength, 0.1, 1) : 1;
+    const rb = 1 + 0.2 * (1 - tl), tm = Math.min(1, tl * rb);
+    const rr = rate * fxRate * Math.exp(0.09 * (Math.random() * 2 - 1)) * rb;
+    const G = gain * fxGain;
+    const g1 = ehSpawnSrc(ehPaperBuf, when, k.s, k.l * tm, rr, G, out, ['highpass', fxHp], [['lowshelf', 260, fxSh], ['highshelf', 3000, -fxHc]]);
+    if(g1 && tl < 1){
+      const endT = when + (k.l * tm) / rr;
+      g1.gain.setValueAtTime(g1.gain.value, Math.max(when, endT - 0.07));
+      g1.gain.linearRampToValueAtTime(0.0001, endT);
+    }
+    if(fxLo > 0){
+      const rLo = (rr / rb) * 0.55;
+      ehSpawnSrc(ehPaperBuf, when, k.s, k.l * tl, rLo, G * fxLo, out, ['lowpass', 1400]);
+    }
+    return k.l / (rate * fxRate);
+  }
+
+  function ehEventLabel(k){
+    if(k === 'turn') return { cat: 'turn', label: '시험지 넘김' };
+    if(k === 'flip') return { cat: 'turn', label: '시험지 훑기' };
+    if(k === 'scratch') return { cat: 'write', label: '샤프 필기' };
+    if(k === 'line') return { cat: 'write', label: '밑줄 긋기' };
+    if(k === 'click') return { cat: 'write', label: '샤프 노크' };
+    if(k === 'mark') return { cat: 'write', label: '답안 마킹' };
+    if(k === 'erase') return { cat: 'write', label: '지우개 사용' };
+    if(k === 'crumb') return { cat: 'write', label: '지우개 정리' };
+    return { cat: 'write', label: '숨소리' };
+  }
+
+  function ehTriggerSeatFeedback(seatIdx, cat, label){
+    ehLastSeatFeedback = { seatIndex: seatIdx, category: cat, label: label };
+    if(ehSeatMeta){
+      ehSeatMeta.textContent = ((seatIdx % 4) + 1) + '-' + (Math.floor(seatIdx / 4) + 1) + ' · ' + label;
+    }
+    const btnEl = ehSeatBtnEls[seatIdx];
+    if(btnEl && !btnEl.classList.contains('is-me')){
+      btnEl.classList.remove('is-sound-turn', 'is-sound-write');
+      btnEl.classList.add(cat === 'turn' ? 'is-sound-turn' : 'is-sound-write');
+      if(ehSeatPulseTimers[seatIdx]) clearTimeout(ehSeatPulseTimers[seatIdx]);
+      ehSeatPulseTimers[seatIdx] = setTimeout(() => {
+        btnEl.classList.remove('is-sound-turn', 'is-sound-write');
+        delete ehSeatPulseTimers[seatIdx];
+      }, 420);
+    }
+  }
+
+  function ehPlayEvent(e, when){
+    if(!ehAudioCtx || !ehNoiseBuf) return;
+    const seatIdx = clamp(e.a, 0, 27);
+    const out = ehSeatInputs[seatIdx];
+    if(!out) return;
+
+    const delayMs = Math.max(0, (when - ehAudioCtx.currentTime) * 1000);
+    const meta = ehEventLabel(e.k);
+    const tid = setTimeout(() => {
+      ehUiTimers.delete(tid);
+      ehTriggerSeatFeedback(seatIdx, meta.cat, meta.label);
+    }, delayMs);
+    ehUiTimers.add(tid);
+
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    if(e.k === 'scratch' || e.k === 'line' || e.k === 'click' || e.k === 'erase' || e.k === 'crumb'){
+      if(!ehPencilBuf) return;
+      const pg = EH_PRESET.pencilGain, erG = EH_PRESET.eraserGain;
+      const pick = cat => {
+        const m = ehPencilClips.filter(x => x.c === cat);
+        return m[Math.floor(Math.random() * m.length)];
+      };
+      let t = when;
+      const st = (k, g, hp) => {
+        const r = rnd(0.92, 1.1);
+        ehSpawnSrc(ehPencilBuf, t, k.s, k.l, r, g, out, ['highpass', hp === undefined ? 350 : hp]);
+        return k.l / r;
+      };
+      if(e.k === 'scratch'){
+        const ns = 1 + Math.floor(Math.random() * 3);
+        for(let i = 0; i < ns; i++) t += st(pick('w'), 0.5 * e.v * pg) + rnd(0.02, 0.12);
+      }else if(e.k === 'erase'){
+        for(let i = 0; i < e.n; i++) t += st(pick('E'), 0.6 * e.v * erG, 120) + rnd(0.05, 0.25);
+      }else if(e.k === 'crumb'){
+        const cnt = 1 + (Math.random() < 0.35 ? 1 : 0);
+        for(let i = 0; i < cnt; i++) t += st(pick('C'), 0.6 * e.v * erG, 120) + rnd(0.1, 0.4);
+      }else if(e.k === 'click'){
+        st(pick('k'), 0.5 * e.v * pg);
+      }else{
+        for(let i = 0; i < e.n; i++) t += st(pick('u'), 0.5 * e.v * pg) + rnd(0.25, 0.9);
+      }
+      return;
+    }
+    if(e.k === 'turn' || e.k === 'flip'){
+      const g = (0.9 + 0.3 * Math.random()) * (e.v || 1);
+      const by = c => ehPaperClips.filter(x => x.c === c);
+      const pk = arr => arr[Math.floor(Math.random() * arr.length)];
+      const d = Math.hypot((seatIdx % 4) - ehSettings.mySeat[0], (seatIdx >> 2) - ehSettings.mySeat[1]);
+      if(e.k === 'turn'){
+        const pool = (d <= 1.5 && Math.random() < 0.3) ? by('N') : by('T');
+        ehPlayPaperClip(pk(pool), when, out, g, 1, true);
+      }else{
+        let t = when, tot = 0.17 * e.n + 0.2;
+        while(t - when < tot){
+          const k = (Math.random() < 0.15 && tot - (t - when) > 1) ? pk(by('F')) : pk(by('T'));
+          t += Math.max(0.2, ehPlayPaperClip(k, t, out, g * 0.8, rnd(1, 1.2)) * 0.8);
+        }
+      }
+      return;
+    }
+    const o = Math.random() * 1.5;
+    if(e.k === 'mark'){
+      const ns = 4 + Math.floor(Math.random() * 4);
+      let t = when;
+      for(let i = 0; i < ns; i++){
+        const d = rnd(0.05, 0.1);
+        const g = ehSpawnSrc(ehNoiseBuf, t, o, d + 0.05, 1, 0, out, ['bandpass', rnd(1300, 2300), 0.8]);
+        if(g){
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(0.11 * e.v * (0.6 + Math.random() * 0.6), t + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, t + d);
+        }
+        t += d + rnd(0.01, 0.05);
+      }
+    }else if(e.k === 'sniff'){
+      const d = rnd(0.15, 0.3);
+      const g = ehSpawnSrc(ehNoiseBuf, when, o, d, 1, 0, out, ['bandpass', rnd(1400, 2600), 1.5]);
+      if(g){
+        g.gain.setValueAtTime(0, when);
+        g.gain.linearRampToValueAtTime(0.08, when + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, when + d);
+      }
+    }
+  }
+
+  function ehDrawDensityCanvas(){
+    if(!ehDensityCanvas || !ehSchedule) return;
+    if(playbackSettingsPanel && !playbackSettingsPanel.classList.contains('open')) return;
+    const cssW = Math.max(220, ehDensityCanvas.clientWidth || 296);
+    const cssH = Math.max(64, ehDensityCanvas.clientHeight || 74);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const W = Math.round(cssW * dpr), H = Math.round(cssH * dpr);
+    if(ehDensityCanvas.width !== W || ehDensityCanvas.height !== H){
+      ehDensityCanvas.width = W; ehDensityCanvas.height = H;
+    }
+    const c2d = ehDensityCanvas.getContext('2d');
+    if(!c2d) return;
+    c2d.clearRect(0, 0, W, H);
+    const T = ehSchedule.durationMin;
+    const a = ehSchedule.turnDensityPerMin, b = ehSchedule.writeDensityPerMin;
+    let mx = 1;
+    for(let i = 0; i < T; i++){
+      if(a[i] > mx) mx = a[i];
+      if(b[i] / 6 > mx) mx = b[i] / 6;
+    }
+    const padTop = 6 * dpr, padBottom = 16 * dpr;
+    const chartH = Math.max(10, H - padTop - padBottom);
+    const bw = W / T;
+    const writeCol = resolvedTheme === 'dark' ? 'rgba(165,165,174,.34)' : (resolvedTheme === 'sepia' ? 'rgba(102,84,64,.28)' : 'rgba(120,120,128,.30)');
+    const turnCol = resolvedTheme === 'dark' ? 'rgba(122,178,238,.86)' : (resolvedTheme === 'sepia' ? 'rgba(64,106,150,.82)' : 'rgba(47,93,138,.84)');
+    const axisCol = resolvedTheme === 'dark' ? 'rgba(235,235,245,.52)' : (resolvedTheme === 'sepia' ? 'rgba(72,56,40,.58)' : 'rgba(60,60,67,.54)');
+    c2d.fillStyle = resolvedTheme === 'dark' ? 'rgba(255,255,255,.09)' : 'rgba(0,0,0,.08)';
+    c2d.fillRect(0, H - padBottom, W, Math.max(1, 1 * dpr));
+    const barGap = Math.min(1.2 * dpr, bw * 0.18), barW = Math.max(1, bw - barGap);
+    for(let i = 0; i < T; i++){
+      const hW = ((b[i] / 6) / mx) * chartH;
+      const hT = (a[i] / mx) * chartH;
+      const x = i * bw;
+      if(hW > 0.4){ c2d.fillStyle = writeCol; c2d.fillRect(x, H - padBottom - hW, barW, hW); }
+      if(hT > 0.4){ c2d.fillStyle = turnCol; c2d.fillRect(x, H - padBottom - hT, barW, hT); }
+    }
+    c2d.fillStyle = axisCol;
+    c2d.font = '500 ' + Math.round(9.5 * dpr) + 'px -apple-system,BlinkMacSystemFont,"Pretendard Variable",sans-serif';
+    c2d.textBaseline = 'bottom';
+    const stepMin = T >= 80 ? 20 : 10;
+    for(let m = 0; m <= T; m += stepMin){
+      const lbl = m + '분';
+      if(m === 0){ c2d.textAlign = 'left'; c2d.fillText(lbl, 1 * dpr, H - 1 * dpr); }
+      else if(m >= T){ c2d.textAlign = 'right'; c2d.fillText(lbl, W - 1 * dpr, H - 1 * dpr); }
+      else{ c2d.textAlign = 'center'; c2d.fillText(lbl, m * bw, H - 1 * dpr); }
+    }
+    const isRunningMain = (phase === 'rise' || phase === 'hold');
+    let playheadSec = null;
+    if(ehStandaloneRunning) playheadSec = ehStandaloneElapsedSec;
+    else if(isRunningMain && ehSettings.enabled && ehSyncPhase === 'main') playheadSec = ehSyncElapsedSec;
+    if(playheadSec !== null && playheadSec >= 0){
+      const px = clamp((playheadSec / (T * 60)) * W, 0, W - 1);
+      c2d.fillStyle = resolvedTheme === 'dark' ? 'rgba(255,214,102,.92)' : 'rgba(210,82,46,.88)';
+      c2d.fillRect(px, 2 * dpr, Math.max(1.5, 1.5 * dpr), H - padBottom - 2 * dpr);
+    }
+  }
+
+  function ehRenderSeatGrid(){
+    if(!ehSeatGrid) return;
+    if(ehSeatBtnEls.length === 0){
+      ehSeatGrid.innerHTML = '';
+      for(let r = 0; r < 7; r++){
+        const rowEl = document.createElement('div');
+        rowEl.className = 'eh-seat-row';
+        for(let c = 0; c < 4; c++){
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'eh-seat-btn';
+          b.addEventListener('click', () => {
+            ehSettings.mySeat = [c, r];
+            ehLastSeatFeedback = null;
+            ehSaveSettings();
+            ehRebuildSeatChains();
+            ehRebuildSchedule();
+            ehRenderUI();
+          });
+          rowEl.appendChild(b);
+          ehSeatBtnEls.push(b);
+        }
+        ehSeatGrid.appendChild(rowEl);
+      }
+    }
+    const occSet = new Set(ehSchedule ? ehSchedule.otherSeats : []);
+    for(let s = 0; s < 28; s++){
+      const c = s % 4, r = Math.floor(s / 4);
+      const isMe = ehSettings.mySeat[0] === c && ehSettings.mySeat[1] === r;
+      const isOcc = isMe || occSet.has(s);
+      const b = ehSeatBtnEls[s];
+      if(!b) continue;
+      b.classList.toggle('is-me', isMe);
+      b.classList.toggle('is-vacant', !isOcc);
+      b.setAttribute('aria-pressed', isMe ? 'true' : 'false');
+      b.title = isMe ? ('내 자리 (' + (c + 1) + '열 ' + (r + 1) + '행)') : ((c + 1) + '열 ' + (r + 1) + '행 내 자리로 지정');
+      b.textContent = (isMe ? '★ ' : '') + (c + 1) + '-' + (r + 1);
+    }
+  }
+
+  function ehRenderUI(){
+    const isRunningMain = (phase === 'rise' || phase === 'hold');
+    const isPausedOrDone = isPaused || (pauseBtn && pauseBtn.textContent === 'DONE');
+    const subjMeta = EH_SUBJECTS[ehSubjectKey] || EH_SUBJECTS.kor;
+
+    if(ehEnabledToggle) ehEnabledToggle.checked = ehSettings.enabled;
+    if(ehSubjName) ehSubjName.textContent = subjMeta.shortLabel;
+
+    let sub = '준비령 파본검사 · 본령 풀이 입체음향 자동 연동';
+    if(isRunningMain){
+      if(!ehSettings.enabled) sub = '켜면 현재 진행 중인 타이머 구간에 즉시 연동됩니다';
+      else if(isPausedOrDone) sub = '실전 타이머 일시정지됨 · 대기 중';
+      else if(ehSyncPhase === 'prepare'){
+        if(ehSyncPrepareInfo){
+          if(ehSyncElapsedSec < ehSyncPrepareInfo.windowStartSec) sub = '준비령 연동 · 파본검사 대기 중';
+          else if(ehSyncElapsedSec <= ehSyncPrepareInfo.windowEndSec) sub = '준비령 연동 · 파본검사 시험지 넘김 재생 중';
+          else sub = '준비령 연동 · 파본검사 완료 (본령까지 정숙 유지)';
+        }else sub = '준비령 연동 중';
+      }else if(ehSyncPhase === 'main') sub = '본령 실전 연동 중 · 1× 실시간';
+      else sub = '타이머 연동 중 · 정숙 구간';
+    }else if(ehStandaloneRunning){
+      sub = '단독 재생 중 · ×' + ehSettings.standaloneSpeed + ' 배속';
+    }
+    if(ehModeSub) ehModeSub.textContent = sub;
+
+    let dispClock = null;
+    if(ehStandaloneRunning) dispClock = ehStandaloneElapsedSec;
+    else if(isRunningMain && ehSettings.enabled && (ehSyncPhase === 'main' || ehSyncPhase === 'prepare')) dispClock = ehSyncElapsedSec;
+    if(ehSep && ehElapsedClock){
+      if(dispClock !== null){
+        ehSep.style.display = '';
+        ehElapsedClock.style.display = '';
+        ehElapsedClock.textContent = ehFormatSecClock(dispClock);
+      }else{
+        ehSep.style.display = 'none';
+        ehElapsedClock.style.display = 'none';
+      }
+    }
+
+    if(ehPlayBtn){
+      if(isRunningMain){
+        ehPlayBtn.textContent = ehSettings.enabled ? '실전 연동 중' : '연동 켜기';
+        ehPlayBtn.classList.toggle('is-active', ehSettings.enabled);
+      }else{
+        ehPlayBtn.textContent = ehStandaloneRunning ? '단독 정지' : '단독 재생';
+        ehPlayBtn.classList.toggle('is-active', ehStandaloneRunning);
+      }
+    }
+
+    if(ehSeatMeta && !ehLastSeatFeedback){
+      ehSeatMeta.textContent = '내 자리 ' + (ehSettings.mySeat[0] + 1) + '-' + (ehSettings.mySeat[1] + 1);
+    }
+
+    if(ehVolSlider){
+      ehVolSlider.value = String(ehSettings.volume);
+      ehVolSlider.style.setProperty('--slider-pct', ehSettings.volume + '%');
+    }
+    if(ehVolVal) ehVolVal.textContent = ehSettings.volume + '%';
+
+    if(ehCountSlider){
+      ehCountSlider.value = String(ehSettings.studentCount);
+      ehCountSlider.style.setProperty('--slider-pct', (((ehSettings.studentCount - 1) / 27) * 100).toFixed(1) + '%');
+    }
+    if(ehCountVal) ehCountVal.textContent = ehSettings.studentCount + '명';
+
+    if(ehMeanSlider){
+      ehMeanSlider.value = String(ehSettings.skillMean);
+      ehMeanSlider.style.setProperty('--slider-pct', (ehSettings.skillMean * 100).toFixed(1) + '%');
+    }
+    if(ehMeanVal) ehMeanVal.textContent = ehSettings.skillMean.toFixed(2) + ' (' + ehFormatSkillLabel(ehSettings.skillMean) + ')';
+
+    if(ehStdSlider){
+      ehStdSlider.value = String(ehSettings.skillStd);
+      ehStdSlider.style.setProperty('--slider-pct', ((ehSettings.skillStd / 0.35) * 100).toFixed(1) + '%');
+    }
+    if(ehStdVal) ehStdVal.textContent = '±' + ehSettings.skillStd.toFixed(2);
+
+    if(ehSpeedRow) ehSpeedRow.classList.toggle('is-locked', isRunningMain);
+    if(ehSpeedSlider){
+      ehSpeedSlider.disabled = isRunningMain;
+      ehSpeedSlider.value = String(isRunningMain ? 1 : ehSettings.standaloneSpeed);
+      ehSpeedSlider.style.setProperty('--slider-pct', isRunningMain ? '0%' : ((((ehSettings.standaloneSpeed - 1) / 29) * 100).toFixed(1) + '%'));
+    }
+    if(ehSpeedVal) ehSpeedVal.textContent = isRunningMain ? '1× 고정' : ('×' + ehSettings.standaloneSpeed);
+
+    if(ehAirToggle) ehAirToggle.checked = ehSettings.ambientAir;
+    if(ehDensityFoot && ehSchedule){
+      ehDensityFoot.textContent = '타 수험생 ' + ehSchedule.otherSeats.length + '명 · 넘김 ' + ehSchedule.totalTurns + '회 · 1인당 ' + ehSchedule.turnsPerStudent.toFixed(1) + '회';
+    }
+
+    const isNoisePlayingNow = ehStandaloneRunning || (isRunningMain && ehSettings.enabled && !isPausedOrDone && (ehSyncPhase === 'main' || ehSyncPhase === 'prepare'));
+    if(playbackSettingsBtn) playbackSettingsBtn.classList.toggle('is-noise-playing', isNoisePlayingNow);
+
+    ehRenderSeatGrid();
+    ehDrawDensityCanvas();
+  }
+
+  function ehRebuildSchedule(){
+    ehSchedule = ehBuildMainSchedule(ehSubjectKey);
+    if(ehStandaloneRunning && ehAudioCtx){
+      const el = (ehAudioCtx.currentTime - ehStandaloneT0) * ehSettings.standaloneSpeed;
+      ehCancelScheduledDiscrete();
+      const found = ehSchedule.events.findIndex(e => e.t >= el);
+      ehStandaloneIdx = found < 0 ? ehSchedule.events.length : found;
+    }
+  }
+
+  function ehStopStandalone(){
+    const was = ehStandaloneRunning;
+    ehStandaloneRunning = false;
+    ehStandaloneElapsedSec = 0;
+    if(ehStandaloneTimerId !== null){ clearInterval(ehStandaloneTimerId); ehStandaloneTimerId = null; }
+    ehCancelScheduledDiscrete();
+    if(ehSyncPhase === 'idle') ehSetAmbient(false);
+    if(was) ehRenderUI();
+  }
+
+  function ehTickStandalone(){
+    if(!ehStandaloneRunning || !ehAudioCtx || !ehSchedule) return;
+    const x = ehSettings.standaloneSpeed;
+    const el = (ehAudioCtx.currentTime - ehStandaloneT0) * x;
+    ehStandaloneElapsedSec = el;
+    const evs = ehSchedule.events;
+    while(ehStandaloneIdx < evs.length && (evs[ehStandaloneIdx].t - el) / x < 0.35){
+      const w = ehAudioCtx.currentTime + Math.max(0, (evs[ehStandaloneIdx].t - el) / x);
+      ehPlayEvent(evs[ehStandaloneIdx], w);
+      ehStandaloneIdx++;
+    }
+    ehRenderUI();
+    if(el >= ehSchedule.durationMin * 60) ehStopStandalone();
+  }
+
+  async function ehToggleStandalone(){
+    if(ehStandaloneRunning){ ehStopStandalone(); return; }
+    stopExamHallTimerSync();
+    const ok = await ehEnsureAudio();
+    if(!ok || !ehAudioCtx) return;
+    if(!ehSchedule) ehRebuildSchedule();
+    ehStandaloneT0 = ehAudioCtx.currentTime;
+    ehStandaloneIdx = 0;
+    ehStandaloneElapsedSec = 0;
+    ehStandaloneRunning = true;
+    ehSetAmbient(ehSettings.ambientAir);
+    ehStandaloneTimerId = setInterval(ehTickStandalone, 90);
+    ehTickStandalone();
+  }
+
+  function stopExamHallTimerSync(){
+    ehSyncPhase = 'idle';
+    ehSyncBlockKey = '';
+    ehSyncEvents = [];
+    ehSyncIdx = 0;
+    ehSyncLastElapsedSec = 0;
+    ehSyncElapsedSec = 0;
+    ehSyncPrepareInfo = null;
+    ehCancelScheduledDiscrete();
+    if(!ehStandaloneRunning) ehSetAmbient(false);
+    ehRenderUI();
+  }
+
+  function unlockExamHallAudio(){
+    if(ehSettings.enabled) void ehEnsureAudio();
+  }
+
+  function notifyExamHallPauseChanged(pausedNow){
+    if(pausedNow){
+      ehCancelScheduledDiscrete();
+      ehSetAmbient(false);
+    }
+    ehRenderUI();
+  }
+
+  function refreshExamHallTheme(){
+    ehDrawDensityCanvas();
+  }
+
+  function refreshExamHallFromTimerIdle(){
+    const nextSubj = ehResolveSubjectKey(currentPreset && currentPreset.steps && currentPreset.steps[0], currentPreset);
+    if(nextSubj !== ehSubjectKey || !ehSchedule){
+      ehSubjectKey = nextSubj;
+      ehRebuildSchedule();
+    }
+    if(phase === 'idle') stopExamHallTimerSync();
+    else ehRenderUI();
+  }
+
+  function syncExamHallFromRunningTimer(simMinutes, pausedEffective, isDoneNow, handDragging){
+    if(isDoneNow || !currentPreset || !currentPreset.steps || !currentPreset.steps.length){
+      if(ehSyncPhase !== 'idle') stopExamHallTimerSync();
+      return;
+    }
+    let activeIdx = currentPreset.steps.length - 1;
+    for(let i = 0; i < currentPreset.steps.length; i++){
+      const s = currentPreset.steps[i];
+      if(simMinutes >= s.startMinutes && simMinutes < s.endMinutes){ activeIdx = i; break; }
+    }
+    const activeStep = currentPreset.steps[activeIdx];
+    const nextSubj = ehResolveSubjectKey(activeStep, currentPreset);
+    if(nextSubj !== ehSubjectKey || !ehSchedule){
+      ehSubjectKey = nextSubj;
+      ehRebuildSchedule();
+    }
+
+    const cueNodes = EMBEDDED.selectableCueNodes || [];
+    const classifyRow = row => {
+      const node = row.startNodeId ? cueNodes.find(n => n.nodeId === row.startNodeId) : null;
+      const cat = row.category || '';
+      if((node && node.stageType === 'prepare') || row.stageType === 'prepare' || row.bellAtStart === 'prepare' || cat.indexOf('준비령') === 0 || (cat.indexOf('준비령') !== -1 && cat.indexOf('→ 준비령') === -1)) return 'prepare';
+      if((node && node.stageType === 'warn') || row.stageType === 'warn' || row.bellAtStart === 'warn_10m' || row.bellAtStart === 'warn_5m' || cat.indexOf('종료 10분 전') === 0 || cat.indexOf('종료 5분 전') === 0) return 'warn';
+      if((node && (node.stageType === 'main' || node.stageType === 'listening')) || row.stageType === 'main' || row.stageType === 'listening' || row.bellAtStart === 'main' || row.bellAtStart === 'listening_intro' || cat.indexOf('본령') === 0 || cat.indexOf('듣기평가 안내방송 및 본령') !== -1) return 'main';
+      return 'other';
+    };
+    const groupTag = row => {
+      const node = row.startNodeId ? cueNodes.find(n => n.nodeId === row.startNodeId) : null;
+      return (node && node.subjectGroupId) ? node.subjectGroupId : ((row.periodLabel || '') + ':' + (row.displayTitle || ''));
+    };
+
+    const kind = classifyRow(activeStep);
+    let targetPhase = 'quiet', blockKey = 'quiet_' + activeIdx, elapsedSec = 0, blockDurSec = 0;
+
+    if(kind === 'prepare'){
+      targetPhase = 'prepare';
+      blockDurSec = Math.max(10, (activeStep.endMinutes - activeStep.startMinutes) * 60);
+      elapsedSec = clamp((simMinutes - activeStep.startMinutes) * 60, 0, blockDurSec);
+      blockKey = 'prep_' + currentPreset.id + '_' + activeIdx + '_' + blockDurSec.toFixed(1);
+    }else if(kind === 'main' || kind === 'warn'){
+      targetPhase = 'main';
+      const curG = groupTag(activeStep);
+      let sIdx = activeIdx, eIdx = activeIdx;
+      while(sIdx > 0){
+        const prev = currentPreset.steps[sIdx - 1];
+        const pk = classifyRow(prev);
+        if((pk === 'main' || pk === 'warn') && groupTag(prev) === curG && Math.abs(prev.endMinutes - currentPreset.steps[sIdx].startMinutes) < 0.05) sIdx--;
+        else break;
+      }
+      while(eIdx + 1 < currentPreset.steps.length){
+        const nxt = currentPreset.steps[eIdx + 1];
+        if(classifyRow(nxt) === 'warn' && groupTag(nxt) === curG && Math.abs(nxt.startMinutes - currentPreset.steps[eIdx].endMinutes) < 0.05) eIdx++;
+        else break;
+      }
+      const firstS = currentPreset.steps[sIdx], lastS = currentPreset.steps[eIdx];
+      blockDurSec = Math.max(10, (lastS.endMinutes - firstS.startMinutes) * 60);
+      elapsedSec = Math.max(0, (simMinutes - firstS.startMinutes) * 60);
+      if(classifyRow(firstS) === 'warn'){
+        const subjTot = (EH_SUBJECTS[ehSubjectKey] ? EH_SUBJECTS[ehSubjectKey].T : 80) * 60;
+        elapsedSec = Math.max(0, subjTot - Math.max(0, (lastS.endMinutes - simMinutes) * 60));
+      }
+      blockKey = 'main_' + currentPreset.id + '_' + curG + '_' + sIdx;
+    }
+
+    if(!ehSettings.enabled){
+      if(ehSyncPhase !== 'idle') stopExamHallTimerSync();
+      return;
+    }
+    if(ehStandaloneRunning) ehStopStandalone();
+
+    const prevDispSec = Math.floor(ehSyncElapsedSec);
+    const prevPhase = ehSyncPhase;
+    ehSyncElapsedSec = elapsedSec;
+
+    if(targetPhase === 'quiet'){
+      ehSyncPhase = 'quiet'; ehSyncBlockKey = blockKey; ehSyncPrepareInfo = null;
+      ehCancelScheduledDiscrete(); ehSetAmbient(false);
+      if(prevPhase !== 'quiet') ehRenderUI();
+      return;
+    }
+    if(pausedEffective || handDragging){
+      ehCancelScheduledDiscrete(); ehSetAmbient(false);
+      ehSyncLastElapsedSec = elapsedSec;
+      if(prevPhase !== targetPhase) ehSyncPhase = targetPhase;
+      if(Math.floor(elapsedSec) !== prevDispSec || prevPhase !== targetPhase) ehRenderUI();
+      return;
+    }
+    if(!ehAudioCtx || ehAudioCtx.state !== 'running'){
+      void ehEnsureAudio();
+      return;
+    }
+
+    const identity = targetPhase === 'prepare'
+      ? (blockKey + '_' + ehSettings.studentCount + '_' + ehSettings.mySeat[0] + '_' + ehSettings.mySeat[1] + '_' + ehSettings.seed)
+      : (blockKey + '_' + ehSubjectKey + '_' + ehSettings.studentCount + '_' + ehSettings.skillMean + '_' + ehSettings.skillStd + '_' + ehSettings.mySeat[0] + '_' + ehSettings.mySeat[1] + '_' + ehSettings.seed);
+    const jumped = Math.abs(elapsedSec - ehSyncLastElapsedSec) > 0.85;
+
+    if(identity !== ehSyncBlockKey || targetPhase !== ehSyncPhase){
+      ehCancelScheduledDiscrete();
+      ehSyncBlockKey = identity;
+      ehSyncPhase = targetPhase;
+      if(targetPhase === 'prepare'){
+        const prep = ehBuildPrepareSchedule(blockDurSec);
+        ehSyncEvents = prep.events;
+        ehSyncPrepareInfo = { windowStartSec: prep.windowStartSec, windowEndSec: prep.windowEndSec };
+      }else{
+        ehSyncEvents = ehSchedule.events;
+        ehSyncPrepareInfo = null;
+      }
+      const found = ehSyncEvents.findIndex(e => e.t >= elapsedSec);
+      ehSyncIdx = found < 0 ? ehSyncEvents.length : found;
+      ehRenderUI();
+    }else if(jumped){
+      ehCancelScheduledDiscrete();
+      const found = ehSyncEvents.findIndex(e => e.t >= elapsedSec);
+      ehSyncIdx = found < 0 ? ehSyncEvents.length : found;
+    }
+
+    ehSyncLastElapsedSec = elapsedSec;
+    ehSetAmbient(ehSettings.ambientAir);
+
+    while(ehSyncIdx < ehSyncEvents.length && ehSyncEvents[ehSyncIdx].t - elapsedSec < 0.32){
+      const ev = ehSyncEvents[ehSyncIdx];
+      if(ev.t >= elapsedSec - 0.12){
+        ehPlayEvent(ev, ehAudioCtx.currentTime + Math.max(0, ev.t - elapsedSec));
+      }
+      ehSyncIdx++;
+    }
+
+    if(Math.floor(elapsedSec) !== prevDispSec) ehRenderUI();
+  }
+
+  if(ehEnabledToggle){
+    ehEnabledToggle.addEventListener('change', () => {
+      ehSettings.enabled = ehEnabledToggle.checked;
+      ehSaveSettings();
+      if(ehSettings.enabled) void ehEnsureAudio();
+      else if(ehSyncPhase !== 'idle') stopExamHallTimerSync();
+      ehRenderUI();
+    });
+  }
+  if(ehPlayBtn){
+    ehPlayBtn.addEventListener('click', () => {
+      if(phase === 'rise' || phase === 'hold'){
+        ehSettings.enabled = !ehSettings.enabled;
+        ehSaveSettings();
+        if(ehSettings.enabled) void ehEnsureAudio();
+        else stopExamHallTimerSync();
+        ehRenderUI();
+      }else{
+        void ehToggleStandalone();
+      }
+    });
+  }
+  if(ehVolSlider){
+    ehVolSlider.addEventListener('input', () => {
+      ehSettings.volume = Number(ehVolSlider.value);
+      if(ehMasterGain && ehAudioCtx){
+        ehMasterGain.gain.setValueAtTime(Math.pow(ehSettings.volume / 100, 2) * 2, ehAudioCtx.currentTime);
+      }
+      ehSaveSettings();
+      ehRenderUI();
+    });
+  }
+  if(ehCountSlider){
+    ehCountSlider.addEventListener('input', () => {
+      ehSettings.studentCount = Number(ehCountSlider.value);
+      ehSaveSettings();
+      ehRebuildSchedule();
+      ehRenderUI();
+    });
+  }
+  if(ehMeanSlider){
+    ehMeanSlider.addEventListener('input', () => {
+      ehSettings.skillMean = Number(Number(ehMeanSlider.value).toFixed(2));
+      ehSaveSettings();
+      ehRebuildSchedule();
+      ehRenderUI();
+    });
+  }
+  if(ehStdSlider){
+    ehStdSlider.addEventListener('input', () => {
+      ehSettings.skillStd = Number(Number(ehStdSlider.value).toFixed(2));
+      ehSaveSettings();
+      ehRebuildSchedule();
+      ehRenderUI();
+    });
+  }
+  if(ehSpeedSlider){
+    ehSpeedSlider.addEventListener('input', () => {
+      if(phase === 'rise' || phase === 'hold') return;
+      const nextSpd = clamp(Math.round(Number(ehSpeedSlider.value)), 1, 30);
+      if(ehStandaloneRunning && ehAudioCtx && ehSchedule){
+        const now = ehAudioCtx.currentTime;
+        const curEl = (now - ehStandaloneT0) * ehSettings.standaloneSpeed;
+        ehSettings.standaloneSpeed = nextSpd;
+        ehStandaloneT0 = now - curEl / nextSpd;
+        ehCancelScheduledDiscrete();
+        const found = ehSchedule.events.findIndex(e => e.t >= curEl);
+        ehStandaloneIdx = found < 0 ? ehSchedule.events.length : found;
+      }else{
+        ehSettings.standaloneSpeed = nextSpd;
+      }
+      ehSaveSettings();
+      ehRenderUI();
+    });
+  }
+  if(ehAirToggle){
+    ehAirToggle.addEventListener('change', () => {
+      ehSettings.ambientAir = ehAirToggle.checked;
+      ehSaveSettings();
+      const shouldPlay = ehStandaloneRunning || ((phase === 'rise' || phase === 'hold') && ehSettings.enabled && !isPaused && (ehSyncPhase === 'main' || ehSyncPhase === 'prepare'));
+      ehSetAmbient(ehSettings.ambientAir && shouldPlay);
+      ehRenderUI();
+    });
+  }
+  if(ehReseedBtn){
+    ehReseedBtn.addEventListener('click', () => {
+      ehSettings.seed = Math.floor(Math.random() * 999999) + 1;
+      ehLastSeatFeedback = null;
+      ehSaveSettings();
+      ehRebuildSchedule();
+      ehRenderUI();
+    });
+  }
+  if(ehTestBtn){
+    ehTestBtn.addEventListener('click', async () => {
+      const ok = await ehEnsureAudio();
+      if(!ok || !ehAudioCtx) return;
+      const myIdx = ehSettings.mySeat[1] * 4 + ehSettings.mySeat[0];
+      const sampleSeat = myIdx === 3 ? 2 : 3;
+      const w = ehAudioCtx.currentTime + 0.05;
+      const seq = [['turn',0,1],['flip',1.2,4],['scratch',2.6,1],['mark',3.4,1],['click',4.0,1],['erase',4.6,1],['crumb',6.4,1]];
+      for(let i = 0; i < seq.length; i++){
+        ehPlayEvent({ t: seq[i][1], a: sampleSeat, k: seq[i][0], n: seq[i][2], v: 1 }, w + seq[i][1]);
+      }
+    });
+  }
+
   function setPlaybackSettingsOpen(open){
     if(!playbackSettingsPanel || !playbackSettingsBtn) return;
     playbackSettingsPanel.classList.toggle('open', open);
     playbackSettingsPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
     playbackSettingsBtn.classList.toggle('is-selected', open);
     playbackSettingsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if(open){
+      ehRenderUI();
+      requestAnimationFrame(ehDrawDensityCanvas);
+    }
   }
   if(playbackSettingsBtn){
     playbackSettingsBtn.addEventListener('click', ()=>{
@@ -7782,6 +9060,10 @@ void main(){
   if(playbackSettingsCloseBtn){
     playbackSettingsCloseBtn.addEventListener('click', ()=> setPlaybackSettingsOpen(false));
   }
+
+  ehSubjectKey = ehResolveSubjectKey(currentPreset && currentPreset.steps && currentPreset.steps[0], currentPreset);
+  ehRebuildSchedule();
+  ehRenderUI();
 
   openBuilderBtn.addEventListener('click', openBuilderModalWithDraft);
   builderCloseBtn.addEventListener('click', closeBuilderModalDiscardDraft);
