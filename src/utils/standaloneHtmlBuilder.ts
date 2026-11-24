@@ -6111,6 +6111,7 @@ void main(){
       resumeBell();
       resumeEnglishAudio();
       requestWakeLock();
+      if(typeof unlockExamHallAudio==='function') unlockExamHallAudio();
     }
     if(typeof notifyExamHallPauseChanged==='function') notifyExamHallPauseChanged(isPaused);
   });
@@ -7996,33 +7997,74 @@ void main(){
     const ss = s % 60;
     return String(mm).padStart(2, '0') + ':' + String(ss).padStart(2, '0');
   }
-  function ehLoadSettings(){
+  const EH_ENABLED_COOKIE_KEY = 'csat_eh_enabled';
+  function ehReadEnabledCookie(){
+    try{
+      if(!document.cookie) return null;
+      const parts = document.cookie.split(';');
+      for(let i = 0; i < parts.length; i++){
+        const kv = parts[i].trim().split('=');
+        if(kv[0] === EH_ENABLED_COOKIE_KEY){
+          if(kv[1] === '1' || kv[1] === 'true') return true;
+          if(kv[1] === '0' || kv[1] === 'false') return false;
+        }
+      }
+    }catch(err){}
+    return null;
+  }
+  function ehWriteEnabledCookie(enabled){
+    try{
+      document.cookie = EH_ENABLED_COOKIE_KEY + '=' + (enabled ? '1' : '0') + '; max-age=31536000; path=/; SameSite=Lax';
+    }catch(err){}
+  }
+  function ehSanitizeSettings(raw){
     const def = {
       enabled: false, mySeat: [1, 3], skillMean: 0.5, skillStd: 0.15,
       studentCount: 28, volume: 70, standaloneSpeed: 1, ambientAir: true, seed: 2027
     };
+    if(!raw || typeof raw !== 'object') return def;
+    const p = raw;
+    const seat = Array.isArray(p.mySeat) ? p.mySeat : def.mySeat;
+    return {
+      enabled: typeof p.enabled === 'boolean' ? p.enabled : def.enabled,
+      mySeat: [clamp(Math.round(Number(seat[0])||0), 0, 3), clamp(Math.round(Number(seat[1])||0), 0, 6)],
+      skillMean: Number.isFinite(Number(p.skillMean)) ? Number(clamp(Number(p.skillMean), 0, 1).toFixed(2)) : def.skillMean,
+      skillStd: Number.isFinite(Number(p.skillStd)) ? Number(clamp(Number(p.skillStd), 0, 0.35).toFixed(2)) : def.skillStd,
+      studentCount: Number.isFinite(Number(p.studentCount)) ? clamp(Math.round(Number(p.studentCount)), 1, 28) : def.studentCount,
+      volume: Number.isFinite(Number(p.volume)) ? clamp(Math.round(Number(p.volume)), 0, 100) : def.volume,
+      standaloneSpeed: Number.isFinite(Number(p.standaloneSpeed)) ? clamp(Math.round(Number(p.standaloneSpeed)), 1, 30) : def.standaloneSpeed,
+      ambientAir: typeof p.ambientAir === 'boolean' ? p.ambientAir : def.ambientAir,
+      seed: Number.isFinite(Number(p.seed)) ? clamp(Math.round(Math.abs(Number(p.seed))), 1, 9999999) : def.seed
+    };
+  }
+  function ehLoadSettings(){
     try{
       const raw = localStorage.getItem(EH_STORAGE_KEY);
-      if(!raw) return def;
-      const p = JSON.parse(raw) || {};
-      const seat = Array.isArray(p.mySeat) ? p.mySeat : def.mySeat;
-      return {
-        enabled: typeof p.enabled === 'boolean' ? p.enabled : def.enabled,
-        mySeat: [clamp(Math.round(Number(seat[0])||0), 0, 3), clamp(Math.round(Number(seat[1])||0), 0, 6)],
-        skillMean: Number.isFinite(Number(p.skillMean)) ? Number(clamp(Number(p.skillMean), 0, 1).toFixed(2)) : def.skillMean,
-        skillStd: Number.isFinite(Number(p.skillStd)) ? Number(clamp(Number(p.skillStd), 0, 0.35).toFixed(2)) : def.skillStd,
-        studentCount: Number.isFinite(Number(p.studentCount)) ? clamp(Math.round(Number(p.studentCount)), 1, 28) : def.studentCount,
-        volume: Number.isFinite(Number(p.volume)) ? clamp(Math.round(Number(p.volume)), 0, 100) : def.volume,
-        standaloneSpeed: Number.isFinite(Number(p.standaloneSpeed)) ? clamp(Math.round(Number(p.standaloneSpeed)), 1, 30) : def.standaloneSpeed,
-        ambientAir: typeof p.ambientAir === 'boolean' ? p.ambientAir : def.ambientAir,
-        seed: Number.isFinite(Number(p.seed)) ? clamp(Math.round(Math.abs(Number(p.seed))), 1, 9999999) : def.seed
-      };
-    }catch(err){
-      return def;
-    }
+      if(raw) return ehSanitizeSettings(JSON.parse(raw));
+    }catch(err){}
+    try{
+      const mainRaw = localStorage.getItem(STORAGE_KEY);
+      if(mainRaw){
+        const parsed = JSON.parse(mainRaw) || {};
+        if(parsed.examHallSettings && typeof parsed.examHallSettings === 'object'){
+          return ehSanitizeSettings(parsed.examHallSettings);
+        }
+        if(typeof parsed.examHallEnabled === 'boolean'){
+          return ehSanitizeSettings({ enabled: parsed.examHallEnabled });
+        }
+      }
+    }catch(err){}
+    const cookieEnabled = ehReadEnabledCookie();
+    if(cookieEnabled !== null) return ehSanitizeSettings({ enabled: cookieEnabled });
+    return ehSanitizeSettings(null);
   }
-  function ehSaveSettings(){
+  function ehSaveSettings(skipMainSync){
+    ehSettings = ehSanitizeSettings(ehSettings);
     try{ localStorage.setItem(EH_STORAGE_KEY, JSON.stringify(ehSettings)); }catch(err){}
+    ehWriteEnabledCookie(ehSettings.enabled);
+    if(!skipMainSync && typeof saveCustomSettings === 'function'){
+      saveCustomSettings();
+    }
   }
 
   let ehSettings = ehLoadSettings();
@@ -8175,8 +8217,44 @@ void main(){
         ehSimulateOne(S, L, r, otherSeats[i], evs, ulSet.has(i));
       }
     }
-    evs.sort((a, b) => a.t - b.t);
     const T = S.T;
+    // 종료 10분 전 ~ 5분 전 (5분간): 시험지 검토 구간으로 전체 기준 넘김 빈도의 약 1.5~2배 수준으로 증가
+    const reviewStartMin = Math.max(0, T - 10);
+    const reviewEndMin = Math.max(reviewStartMin, T - 5);
+    const reviewDurMin = reviewEndMin - reviewStartMin;
+    if(M > 0 && reviewDurMin > 0 && T > reviewDurMin){
+      const reviewStartSec = reviewStartMin * 60;
+      const reviewEndSec = reviewEndMin * 60;
+      const totalExamSec = T * 60;
+      let existingReviewTurns = 0;
+      let nonReviewTurns = 0;
+      for(let i = 0; i < evs.length; i++){
+        const e = evs[i];
+        if(e.k !== 'turn' && e.k !== 'flip') continue;
+        if(e.t >= reviewStartSec && e.t < reviewEndSec) existingReviewTurns++;
+        else if(e.t >= 0 && e.t < totalExamSec) nonReviewTurns++;
+      }
+      const baselinePerMin = nonReviewTurns / (T - reviewDurMin);
+      const rr = ehMulberry(ehSettings.seed + 10505);
+      const targetMultiplier = 1.65 + rr() * 0.25;
+      const targetReviewTurns = Math.round(baselinePerMin * reviewDurMin * targetMultiplier);
+      const extraTurns = Math.max(0, targetReviewTurns - existingReviewTurns);
+      for(let i = 0; i < extraTurns; i++){
+        const bellSample = (rr() + rr() + rr()) / 3;
+        const pos = rr() < 0.45 ? rr() : bellSample;
+        const tMin = reviewStartMin + 0.06 + pos * (reviewDurMin - 0.12);
+        const seatIdx = otherSeats[Math.floor(rr() * M)];
+        const isFlip = rr() < 0.38;
+        evs.push({
+          t: tMin * 60,
+          a: seatIdx,
+          k: isFlip ? 'flip' : 'turn',
+          n: isFlip ? 2 + Math.floor(rr() * 2) : 1,
+          v: 0.8 + 0.35 * rr()
+        });
+      }
+    }
+    evs.sort((a, b) => a.t - b.t);
     const turnD = new Array(T).fill(0);
     const writeD = new Array(T).fill(0);
     let totalTurns = 0;
@@ -9081,6 +9159,15 @@ void main(){
     playbackSettingsCloseBtn.addEventListener('click', ()=> setPlaybackSettingsOpen(false));
   }
 
+  window.addEventListener('storage', (e) => {
+    if(e.key !== EH_STORAGE_KEY || !e.newValue) return;
+    try{
+      ehSettings = ehSanitizeSettings(JSON.parse(e.newValue));
+      ehRebuildSchedule();
+      ehRenderUI();
+    }catch(err){}
+  });
+
   ehSubjectKey = ehResolveSubjectKey(currentPreset && currentPreset.steps && currentPreset.steps[0], currentPreset);
   ehRebuildSchedule();
   ehRenderUI();
@@ -9177,6 +9264,8 @@ void main(){
         customSequenceConfig,
         bookmarkFolders,
         bookmarks,
+        examHallSettings: ehSettings,
+        examHallEnabled: Boolean(ehSettings && ehSettings.enabled),
         updatedAt: new Date().toISOString()
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -9267,6 +9356,18 @@ void main(){
       if(typeof parsed.devMode==='boolean'){
         devModeToggle.checked = parsed.devMode;
       }
+      if(!localStorage.getItem(EH_STORAGE_KEY)){
+        if(parsed.examHallSettings && typeof parsed.examHallSettings === 'object'){
+          ehSettings = ehSanitizeSettings(parsed.examHallSettings);
+          ehSaveSettings(true);
+          ehRebuildSchedule();
+          ehRenderUI();
+        }else if(typeof parsed.examHallEnabled === 'boolean'){
+          ehSettings = ehSanitizeSettings(Object.assign({}, ehSettings, { enabled: parsed.examHallEnabled }));
+          ehSaveSettings(true);
+          ehRenderUI();
+        }
+      }
     }catch(e){
       applyTheme('auto', true);
       renderBookmarks();
@@ -9288,7 +9389,9 @@ void main(){
       prelimBellGlowAnim,
       customSequenceConfig,
       bookmarkFolders,
-      bookmarks
+      bookmarks,
+      examHallSettings: ehSettings,
+      examHallEnabled: Boolean(ehSettings && ehSettings.enabled)
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json;charset=utf-8'});
     const url = URL.createObjectURL(blob);
@@ -9386,6 +9489,16 @@ void main(){
               syncUiToPresetIdle();
             }
           }
+        }
+        if(data.examHallSettings && typeof data.examHallSettings === 'object'){
+          ehSettings = ehSanitizeSettings(data.examHallSettings);
+          ehSaveSettings(true);
+          ehRebuildSchedule();
+          ehRenderUI();
+        }else if(typeof data.examHallEnabled === 'boolean'){
+          ehSettings = ehSanitizeSettings(Object.assign({}, ehSettings, { enabled: data.examHallEnabled }));
+          ehSaveSettings(true);
+          ehRenderUI();
         }
         if(typeof data.devMode==='boolean'){
           devModeToggle.checked = data.devMode;

@@ -311,58 +311,129 @@ export function formatSkillLevelLabel(v: number): string {
   return '최상위';
 }
 
-export function readStoredExamHallSettings(): ExamHallSettings {
-  try {
-    const raw = localStorage.getItem(EXAM_HALL_STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_EXAM_HALL_SETTINGS, mySeat: [...DEFAULT_EXAM_HALL_SETTINGS.mySeat] };
-    const p = JSON.parse(raw) as Record<string, unknown>;
-    const enabled = typeof p.enabled === 'boolean' ? p.enabled : DEFAULT_EXAM_HALL_SETTINGS.enabled;
-    const rawSeat = Array.isArray(p.mySeat) ? p.mySeat : DEFAULT_EXAM_HALL_SETTINGS.mySeat;
-    const col = clampNum(Math.round(Number(rawSeat[0]) || 0), 0, 3);
-    const row = clampNum(Math.round(Number(rawSeat[1]) || 0), 0, 6);
-    const skillMean = Number.isFinite(Number(p.skillMean))
-      ? clampNum(Number(p.skillMean), 0, 1)
-      : DEFAULT_EXAM_HALL_SETTINGS.skillMean;
-    const skillStd = Number.isFinite(Number(p.skillStd))
-      ? clampNum(Number(p.skillStd), 0, 0.35)
-      : DEFAULT_EXAM_HALL_SETTINGS.skillStd;
-    const studentCount = Number.isFinite(Number(p.studentCount))
-      ? clampNum(Math.round(Number(p.studentCount)), 1, 28)
-      : DEFAULT_EXAM_HALL_SETTINGS.studentCount;
-    const volume = Number.isFinite(Number(p.volume))
-      ? clampNum(Math.round(Number(p.volume)), 0, 100)
-      : DEFAULT_EXAM_HALL_SETTINGS.volume;
-    const standaloneSpeed = Number.isFinite(Number(p.standaloneSpeed))
-      ? clampNum(Math.round(Number(p.standaloneSpeed)), 1, 30)
-      : DEFAULT_EXAM_HALL_SETTINGS.standaloneSpeed;
-    const ambientAir =
-      typeof p.ambientAir === 'boolean' ? p.ambientAir : DEFAULT_EXAM_HALL_SETTINGS.ambientAir;
-    const seed = Number.isFinite(Number(p.seed))
-      ? clampNum(Math.round(Math.abs(Number(p.seed))), 1, 9999999)
-      : DEFAULT_EXAM_HALL_SETTINGS.seed;
+const MAIN_CUSTOM_SETTINGS_STORAGE_KEY = 'csat_timer_custom_settings_v2';
+const EXAM_HALL_ENABLED_COOKIE_KEY = 'csat_eh_enabled';
 
-    return {
-      enabled,
-      mySeat: [col, row],
-      skillMean: Number(skillMean.toFixed(2)),
-      skillStd: Number(skillStd.toFixed(2)),
-      studentCount,
-      volume,
-      standaloneSpeed,
-      ambientAir,
-      seed,
-    };
+function readExamHallEnabledCookie(): boolean | null {
+  try {
+    if (typeof document === 'undefined' || !document.cookie) return null;
+    const parts = document.cookie.split(';');
+    for (const part of parts) {
+      const [k, v] = part.trim().split('=');
+      if (k === EXAM_HALL_ENABLED_COOKIE_KEY) {
+        if (v === '1' || v === 'true') return true;
+        if (v === '0' || v === 'false') return false;
+      }
+    }
   } catch {
-    return { ...DEFAULT_EXAM_HALL_SETTINGS, mySeat: [...DEFAULT_EXAM_HALL_SETTINGS.mySeat] };
+    // Ignore cookie read errors
+  }
+  return null;
+}
+
+function writeExamHallEnabledCookie(enabled: boolean): void {
+  try {
+    if (typeof document === 'undefined') return;
+    document.cookie = `${EXAM_HALL_ENABLED_COOKIE_KEY}=${enabled ? '1' : '0'}; max-age=31536000; path=/; SameSite=Lax`;
+  } catch {
+    // Ignore cookie write errors (e.g. file:// or restricted context)
   }
 }
 
-export function saveExamHallSettingsToStorage(settings: ExamHallSettings): void {
+export function sanitizeExamHallSettings(raw: unknown): ExamHallSettings {
+  if (!raw || typeof raw !== 'object') {
+    return { ...DEFAULT_EXAM_HALL_SETTINGS, mySeat: [...DEFAULT_EXAM_HALL_SETTINGS.mySeat] };
+  }
+  const p = raw as Record<string, unknown>;
+  const enabled = typeof p.enabled === 'boolean' ? p.enabled : DEFAULT_EXAM_HALL_SETTINGS.enabled;
+  const rawSeat = Array.isArray(p.mySeat) ? p.mySeat : DEFAULT_EXAM_HALL_SETTINGS.mySeat;
+  const col = clampNum(Math.round(Number(rawSeat[0]) || 0), 0, 3);
+  const row = clampNum(Math.round(Number(rawSeat[1]) || 0), 0, 6);
+  const skillMean = Number.isFinite(Number(p.skillMean))
+    ? clampNum(Number(p.skillMean), 0, 1)
+    : DEFAULT_EXAM_HALL_SETTINGS.skillMean;
+  const skillStd = Number.isFinite(Number(p.skillStd))
+    ? clampNum(Number(p.skillStd), 0, 0.35)
+    : DEFAULT_EXAM_HALL_SETTINGS.skillStd;
+  const studentCount = Number.isFinite(Number(p.studentCount))
+    ? clampNum(Math.round(Number(p.studentCount)), 1, 28)
+    : DEFAULT_EXAM_HALL_SETTINGS.studentCount;
+  const volume = Number.isFinite(Number(p.volume))
+    ? clampNum(Math.round(Number(p.volume)), 0, 100)
+    : DEFAULT_EXAM_HALL_SETTINGS.volume;
+  const standaloneSpeed = Number.isFinite(Number(p.standaloneSpeed))
+    ? clampNum(Math.round(Number(p.standaloneSpeed)), 1, 30)
+    : DEFAULT_EXAM_HALL_SETTINGS.standaloneSpeed;
+  const ambientAir =
+    typeof p.ambientAir === 'boolean' ? p.ambientAir : DEFAULT_EXAM_HALL_SETTINGS.ambientAir;
+  const seed = Number.isFinite(Number(p.seed))
+    ? clampNum(Math.round(Math.abs(Number(p.seed))), 1, 9999999)
+    : DEFAULT_EXAM_HALL_SETTINGS.seed;
+
+  return {
+    enabled,
+    mySeat: [col, row],
+    skillMean: Number(skillMean.toFixed(2)),
+    skillStd: Number(skillStd.toFixed(2)),
+    studentCount,
+    volume,
+    standaloneSpeed,
+    ambientAir,
+    seed,
+  };
+}
+
+export function readStoredExamHallSettings(): ExamHallSettings {
   try {
-    localStorage.setItem(EXAM_HALL_STORAGE_KEY, JSON.stringify(settings));
+    const raw = localStorage.getItem(EXAM_HALL_STORAGE_KEY);
+    if (raw) {
+      return sanitizeExamHallSettings(JSON.parse(raw));
+    }
+  } catch {
+    // Fall through to secondary storage
+  }
+
+  try {
+    const mainRaw = localStorage.getItem(MAIN_CUSTOM_SETTINGS_STORAGE_KEY);
+    if (mainRaw) {
+      const parsed = JSON.parse(mainRaw) as Record<string, unknown>;
+      if (parsed && typeof parsed === 'object') {
+        if (parsed.examHallSettings && typeof parsed.examHallSettings === 'object') {
+          return sanitizeExamHallSettings(parsed.examHallSettings);
+        }
+        if (typeof parsed.examHallEnabled === 'boolean') {
+          return {
+            ...DEFAULT_EXAM_HALL_SETTINGS,
+            mySeat: [...DEFAULT_EXAM_HALL_SETTINGS.mySeat],
+            enabled: parsed.examHallEnabled,
+          };
+        }
+      }
+    }
+  } catch {
+    // Fall through to cookie fallback
+  }
+
+  const cookieEnabled = readExamHallEnabledCookie();
+  if (cookieEnabled !== null) {
+    return {
+      ...DEFAULT_EXAM_HALL_SETTINGS,
+      mySeat: [...DEFAULT_EXAM_HALL_SETTINGS.mySeat],
+      enabled: cookieEnabled,
+    };
+  }
+
+  return { ...DEFAULT_EXAM_HALL_SETTINGS, mySeat: [...DEFAULT_EXAM_HALL_SETTINGS.mySeat] };
+}
+
+export function saveExamHallSettingsToStorage(settings: ExamHallSettings): void {
+  const safe = sanitizeExamHallSettings(settings);
+  try {
+    localStorage.setItem(EXAM_HALL_STORAGE_KEY, JSON.stringify(safe));
   } catch {
     // Ignore storage quota errors
   }
+  writeExamHallEnabledCookie(safe.enabled);
 }
 
 /**
@@ -797,9 +868,53 @@ export function buildMainExamSchedule(
     }
   }
 
+  const T = S.T;
+
+  // 종료 10분 전 ~ 5분 전 (5분간): 시험지 검토 구간으로 전체 기준 넘김 빈도의 약 1.5~2배 수준으로 증가
+  const reviewStartMin = Math.max(0, T - 10);
+  const reviewEndMin = Math.max(reviewStartMin, T - 5);
+  const reviewDurMin = reviewEndMin - reviewStartMin;
+
+  if (M > 0 && reviewDurMin > 0 && T > reviewDurMin) {
+    const reviewStartSec = reviewStartMin * 60;
+    const reviewEndSec = reviewEndMin * 60;
+    const totalExamSec = T * 60;
+    let existingReviewTurns = 0;
+    let nonReviewTurns = 0;
+
+    for (const e of rawEvents) {
+      if (e.k !== 'turn' && e.k !== 'flip') continue;
+      if (e.t >= reviewStartSec && e.t < reviewEndSec) {
+        existingReviewTurns++;
+      } else if (e.t >= 0 && e.t < totalExamSec) {
+        nonReviewTurns++;
+      }
+    }
+
+    const baselinePerMin = nonReviewTurns / (T - reviewDurMin);
+    const rr = mulberry(seed + 10505);
+    const targetMultiplier = 1.65 + rr() * 0.25;
+    const targetReviewTurns = Math.round(baselinePerMin * reviewDurMin * targetMultiplier);
+    const extraTurns = Math.max(0, targetReviewTurns - existingReviewTurns);
+
+    for (let i = 0; i < extraTurns; i++) {
+      const bellSample = (rr() + rr() + rr()) / 3;
+      const pos = rr() < 0.45 ? rr() : bellSample;
+      const tMin = reviewStartMin + 0.06 + pos * (reviewDurMin - 0.12);
+      const seatIdx = otherSeats[Math.floor(rr() * M)];
+      const isFlip = rr() < 0.38;
+      rawEvents.push({
+        t: tMin * 60,
+        a: seatIdx,
+        k: isFlip ? 'flip' : 'turn',
+        n: isFlip ? 2 + Math.floor(rr() * 2) : 1,
+        v: 0.8 + 0.35 * rr(),
+      });
+    }
+  }
+
   rawEvents.sort((a, b) => a.t - b.t);
 
-  const T = S.T;
   const turnDensityPerMin = Array<number>(T).fill(0);
   const writeDensityPerMin = Array<number>(T).fill(0);
   let totalTurns = 0;

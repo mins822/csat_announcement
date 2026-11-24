@@ -67,6 +67,7 @@ import {
 } from './components/ExamHallPanelContent';
 import {
   BuiltExamHallSchedule,
+  EXAM_HALL_STORAGE_KEY,
   ExamHallAudioEngine,
   ExamHallSettings,
   ExamHallSubjectKey,
@@ -76,6 +77,7 @@ import {
   computeTimerExamHallSyncState,
   readStoredExamHallSettings,
   resolveExamHallSubjectKey,
+  sanitizeExamHallSettings,
   saveExamHallSettingsToStorage,
 } from './utils/examHallNoiseEngine';
 
@@ -104,6 +106,8 @@ interface StoredCustomSettings {
   mainBellGlowAnim: boolean;
   prelimBellGlowAnim: boolean;
   timetableOpacity?: number;
+  examHallSettings?: ExamHallSettings;
+  examHallEnabled?: boolean;
   updatedAt?: string;
 }
 
@@ -163,6 +167,15 @@ function readStoredCustomSettings(): {
         ? Math.min(98, Math.max(45, Math.round(parsed.timetableOpacity)))
         : 82;
 
+    const examHallSettings =
+      parsed?.examHallSettings && typeof parsed.examHallSettings === 'object'
+        ? sanitizeExamHallSettings(parsed.examHallSettings)
+        : undefined;
+    const examHallEnabled =
+      typeof parsed?.examHallEnabled === 'boolean'
+        ? parsed.examHallEnabled
+        : examHallSettings?.enabled;
+
     return {
       settings: {
         themePref,
@@ -178,6 +191,8 @@ function readStoredCustomSettings(): {
         mainBellGlowAnim,
         prelimBellGlowAnim,
         timetableOpacity,
+        examHallSettings,
+        examHallEnabled,
       },
       correctedCount,
     };
@@ -892,6 +907,25 @@ export default function App() {
   }, [examHallSchedule]);
 
   useEffect(() => {
+    saveExamHallSettingsToStorage(examHallSettings);
+  }, [examHallSettings]);
+
+  useEffect(() => {
+    const handleStorageSync = (e: StorageEvent) => {
+      if (e.key !== EXAM_HALL_STORAGE_KEY || !e.newValue) return;
+      try {
+        const next = sanitizeExamHallSettings(JSON.parse(e.newValue));
+        examHallSettingsRef.current = next;
+        setExamHallSettings(next);
+      } catch {
+        // Ignore malformed external storage updates
+      }
+    };
+    window.addEventListener('storage', handleStorageSync);
+    return () => window.removeEventListener('storage', handleStorageSync);
+  }, []);
+
+  useEffect(() => {
     const engine = examHallAudioRef.current;
     if (!engine) return;
     engine.setStandaloneTickListener((elapsedSec, running) => {
@@ -1267,7 +1301,8 @@ export default function App() {
       nextMainGlow: boolean = mainBellGlowAnimRef.current,
       nextPrelimGlow: boolean = prelimBellGlowAnimRef.current,
       nextTtOpacity: number = timetableOpacityRef.current,
-      nextBookmarkFolders: BookmarkFolder[] = bookmarkFoldersRef.current
+      nextBookmarkFolders: BookmarkFolder[] = bookmarkFoldersRef.current,
+      nextExamHallSettings: ExamHallSettings = examHallSettingsRef.current
     ) => {
       try {
         const validTheme: ThemePreference = VALID_THEME_PREFS.includes(nextThemePref)
@@ -1276,6 +1311,7 @@ export default function App() {
         const validSync: ClockSyncMode = VALID_SYNC_MODES.includes(nextSyncMode)
           ? nextSyncMode
           : 'original_csat_time';
+        const safeExamHall = sanitizeExamHallSettings(nextExamHallSettings);
         const payload: StoredCustomSettings = {
           themePref: validTheme,
           presetId: nextPresetId,
@@ -1290,6 +1326,8 @@ export default function App() {
           mainBellGlowAnim: Boolean(nextMainGlow),
           prelimBellGlowAnim: Boolean(nextPrelimGlow),
           timetableOpacity: clamp(Math.round(nextTtOpacity), 45, 98),
+          examHallSettings: safeExamHall,
+          examHallEnabled: safeExamHall.enabled,
           updatedAt: new Date().toISOString(),
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -3427,50 +3465,65 @@ export default function App() {
 
   const handleUpdateExamHallSettings = useCallback(
     (patch: Partial<ExamHallSettings>) => {
-      setExamHallSettings((prev) => {
-        const next: ExamHallSettings = {
-          ...prev,
-          ...patch,
-          mySeat: patch.mySeat ? [patch.mySeat[0], patch.mySeat[1]] : [prev.mySeat[0], prev.mySeat[1]],
-        };
-        examHallSettingsRef.current = next;
-        saveExamHallSettingsToStorage(next);
+      const prev = examHallSettingsRef.current;
+      const next: ExamHallSettings = sanitizeExamHallSettings({
+        ...prev,
+        ...patch,
+        mySeat: patch.mySeat ? [patch.mySeat[0], patch.mySeat[1]] : [prev.mySeat[0], prev.mySeat[1]],
+      });
+      examHallSettingsRef.current = next;
+      setExamHallSettings(next);
+      saveExamHallSettingsToStorage(next);
+      saveCustomSettingsToStorage(
+        themePrefRef.current,
+        selectedPresetId,
+        devMode,
+        clockSyncModeRef.current,
+        customSequenceConfigRef.current,
+        bookmarksRef.current,
+        bellVolumeRef.current,
+        englishVolumeRef.current,
+        keepScreenAwakeRef.current,
+        mainBellGlowAnimRef.current,
+        prelimBellGlowAnimRef.current,
+        timetableOpacityRef.current,
+        bookmarkFoldersRef.current,
+        next
+      );
 
-        const engine = examHallAudioRef.current;
-        if (engine) {
-          if (patch.volume !== undefined) {
-            engine.updateVolume(next.volume);
-          }
-          if (patch.mySeat !== undefined) {
-            engine.updateMySeat(next.mySeat);
-          }
-          if (patch.standaloneSpeed !== undefined) {
-            engine.updateStandaloneSpeed(next.standaloneSpeed);
-          }
-          if (patch.ambientAir !== undefined) {
-            const st = engineRef.current;
-            const isSyncActiveNow =
-              next.enabled &&
-              (st.phase === 'rise' || st.phase === 'hold') &&
-              !st.isPaused &&
-              (examHallSyncUi.phase === 'prepare' || examHallSyncUi.phase === 'main');
-            engine.updateAmbientAir(
-              next.ambientAir,
-              engine.isStandalonePlaying() || isSyncActiveNow
-            );
-          }
-          if (patch.enabled !== undefined) {
-            if (next.enabled) {
-              engine.unlockOnUserGesture();
-            } else {
-              engine.stopTimerSync();
-            }
+      const engine = examHallAudioRef.current;
+      if (engine) {
+        if (patch.volume !== undefined) {
+          engine.updateVolume(next.volume);
+        }
+        if (patch.mySeat !== undefined) {
+          engine.updateMySeat(next.mySeat);
+        }
+        if (patch.standaloneSpeed !== undefined) {
+          engine.updateStandaloneSpeed(next.standaloneSpeed);
+        }
+        if (patch.ambientAir !== undefined) {
+          const st = engineRef.current;
+          const isSyncActiveNow =
+            next.enabled &&
+            (st.phase === 'rise' || st.phase === 'hold') &&
+            !st.isPaused &&
+            (examHallSyncUi.phase === 'prepare' || examHallSyncUi.phase === 'main');
+          engine.updateAmbientAir(
+            next.ambientAir,
+            engine.isStandalonePlaying() || isSyncActiveNow
+          );
+        }
+        if (patch.enabled !== undefined) {
+          if (next.enabled) {
+            engine.unlockOnUserGesture();
+          } else {
+            engine.stopTimerSync();
           }
         }
-        return next;
-      });
+      }
     },
-    [examHallSyncUi.phase]
+    [devMode, examHallSyncUi.phase, saveCustomSettingsToStorage, selectedPresetId]
   );
 
   const handleToggleExamHallStandalone = useCallback(async () => {
@@ -4908,6 +4961,8 @@ export default function App() {
       mainBellGlowAnim,
       prelimBellGlowAnim,
       timetableOpacity,
+      examHallSettings: examHallSettingsRef.current,
+      examHallEnabled: examHallSettingsRef.current.enabled,
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {
       type: 'application/json;charset=utf-8',
@@ -4949,6 +5004,7 @@ export default function App() {
         let nextMainGlow = mainBellGlowAnim;
         let nextPrelimGlow = prelimBellGlowAnim;
         let nextTtOpacity = timetableOpacity;
+        let nextExamHallSettings = examHallSettingsRef.current;
 
         if (data.themePref && VALID_THEME_PREFS.includes(data.themePref)) {
           nextTheme = data.themePref as ThemePreference;
@@ -5037,6 +5093,20 @@ export default function App() {
             }
           }
         }
+        if (data.examHallSettings && typeof data.examHallSettings === 'object') {
+          nextExamHallSettings = sanitizeExamHallSettings(data.examHallSettings);
+          examHallSettingsRef.current = nextExamHallSettings;
+          setExamHallSettings(nextExamHallSettings);
+          saveExamHallSettingsToStorage(nextExamHallSettings);
+        } else if (typeof data.examHallEnabled === 'boolean') {
+          nextExamHallSettings = sanitizeExamHallSettings({
+            ...examHallSettingsRef.current,
+            enabled: data.examHallEnabled,
+          });
+          examHallSettingsRef.current = nextExamHallSettings;
+          setExamHallSettings(nextExamHallSettings);
+          saveExamHallSettingsToStorage(nextExamHallSettings);
+        }
         if (typeof data.devMode === 'boolean') {
           nextDev = data.devMode;
           setDevMode(nextDev);
@@ -5054,7 +5124,8 @@ export default function App() {
           nextMainGlow,
           nextPrelimGlow,
           nextTtOpacity,
-          nextBookmarkFolders
+          nextBookmarkFolders,
+          nextExamHallSettings
         );
         showToast(
           correctedTotal > 0
