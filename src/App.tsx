@@ -9131,16 +9131,16 @@ export default function App() {
                 <h1>2027학년도 대학수학능력시험 시험장 안내방송 구현</h1>
                 <p>
                   수능 타종 · 수능 방송 · 수능 알림 · 실제 수능 시험장의 1교시 국어부터 5교시 제2외국어/한문까지
-                  37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 영역별 맞춤 시간표 구성을 완벽히 구현한
-                  실전 수능 시계 및 모의고사 타이머입니다.
+                  37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 시험장 백색소음 모드 및 영역별 맞춤 시간표
+                  구성을 완벽히 구현한 실전 수능 시계 및 모의고사 타이머입니다. (제작자: mins822)
                 </p>
                 <div className="info-seo-tags">
                   <span className="info-seo-tag">2027학년도 대학수학능력시험 시험장 안내방송 구현</span>
-                  <span className="info-seo-tag">수능 타종</span>
-                  <span className="info-seo-tag">수능 방송</span>
-                  <span className="info-seo-tag">수능 알림</span>
+                  <span className="info-seo-tag">수능 타종 · 수능 방송 · 수능 알림</span>
                   <span className="info-seo-tag">수능 시계 · 모의고사 타이머</span>
                   <span className="info-seo-tag">영어 듣기평가 자동 재생</span>
+                  <span className="info-seo-tag">수능 시험장 백색소음</span>
+                  <span className="info-seo-tag">제작자: mins822</span>
                 </div>
               </div>
 
@@ -9359,6 +9359,24 @@ export default function App() {
                       }}
                     >
                       {formatAppVersion(true)}
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span>제작자</span>
+                    <span
+                      style={{
+                        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+                        fontWeight: 700,
+                      }}
+                    >
+                      mins822
                     </span>
                   </div>
 

@@ -70,13 +70,26 @@ export function buildStandaloneCsatHtml(
 <meta name="google-site-verification" content="n2IeGBSKyEv1Cnc7odBy2FlFMqShS7C6F4DuHcBBZC0">
 <meta name="google-site-verification" content="v2RFRefw55H8O4y43HAt2Y9RNqFoYyw1AJ3xpNej4jE">
 <meta name="application-name" content="2027학년도 대학수학능력시험 시험장 안내방송">
-<meta name="description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 · 수능 타종 · 수능 방송 · 수능 알림 · 37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 과목별 시간표 구성을 지원하는 수능 시계 및 모의고사 타이머">
-<meta name="keywords" content="2027학년도 대학수학능력시험 시험장 안내방송 구현, 수능 타종, 수능 방송, 수능 알림, 수능 시계, 수능 타이머, 모의고사 타이머, 수능 안내방송, 수능 시간표, 수능 영어 듣기평가">
+<meta name="author" content="mins822">
+<meta name="creator" content="mins822">
+<meta name="publisher" content="mins822">
+<meta name="copyright" content="mins822">
+<meta name="description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 (제작자: mins822) · 수능 타종 · 수능 방송 · 수능 알림 · 1~5교시 37개 공식 타종 음원, 3교시 영어 듣기평가 자동 재생, 시험장 백색소음 모드 및 영역별 맞춤 시간표를 지원하는 실전 수능 시계·모의고사 타이머">
+<meta name="keywords" content="2027학년도 대학수학능력시험 시험장 안내방송 구현, 수능 타종, 수능 방송, 수능 알림, 수능 시계, 수능 타이머, 모의고사 타이머, 수능 안내방송, 수능 시간표, 수능 영어 듣기평가, 수능 예비령 준비령 본령 종료령, 아날로그 수능 시계, 수능 시험장 백색소음, 수능 실전 연습, 평가원 모의고사 타종, 국어 수학 영어 한국사 탐구 제2외국어 타이머, mins822">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://mins822.github.io/csat_announcement/">
-<meta property="og:title" content="2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림">
-<meta property="og:description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 · 수능 타종 · 수능 방송 · 수능 알림 · 37개 공식 타종 음원과 3교시 영어 듣기평가 자동 재생, 과목별 시간표 구성을 지원하는 수능 시계 및 모의고사 타이머">
+<link rel="author" href="https://github.com/mins822">
+<meta property="og:title" content="2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림 | mins822">
+<meta property="og:description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 (제작자: mins822) · 수능 타종 · 수능 방송 · 수능 알림 · 1~5교시 37개 공식 타종 음원, 3교시 영어 듣기평가 자동 재생, 시험장 백색소음 모드 및 영역별 맞춤 시간표를 지원하는 실전 수능 시계·모의고사 타이머">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://mins822.github.io/csat_announcement/">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="2027학년도 대학수학능력시험 시험장 안내방송 · mins822">
+<meta property="og:image" content="https://mins822.github.io/csat_announcement/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@mins822">
+<meta name="twitter:title" content="2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림 | mins822">
+<meta name="twitter:description" content="2027학년도 대학수학능력시험 시험장 안내방송 구현 (제작자: mins822) · 수능 타종 · 수능 방송 · 수능 알림 · 1~5교시 37개 공식 타종 음원, 3교시 영어 듣기평가 자동 재생, 시험장 백색소음 모드 및 영역별 맞춤 시간표를 지원하는 실전 수능 시계·모의고사 타이머">
 <meta name="version" content="${fullVersionString}">
 <meta id="theme-color-meta" name="theme-color" content="#ecebe9">
 <link id="app-favicon" rel="icon" type="image/svg+xml" href="${LIGHT_FAVICON_DATA_URI}">
@@ -84,7 +97,10 @@ export function buildStandaloneCsatHtml(
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Noto+Serif+KR:wght@200..900&family=Noto+Serif:ital,opsz,wght@0,6..144,200..900&family=Outfit:wght@400;500;600&family=Roboto+Condensed:ital,wght@0,600;0,700;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<title>2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림</title>
+<title>2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림 | mins822</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"2027학년도 대학수학능력시험 시험장 안내방송 구현","alternateName":["수능 타종","수능 방송","수능 알림","수능 시계 타이머","모의고사 타이머"],"url":"https://mins822.github.io/csat_announcement/","description":"2027학년도 대학수학능력시험 시험장 안내방송 구현 (제작자: mins822) · 수능 타종 · 수능 방송 · 수능 알림 · 1~5교시 37개 공식 타종 음원, 3교시 영어 듣기평가 자동 재생, 시험장 백색소음 모드 및 영역별 맞춤 시간표를 지원하는 실전 수능 시계·모의고사 타이머","applicationCategory":"EducationalApplication","operatingSystem":"All","inLanguage":"ko-KR","author":{"@type":"Person","name":"mins822","url":"https://github.com/mins822"},"creator":{"@type":"Person","name":"mins822","url":"https://github.com/mins822"},"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}
+</script>
 <script>
 (function(){
   var LIGHT_FAV=${JSON.stringify(LIGHT_FAVICON_DATA_URI)};
@@ -3770,6 +3786,10 @@ html:not(.app-ready) #playbackSettingsPanel{
           <div class="info-row">
             <span>시스템 기기 설정 버전</span>
             <span id="appSystemVersion" class="mono-val"></span>
+          </div>
+          <div class="info-row">
+            <span>제작자</span>
+            <span class="mono-val">mins822</span>
           </div>
           <div class="info-row">
             <label for="devModeToggle" style="cursor:pointer">개발자 모드 활성화</label>
