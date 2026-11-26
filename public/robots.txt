@@ -1,5 +1,49 @@
+# ==========================================================
+# robots.txt
+# 2027학년도 대학수학능력시험 시험장 안내방송 구현 (mins822)
+# https://mins822.github.io/csat_announcement/
+#
+# [배치 위치 - 중요]
+# 크롤러는 robots.txt를 "도메인 루트"에서만 읽습니다.
+#   O  https://mins822.github.io/robots.txt
+#   X  https://mins822.github.io/csat_announcement/robots.txt (무시됨)
+# 따라서 이 파일은 'mins822.github.io' 라는 이름의 저장소
+# (GitHub 사용자 사이트) 최상위에 넣어야 효과가 있습니다.
+# 해당 저장소가 없다면 robots.txt는 생략해도 모두 허용으로 처리되며,
+# sitemap.xml을 Search Console / 네이버 서치어드바이저에 직접 제출하면 됩니다.
+# ==========================================================
+
+# ---- 기본 규칙: 모든 크롤러 전체 허용 ----
 User-agent: *
 Allow: /
 Disallow: /assets/aistudio/
 
+# ---- 주요 검색 크롤러 (국내 + 해외) ----
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# 네이버
+User-agent: Yeti
+Allow: /
+
+# 다음(카카오)
+User-agent: Daumoa
+Allow: /
+
+# ---- 링크 미리보기 봇 (카카오톡/페이스북/X 공유 시 og-image 표시) ----
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# ---- 사이트맵 위치 ----
+# 사이트맵 주소는 절대 URL(https://...)로 적어야 하며,
+# /csat_announcement/ 하위 주소만 담긴 사이트맵은 그 경로에 두어도 인식됩니다.
 Sitemap: https://mins822.github.io/csat_announcement/sitemap.xml

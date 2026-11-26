@@ -1892,7 +1892,7 @@ export default function App() {
       if (titleRef.current) {
         titleRef.current.textContent = preset.displayTitle;
       }
-      document.title = '2027학년도 대학수학능력시험 시험장 안내방송 · 수능 타종 · 수능 방송 · 수능 알림';
+      document.title = '수능 타종 시계 · 시험장 안내방송 | mins822';
       if (startLabRef.current) {
         renderClockTimeLabel(startLabRef.current, 'START TIME', dispStartMin);
         startLabRef.current.style.opacity = '1';
@@ -5278,12 +5278,11 @@ export default function App() {
       />
 
       {/* 검색 엔진(Google 등) 및 웹 접근성을 위한 시맨틱 설명 영역 (시계 화면은 깔끔하게 유지) */}
-      <section className="seo-semantic-region" aria-label="2027학년도 대학수학능력시험 시험장 안내방송 소개">
-        <h1>2027학년도 대학수학능력시험 시험장 안내방송 구현</h1>
+      <section className="seo-semantic-region" aria-label="2027학년도 수능 시험장 안내방송 소개">
+        <h1>2027학년도 수능 시험장 안내방송 · 타종 타이머</h1>
         <p>
-          수능 타종 · 수능 방송 · 수능 알림 · 실제 수능 시험장 안내방송 37개 공식 타종 음원과 3교시 영어
-          듣기평가 자동 재생, 영역별 타종 체크박스 선택 및 시간 간격·시각 설정을 지원하는 수능 시계 및
-          실전 모의고사 타이머 웹 애플리케이션입니다.
+          수능 당일 시험장의 예비령, 준비령, 본령, 종료령 타종과 안내방송을 그대로 재현한 무료 웹 타이머입니다.
+          공식 타종 음원 37개, 3교시 영어 듣기평가 자동 재생, 시험장 백색소음 생성기, 영역별 맞춤 시간표를 지원합니다. (제작자: mins822)
         </p>
       </section>
 

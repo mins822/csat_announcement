@@ -1,0 +1,160 @@
+<!--
+  ============================================================
+  seo-meta-head.html
+  수능 시험장 안내방송 구현 (mins822) — <head> 안에 붙여 넣는 SEO 태그 모음
+  ------------------------------------------------------------
+  적용 위치: Vite 프로젝트의 index.html <head> 안
+  주의
+   - title / description은 글자 폭 때문에 한글 약 28~30자 / 70~75자 안팎에서 잘림
+   - keywords 메타는 구글이 무시함 (네이버·기타 참고용으로만 유지)
+   - JSON-LD 안의 내용은 화면에 보이는 본문(seo-body-content.html)과 일치해야 함
+   - 날짜(dateModified)는 실제 수정 시 갱신
+  ============================================================
+-->
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+<!-- ===== 기본 ===== -->
+<title>수능 타종 시계 · 시험장 안내방송 | mins822</title>
+<meta name="description" content="2027 수능 시험장 안내방송과 타종을 그대로 재현한 무료 모의고사 타이머. 공식 타종 37종, 영어 듣기평가 자동 재생." />
+<meta name="keywords" content="수능 타종, 수능 타종 소리, 수능 안내방송, 수능 시계, 수능 타이머, 모의고사 타이머, 수능 듣기평가, 수능 백색소음, 시험장 소음, 예비령, 준비령, 본령, 종료령, 수능 시간표, 2027학년도 수능, 수능 실전 연습, mins822" />
+<meta name="author" content="mins822" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<link rel="canonical" href="https://mins822.github.io/csat_announcement/" />
+<link rel="alternate" hreflang="ko" href="https://mins822.github.io/csat_announcement/" />
+<link rel="alternate" hreflang="x-default" href="https://mins822.github.io/csat_announcement/" />
+<meta name="theme-color" content="#ecebe9" />
+
+<!-- ===== 앱 느낌 (모바일) ===== -->
+<meta name="application-name" content="수능타종타이머" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="수능타종타이머" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<!-- ===== Open Graph (카카오톡 · 페이스북 · 디스코드 등) ===== -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="수능 시험장 안내방송 · mins822" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:url" content="https://mins822.github.io/csat_announcement/" />
+<meta property="og:title" content="2027 수능 시계 · 타종 · 안내방송 한곳에서" />
+<meta property="og:description" content="예비령부터 종료령까지 37개 타종 음원, 영어 듣기평가 자동 재생, 시험장 백색소음까지. 영역별 시간표로 실전처럼 연습하세요." />
+<meta property="og:image" content="https://mins822.github.io/csat_announcement/og-image.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="수능 시험장 안내방송 · 타종 · 시계 화면 미리보기 (mins822)" />
+
+<!-- ===== Twitter / X ===== -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@mins822" />
+<meta name="twitter:title" content="2027 수능 시계 · 타종 · 안내방송 한곳에서" />
+<meta name="twitter:description" content="시험지 넘기는 소리부터 종료령까지, 수능 당일 시험장을 그대로. 무료 수능 타종 타이머." />
+<meta name="twitter:image" content="https://mins822.github.io/csat_announcement/og-image.jpg" />
+<meta name="twitter:image:alt" content="수능 시험장 안내방송 · 타종 · 시계 화면 미리보기" />
+
+<!-- ===== 구조화 데이터 1: 웹 애플리케이션 ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "수능 시험장 안내방송 · 타종 타이머",
+  "alternateName": [
+    "2027학년도 대학수학능력시험 시험장 안내방송 구현",
+    "수능 타종 타이머",
+    "수능 안내방송 시계",
+    "수능타종타이머"
+  ],
+  "url": "https://mins822.github.io/csat_announcement/",
+  "description": "2027학년도 대학수학능력시험 시험장 안내방송과 타종을 재현한 무료 웹 타이머. 1~5교시 타종 음원 37개, 3교시 영어 듣기평가 자동 재생, 시험장 백색소음 생성기, 영역별 맞춤 시간표를 지원합니다.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web, Android, iOS, Windows, macOS",
+  "browserRequirements": "Requires JavaScript and audio playback support",
+  "inLanguage": "ko-KR",
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student",
+    "audienceType": "대학수학능력시험 수험생"
+  },
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "image": "https://mins822.github.io/csat_announcement/og-image.jpg",
+  "author": { "@type": "Person", "name": "mins822" },
+  "creator": { "@type": "Person", "name": "mins822" },
+  "dateModified": "2026-11-26",
+  "keywords": "수능 타종, 수능 안내방송, 수능 시계, 모의고사 타이머, 수능 듣기평가, 수능 백색소음",
+  "featureList": [
+    "1~5교시 공식 타종 음원 37개 (예비령·준비령·본령·종료 10분 전·종료 5분 전·종료령)",
+    "3교시 영어 듣기평가 자동 연동 재생",
+    "아날로그 수능 시계",
+    "영역별 맞춤 수능 시간표와 시간 간격 편집",
+    "과목별 타종 설정",
+    "HRTF 3D 입체음향 시험장 백색소음 생성기 (시험지 넘김·파본검사·샤프 필기·OMR 마킹 소리)",
+    "시험장 4열×7행 자리 선택, 수험생 인원·실력별 소음 시뮬레이션",
+    "실제 시각 예약 시작",
+    "오프라인 단일 HTML 저장 및 공유"
+  ]
+}
+</script>
+
+<!-- ===== 구조화 데이터 2: 자주 묻는 질문 (본문에도 같은 질문·답이 보여야 함) ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "수능 타종은 어떤 순서로 울리나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "교시마다 예비령, 준비령(파본검사), 본령, 종료 10분 전, 종료 5분 전, 종료령 순서로 울립니다. 이 사이트는 1~5교시 전체 타종 37개 음원을 시간표에 맞춰 재생합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "영어 듣기평가도 재생되나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "네. 3교시 영어 영역의 13:07 듣기평가 안내방송 시점에 맞춰 듣기평가가 자동으로 연동 재생됩니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "시험장 백색소음 모드는 무엇인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "시험지 넘기는 소리, 파본검사 소리, 샤프 필기 소리, OMR 답안 마킹 소리를 HRTF 3D 입체음향으로 무작위 재생해 실제 시험장과 비슷한 환경에서 연습할 수 있는 기능입니다. 자리(4열×7행)와 수험생 인원, 실력 수준을 설정할 수 있습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "원하는 시각에 맞춰 시작할 수 있나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "네. 실제 시각 예약 시작 기능으로 원하는 시각에 시간표가 시작되도록 설정할 수 있습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "인터넷 없이도 사용할 수 있나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "오프라인용 단일 HTML 파일로 저장해 공유하고 사용할 수 있습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "공식 사이트인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아닙니다. 개인 제작자 mins822가 만든 비공식 실전 연습용 도구이며, 한국교육과정평가원 및 교육부와 관련이 없습니다. 실제 시험 시각과 안내는 반드시 공식 공지를 확인하세요."
+      }
+    }
+  ]
+}
+</script>
